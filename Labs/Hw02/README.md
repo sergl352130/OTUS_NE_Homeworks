@@ -31,6 +31,10 @@ enable secret 5 $1$iyZ6$r63d1wdyvn6Jl8V8CZTU8.
 no ip domain-lookup
 !
 !
+interface Vlan1
+ ip address 192.168.1.1 255.255.255.0
+!
+!
 banner motd ^CThis is a secure system. Unauthorized access is prohibited!^C
 !
 line con 0
@@ -58,6 +62,10 @@ enable secret 5 $1$pHN4$2MyeOcN1q4lZN0rr84jQu0
 !
 !
 no ip domain-lookup
+!
+!
+interface Vlan1
+ ip address 192.168.1.2 255.255.255.0
 !
 !
 banner motd ^CThis is a secure system. Unauthorized access is prohibited!^C
@@ -89,6 +97,10 @@ enable secret 5 $1$2TMM$RimE0i6g1XLZrULzCrtcX/
 no ip domain-lookup
 !
 !
+interface Vlan1
+ ip address 192.168.1.3 255.255.255.0
+!
+!
 banner motd ^CThis is a secure system. Unauthorized access is prohibited!^C
 !
 line con 0
@@ -101,4 +113,31 @@ line vty 0 4
 !
 !
 end
+```
+
+### Шаг 4: Проверка связности
+
+### S1:
+
+```
+S1#ping 192.168.1.2
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+S1#ping 192.168.1.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.3, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+```
+
+### S2:
+
+```
+S2#ping 192.168.1.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.3, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 ```
