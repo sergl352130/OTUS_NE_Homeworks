@@ -1,7 +1,7 @@
 # Лабораторная работа 02
 + ## Развертывание коммутируемой сети с резервными каналами
 ## Топология
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/STP_topology.png?raw=true)
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw02/STP_topology.png?raw=true)
 
 ## Цели:
 + ### Часть 1: Создание сети и настройка основных параметров устройств
