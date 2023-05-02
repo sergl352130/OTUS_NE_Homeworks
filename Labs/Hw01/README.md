@@ -1,19 +1,20 @@
-# **Лабораторная работа - Настройка маршрутизации между VLAN по методу "Router-on-a-Stick"**
+# Лабораторная работа 01
++ ## Настройка маршрутизации между VLAN по методу "Router-on-a-Stick"
 ## **Топология** 
 ![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/VLAN_topology.png?raw=true)
 
-## **Цели:**
+## Цели:
 + ### Часть 1: Создание сети и настройка основных параметров устройств
-+ ### Часть 2: Создание VLAN и включение в них портов коммутатора
++ ### Часть 2: Создание VLAN и включение в них портов коммутаторов
 + ### Часть 3: Настройка транков 802.1Q между коммутаторами
 + ### Часть 4: Настройка связности между VLAN на маршрутизаторе
 + ### Часть 5: Проверка функционирования маршрутизации между VLAN
 
-## **Решение**
-## **Часть 1: Создание сети и настройка основных параметров устройств**
+## Решение
+## Часть 1: Создание сети и настройка основных параметров устройств
 
-### **Шаг 1: Коммутация сети по схеме**
-### **Шаг 2: Настройка основных параметров маршрутизатора**
+### Шаг 1: Коммутация сети по схеме
+### Шаг 2: Настройка основных параметров маршрутизатора
 
 ### R1:
 
@@ -46,9 +47,9 @@ line vty 0 4
 end
 ```
 
-### **Шаг 3: Настройка основных параметров для каждого коммутатора**
+### Шаг 3: Настройка основных параметров для каждого коммутатора
 
-### **S1**:
+### S1:
 
 ```
 S1#sh ru
@@ -78,7 +79,7 @@ line vty 0 4
 end
 ```
 
-### **S2**:
+### S2:
 
 ```
 S2#sh ru
@@ -109,72 +110,87 @@ end
 ```
 
 
-## **Часть 2: Create VLANs and Assign Switch Ports**
+## Часть 2: Создание VLAN и включение в них портов коммутаторов
+
+### Шаг 1: Создание VLAN на обоих коммутаторах
+### Шаг 2: Включение в VLANы портов коммутаторов
+
+### S1:
+
+```
+S1#sh ru
+Building configuration...
+!
+interface Ethernet0/0
+ switchport access vlan 3
+ switchport mode access
+!
+!
+interface Ethernet0/2
+ switchport access vlan 7
+ switchport mode access
+ shutdown
+!
+!
+end
+
+S1#sh vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+3    Management                       active    Et0/0
+4    Operations                       active
+7    ParkingLot                       active    Et0/2
+8    Native                           active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+
+```
+
+### S2:
+
+```
+S2#sh ru
+Building configuration...
+!
+interface Ethernet0/0
+ switchport access vlan 4
+ switchport mode access
+!
+!
+interface Ethernet0/2
+ switchport access vlan 7
+ switchport mode access
+ shutdown
+!
+interface Ethernet0/3
+ switchport access vlan 7
+ switchport mode access
+ shutdown
+!
+end
+
+S2#sh vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+3    Management                       active
+4    Operations                       active    Et0/0
+7    ParkingLot                       active    Et0/2, Et0/3
+8    Native                           active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+
+```
 
 
-### **Шаг 1: Create VLANs on both switches.**
-
-
-a.	Create and name the required VLANs on each switch from the table above.
-
-
-b.	Configure the management interface and default gateway on each switch using the IP address information in the Addressing Table. 
-
-
-c.	Assign all unused ports on both switches to the ParkingLot VLAN, configure them for static access mode, and administratively deactivate them.
-
-
-
-
-### **Шаг 2: Assign VLANs to the correct switch interfaces.**
-
-
-a.	Assign used ports to the appropriate VLAN (specified in the VLAN table above) and configure them for static access mode. Be sure to do this on both switches
-
-
-b.	Issue the show vlan brief command and verify that the VLANs are assigned to the correct interfaces.
-
-
-### **S1**:
-
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/S1(VLAN).png?raw=true)
-
-
-### **S2**:
-
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/S2(Vlan).png?raw=true)
-
-
-
-
-## **Часть 3: Configure an 802.1Q Trunk Between the Switches**
-
-
-### **Шаг 1: Manually configure trunk interface F0/1.**
-
-
-a.	Change the switchport mode on interface F0/1 to force trunking. Make sure to do this on both switches.
-
-
-b.	As a part of the trunk configuration, set the native VLAN to 8 on both switches. You may see error messages temporarily while the two interfaces are configured for different native VLANs.
-
-
-c.	As another part of trunk configuration, specify that VLANs 3, 4, and 8 are only allowed to cross the trunk.
-
-
-d.	Issue the show interfaces trunk command to verify trunking ports, the Native VLAN and allowed VLANs across the trunk.
-
-
-### **Шаг 2: Manually configure S1’s trunk interface F0/5**
-
-
-a.	Configure the F0/5 on S1 with the same trunk parameters as F0/1. This is the trunk to the router.
-
-
-b.	Save the running configuration to the startup configuration file on S1 and S2.
-
-
-c.	Issue the show interfaces trunk command to verify trunking.
+## Часть 3: Настройка транков 802.1Q между коммутаторами
 
 
 ### **S1**:
