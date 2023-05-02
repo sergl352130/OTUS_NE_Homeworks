@@ -109,6 +109,55 @@ line vty 0 4
 end
 ```
 
+### Шаг 4: Настройка основных параметров для каждого ПК
+
+### PC-A:
+
+```
+Welcome to Virtual PC Simulator, version 1.3 (0.8.1)
+Dedicated to Daling.
+Build time: May  7 2022 15:27:29
+Copyright (c) 2007-2015, Paul Meng (mirnshi@gmail.com)
+Copyright (c) 2021, Alain Degreffe (alain.degreffe@eve-ng.net)
+All rights reserved.
+
+VPCS is free software, distributed under the terms of the "BSD" licence.
+Source code and license can be found at vpcs.sf.net.
+For more information, please visit wiki.freecode.com.cn.
+Modified version for EVE-NG.
+
+Press '?' to get help.
+
+Executing the startup file
+
+
+Checking for duplicate address...
+PC-A : 192.168.3.3 255.255.255.0 gateway 192.168.3.1
+```
+
+### PC-B:
+
+```
+Welcome to Virtual PC Simulator, version 1.3 (0.8.1)
+Dedicated to Daling.
+Build time: May  7 2022 15:27:29
+Copyright (c) 2007-2015, Paul Meng (mirnshi@gmail.com)
+Copyright (c) 2021, Alain Degreffe (alain.degreffe@eve-ng.net)
+All rights reserved.
+
+VPCS is free software, distributed under the terms of the "BSD" licence.
+Source code and license can be found at vpcs.sf.net.
+For more information, please visit wiki.freecode.com.cn.
+Modified version for EVE-NG.
+
+Press '?' to get help.
+
+Executing the startup file
+
+
+Checking for duplicate address...
+PC-B : 192.168.4.3 255.255.255.0 gateway 192.168.4.1
+```
 
 ## Часть 2: Создание VLAN и включение в них портов коммутаторов
 
@@ -147,7 +196,6 @@ VLAN Name                             Status    Ports
 1003 token-ring-default               act/unsup
 1004 fddinet-default                  act/unsup
 1005 trnet-default                    act/unsup
-
 ```
 
 ### S2:
@@ -186,67 +234,146 @@ VLAN Name                             Status    Ports
 1003 token-ring-default               act/unsup
 1004 fddinet-default                  act/unsup
 1005 trnet-default                    act/unsup
-
 ```
 
 
 ## Часть 3: Настройка транков 802.1Q между коммутаторами
 
 
-### **S1**:
+### S1:
 
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/S1(tr).png?raw=true)
+```
+S1#show interfaces trunk
 
+Port        Mode             Encapsulation  Status        Native vlan
+Et0/1       on               802.1q         trunking      8
+Et0/3       on               802.1q         trunking      8
 
-### **S2**:
+Port        Vlans allowed on trunk
+Et0/1       3-4,8
+Et0/3       3-4,8
 
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/S2(tr).png?raw=true)
+Port        Vlans allowed and active in management domain
+Et0/1       3-4,8
+Et0/3       3-4,8
 
+Port        Vlans in spanning tree forwarding state and not pruned
+Et0/1       3-4,8
+Et0/3       3-4,8
+```
 
+### S2:
 
+```
+S2#show interfaces trunk
 
+Port        Mode             Encapsulation  Status        Native vlan
+Et0/1       on               802.1q         trunking      8
 
-## **Часть 4: Configure Inter-VLAN Routing on the Router**
+Port        Vlans allowed on trunk
+Et0/1       3-4,8
 
+Port        Vlans allowed and active in management domain
+Et0/1       3-4,8
 
-a.	Activate interface G0/0/1 on the router.
-
-
-b.	Configure sub-interfaces for each VLAN as specified in the IP addressing table. All sub-interfaces use 802.1Q encapsulation. Ensure the sub-interface for the native VLAN does not have an IP address assigned. Include a description for each sub-interface.
-
-
-c.	Use the show ip interface brief command to verify the sub-interfaces are operational.
-
-
-### **R1**:
-
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/RoT.png?raw=true)
-
-
-## **Часть 5: Verify Inter-VLAN Routing is Working**
-
-### **Шаг 1: Complete the following tests from PC-A. All should be successful.**
-
-
-
-a.	Ping from PC-A to its default gateway.
-
-
-b.	Ping from PC-A to PC-B
-
-
-c.	Ping from PC-A to S2
+Port        Vlans in spanning tree forwarding state and not pruned
+Et0/1       3-4,8
+```
 
 
-### **PC-A**:
-
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/PC-A%20Test.png?raw=true)
+## Часть 4: Настройка связности между VLAN на маршрутизаторе
 
 
+### R1:
 
-### **Шаг 2: Complete the following test from PC-B.**
+```
+R1#sh run
+Building configuration...
+!
+interface Ethernet0/0
+ no ip address
+ shutdown
+!
+interface Ethernet0/1
+ no ip address
+ shutdown
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no ip address
+!
+interface Ethernet0/3.3
+ encapsulation dot1Q 3
+ ip address 192.168.3.1 255.255.255.0
+!
+interface Ethernet0/3.4
+ encapsulation dot1Q 4
+ ip address 192.168.4.1 255.255.255.0
+!
+interface Ethernet0/3.8
+ encapsulation dot1Q 8 native
+!
+!
+end
 
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw01/Tracert.png?raw=true)
+R1#show ip interface brief
+Interface                  IP-Address      OK? Method Status                Protocol
+Ethernet0/0                unassigned      YES NVRAM  administratively down down
+Ethernet0/1                unassigned      YES NVRAM  administratively down down
+Ethernet0/2                unassigned      YES NVRAM  administratively down down
+Ethernet0/3                unassigned      YES NVRAM  up                    up  
+Ethernet0/3.3              192.168.3.1     YES NVRAM  up                    up  
+Ethernet0/3.4              192.168.4.1     YES NVRAM  up                    up  
+Ethernet0/3.8              unassigned      YES unset  up                    up  
+```
 
 
+## Часть 5: Проверка функционирования маршрутизации между VLAN
 
+### PC-A:
+
+```
+PC-A> ping 192.168.3.1
+
+84 bytes from 192.168.3.1 icmp_seq=1 ttl=255 time=0.461 ms
+84 bytes from 192.168.3.1 icmp_seq=2 ttl=255 time=0.861 ms
+84 bytes from 192.168.3.1 icmp_seq=3 ttl=255 time=0.757 ms
+84 bytes from 192.168.3.1 icmp_seq=4 ttl=255 time=1.010 ms
+84 bytes from 192.168.3.1 icmp_seq=5 ttl=255 time=0.869 ms
+
+PC-A> ping 192.168.4.3
+
+84 bytes from 192.168.4.3 icmp_seq=1 ttl=63 time=2.568 ms
+84 bytes from 192.168.4.3 icmp_seq=2 ttl=63 time=1.644 ms
+84 bytes from 192.168.4.3 icmp_seq=3 ttl=63 time=1.800 ms
+84 bytes from 192.168.4.3 icmp_seq=4 ttl=63 time=1.642 ms
+84 bytes from 192.168.4.3 icmp_seq=5 ttl=63 time=1.968 ms
+
+PC-A> ping 192.168.3.12
+
+84 bytes from 192.168.3.12 icmp_seq=1 ttl=255 time=0.490 ms
+84 bytes from 192.168.3.12 icmp_seq=2 ttl=255 time=1.203 ms
+84 bytes from 192.168.3.12 icmp_seq=3 ttl=255 time=0.980 ms
+84 bytes from 192.168.3.12 icmp_seq=4 ttl=255 time=0.979 ms
+84 bytes from 192.168.3.12 icmp_seq=5 ttl=255 time=0.568 ms
+```
+
+### PC-B:
+
+```
+PC-B> ping 192.168.3.3
+
+84 bytes from 192.168.3.3 icmp_seq=1 ttl=63 time=2.465 ms
+84 bytes from 192.168.3.3 icmp_seq=2 ttl=63 time=1.063 ms
+84 bytes from 192.168.3.3 icmp_seq=3 ttl=63 time=1.926 ms
+84 bytes from 192.168.3.3 icmp_seq=4 ttl=63 time=1.178 ms
+84 bytes from 192.168.3.3 icmp_seq=5 ttl=63 time=1.218 ms
+
+PC-B> trace 192.168.3.3
+trace to 192.168.3.3, 8 hops max, press Ctrl+C to stop
+ 1   192.168.4.1   1.253 ms  0.694 ms  0.766 ms
+ 2   *192.168.3.3   1.078 ms (ICMP type:3, code:3, Destination port unreachable)
+```
