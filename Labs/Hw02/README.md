@@ -178,7 +178,7 @@ interface Vlan1
 !
 end
 
-S1#sh spanning-tree
+S1#show spanning-tree
 
 VLAN0001
   Spanning tree enabled protocol ieee
@@ -229,7 +229,7 @@ interface Vlan1
 !
 end
 
-S2#sh spanning-tree
+S2#show spanning-tree
 
 VLAN0001
   Spanning tree enabled protocol ieee
@@ -262,7 +262,6 @@ Building configuration...
 interface Ethernet0/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
- spanning-tree cost 90
 !
 interface Ethernet0/1
  switchport trunk encapsulation dot1q
@@ -282,7 +281,7 @@ interface Vlan1
 !
 end
 
-S3#sh spanning-tree
+S3#show spanning-tree
 
 VLAN0001
   Spanning tree enabled protocol ieee
@@ -320,17 +319,139 @@ Et0/3               Altn BLK 100       128.4    Shr
   5. #### Какой порт отображается в качестве альтернативного и в настоящее время заблокирован?
      + Альтернативными (alternate) становятся порты, которые не являются корневыми или назначенными
   6. #### Почему протокол spanning-tree выбрал этот порт в качестве невыделенного (заблокированного) порта?
-     + Альтернативные порты блокируются протоколом spanning-tree для предотвращения петель
+     + Альтернативные порты блокируются протоколом spanning-tree для предотвращения петель на L2
 
 
 ## Часть 3. Наблюдение за процессом выбора протоколом STP порта, исходя из стоимости портов
 
 ### Шаг 1. Определить коммутатор с заблокированным портом
+### Шаг 2. Изменить стоимость порта
+
+### S3:
+
+```
+S3#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+S3(config)#int Et0/0
+S3(config-if)#spanning-tree cost 90
+S3(config-if)#^Z
+S3#
+S3#sh run
+Building configuration...
+!
+!
+interface Ethernet0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ spanning-tree cost 90
+!
+!
+end
+```
+
+### Шаг 3. Просмотреть изменения протокола spanning-tree
+
+### S3:
+
+```
+S3#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        90
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  15  sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 90        128.1    Shr
+Et0/1               Altn BLK 100       128.2    Shr
+Et0/2               Desg FWD 100       128.3    Shr
+Et0/3               Desg FWD 100       128.4    Shr
+```
 
 ### S2:
 
 ```
-S2#sh spanning-tree
+S2#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  15  sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 100       128.1    Shr
+Et0/1               Altn BLK 100       128.2    Shr
+Et0/2               Altn BLK 100       128.3    Shr
+Et0/3               Altn BLK 100       128.4    Shr
+```
+
+### Шаг 4. Удалить изменения стоимости порта
+
+### S3:
+
+```
+S3#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+S3(config)#int Et0/0
+S3(config-if)#no spanning-tree cost 90
+S3(config-if)#^Z
+S3#
+S3#sh run
+Building configuration...
+!
+!
+interface Ethernet0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!
+!
+end
+
+S3#show spanning-tree
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    32769
+             Address     aabb.cc00.1000
+             Cost        100
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 100       128.1    Shr
+Et0/1               Altn BLK 100       128.2    Shr
+Et0/2               Altn BLK 100       128.3    Shr
+Et0/3               Altn BLK 100       128.4    Shr
+```
+
+### S3:
+
+```
+S2#show spanning-tree
 
 VLAN0001
   Spanning tree enabled protocol ieee
@@ -353,28 +474,24 @@ Et0/2               Desg FWD 100       128.3    Shr
 Et0/3               Desg FWD 100       128.4    Shr
 ```
 
-### S3:
+## Часть 4. Наблюдение за процессом выбора протоколом STP порта, исходя из приоритета портов
 
-```
-S3#sh spanning-tree
+Выполнено ранее
 
-VLAN0001
-  Spanning tree enabled protocol ieee
-  Root ID    Priority    32769
-             Address     aabb.cc00.1000
-             Cost        100
-             Port        1 (Ethernet0/0)
-             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+### Ответы на вопросы:
 
-  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
-             Address     aabb.cc00.3000
-             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
-             Aging Time  300 sec
+  1. #### Какой порт выбран протоколом STP в качестве корневого на каждом коммутаторе некорневого моста?
+     + S3: Et0/0; S2: Et0/0
+  2. #### Почему протокол STP выбрал эти порты в качестве корневых?
+     + Потому что у этих портов наименьшие приоритеты порта отправителя
+  
 
-Interface           Role Sts Cost      Prio.Nbr Type
-------------------- ---- --- --------- -------- --------------------------------
-Et0/0               Root FWD 100       128.1    Shr
-Et0/1               Altn BLK 100       128.2    Shr
-Et0/2               Altn BLK 100       128.3    Shr
-Et0/3               Altn BLK 100       128.4    Shr
-```
+
+## Вопросы для повторения:
+
+  1. #### Какое значение протокол STP использует первым после выбора корневого моста, чтобы определить выбор порта?
+     + Bridge ID
+  2. #### Если первое значение на двух портах одинаково, какое следующее значение будет использовать протокол STP при выборе порта?
+     + Port Priority
+  3. #### Если оба значения на двух портах равны, каким будет следующее значение, которое использует протокол STP при выборе порта?
+     + Port ID  
