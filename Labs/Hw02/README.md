@@ -146,7 +146,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 
 ### Шаг 1. Отключить все порты на коммутаторах
 ### Шаг 2. Настроить подключенные порты в качестве транковых
-### Шаг 3. Включить транковые порты на всех коммутаторах
+### Шаг 3. Включить порты E0/1 и E0/3 на всех коммутаторах
 ### Шаг 4. Отобразить данные протокола spanning-tree
 
 ### S1:
@@ -159,6 +159,7 @@ Building configuration...
 interface Ethernet0/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ shutdown
 !
 interface Ethernet0/1
  switchport trunk encapsulation dot1q
@@ -167,6 +168,7 @@ interface Ethernet0/1
 interface Ethernet0/2
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ shutdown
 !
 interface Ethernet0/3
  switchport trunk encapsulation dot1q
@@ -194,9 +196,7 @@ VLAN0001
 
 Interface           Role Sts Cost      Prio.Nbr Type
 ------------------- ---- --- --------- -------- --------------------------------
-Et0/0               Desg FWD 100       128.1    Shr
 Et0/1               Desg FWD 100       128.2    Shr
-Et0/2               Desg FWD 100       128.3    Shr
 Et0/3               Desg FWD 100       128.4    Shr
 ```
 
@@ -210,6 +210,7 @@ Building configuration...
 interface Ethernet0/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ shutdown
 !
 interface Ethernet0/1
  switchport trunk encapsulation dot1q
@@ -218,6 +219,7 @@ interface Ethernet0/1
 interface Ethernet0/2
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ shutdown
 !
 interface Ethernet0/3
  switchport trunk encapsulation dot1q
@@ -236,7 +238,7 @@ VLAN0001
   Root ID    Priority    32769
              Address     aabb.cc00.1000
              Cost        100
-             Port        1 (Ethernet0/0)
+             Port        2 (Ethernet0/1)
              Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
 
   Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
@@ -246,9 +248,7 @@ VLAN0001
 
 Interface           Role Sts Cost      Prio.Nbr Type
 ------------------- ---- --- --------- -------- --------------------------------
-Et0/0               Root FWD 100       128.1    Shr
-Et0/1               Altn BLK 100       128.2    Shr
-Et0/2               Desg FWD 100       128.3    Shr
+Et0/1               Root FWD 100       128.2    Shr
 Et0/3               Desg FWD 100       128.4    Shr
 ```
 
@@ -262,6 +262,7 @@ Building configuration...
 interface Ethernet0/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ shutdown
 !
 interface Ethernet0/1
  switchport trunk encapsulation dot1q
@@ -270,6 +271,7 @@ interface Ethernet0/1
 interface Ethernet0/2
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ shutdown
 !
 interface Ethernet0/3
  switchport trunk encapsulation dot1q
@@ -288,7 +290,7 @@ VLAN0001
   Root ID    Priority    32769
              Address     aabb.cc00.1000
              Cost        100
-             Port        1 (Ethernet0/0)
+             Port        2 (Ethernet0/1)
              Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
 
   Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
@@ -298,9 +300,7 @@ VLAN0001
 
 Interface           Role Sts Cost      Prio.Nbr Type
 ------------------- ---- --- --------- -------- --------------------------------
-Et0/0               Root FWD 100       128.1    Shr
-Et0/1               Altn BLK 100       128.2    Shr
-Et0/2               Altn BLK 100       128.3    Shr
+Et0/1               Root FWD 100       128.2    Shr
 Et0/3               Altn BLK 100       128.4    Shr
 ```
 
@@ -309,17 +309,17 @@ Et0/3               Altn BLK 100       128.4    Shr
 ![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw02/STP_topology_1.png?raw=true)
 
   1. #### Какой коммутатор является корневым мостом?
-     + В данной конфигурации корневым является коммутатор S1
+     + В данной конфигурации корневым является коммутатор S1.
   2. #### Почему этот коммутатор был выбран протоколом spanning-tree в качестве корневого моста?
-     + Потому что данный коммутатор обладает наименьшим МАС-адресом
+     + Потому что у него наименьший Bridge ID (BID = Bridge Priority + System Extension + MAC). Так как в этой сети Bridge Priority у всех коммутаторов одинаковый (32768), sys-id-ext, который равен VLAN ID, тоже одинаковый (1), наименьший BID у коммутатора S1 с наименьшим МАС-адресом (aabb.cc00.1000).
   3. #### Какие порты на коммутаторе являются корневыми портами?
-     + Корневыми (root) являются порты, ближайшие к корневому мосту по общей стоимости (cost) пути к нему 
+     + Корневыми (root) являются порты, ближайшие к корневому мосту по общей стоимости (cost) пути к нему.
   4. #### Какие порты на коммутаторе являются назначенными портами?
-     + Назначенными (designated) являются порты, которые имеют наилучший путь для приема трафика, ведущего к корневому мосту
+     + Назначенными (designated) являются порты, которые имеют наилучший путь для приема трафика, ведущего к корневому мосту.
   5. #### Какой порт отображается в качестве альтернативного и в настоящее время заблокирован?
-     + Альтернативными (alternate) становятся порты, которые не являются корневыми или назначенными
+     + Альтернативными (alternate) становятся порты, которые не являются корневыми или назначенными.
   6. #### Почему протокол spanning-tree выбрал этот порт в качестве невыделенного (заблокированного) порта?
-     + Альтернативные порты блокируются протоколом spanning-tree для предотвращения петель на L2
+     + Учитывая, что пути к S1 (root bridge) от портов S2:E0/3 и S3:E0/3 по стоимости (cost) равнозначны, при выборе designated порта был принят во внимание Port ID, который включает Port Priority и номер порта. Port Priority одинаковые, а в целом Port ID меньший у порта S2:E0/3, так как путь к S1 проходит через порты с номерами S2:E0/3-S2:E0/1-S1:E0/1. У порта S3:E0/3 путь к S1 проходит через порты с номерами S3:E0/3-S3:E0/1-S1:E0/3, соответственно Port ID больше и порт Е0/3 коммутатора S3 выбран alternate и заблокирован.
 
 
 ## Часть 3. Наблюдение за процессом выбора протоколом STP порта, исходя из стоимости портов
