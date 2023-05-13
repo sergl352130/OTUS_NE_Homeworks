@@ -9,7 +9,7 @@
 + ### Часть 3: Настройка и верификация ретрансляции DHCP на маршрутизаторе R2
 
 ## Решение
-+ ### Часть 1: Создание сети и настройка основных параметров устройств
+## Часть 1: Создание сети и настройка основных параметров устройств
 
 ### Шаг 1: Разработка схемы адресации
 
@@ -31,3 +31,65 @@ Record the first IP address in the Addressing Table for R2 G0/0/1.
 
 ### Шаг 2: Коммутация сети по схеме
 ### Шаг 3: Настройка основных параметров для каждого маршрутизатора
+
+### R1:
+
+```
+R1#sh run
+Building configuration...
+!
+hostname R1
+!
+!
+enable secret 5 $1$uVzv$yXPXUYM28Zo/oyQYdHe1q0
+!
+!
+no ip domain lookup
+!
+!
+banner motd ^CThis is a secure system. Unauthorized access is prohibited!^C
+!
+line con 0
+ password 7 070C285F4D06
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 094F471A1A0A
+ login
+ transport input none
+!
+!
+end
+```
+
+### R2:
+
+```
+R1#sh run
+Building configuration...
+!
+hostname R1
+!
+!
+enable secret 5 $1$Gc3c$f2SmFX0gmzwRtcaaez/fJ0
+!
+!
+no ip domain lookup
+!
+!
+banner motd ^CThis is a secure system. Unauthorized access is prohibited!^C
+!
+line con 0
+ password 7 14141B180F0B
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 030752180500
+ login
+ transport input none
+!
+!
+end
+```
