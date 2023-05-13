@@ -69,7 +69,7 @@ end
 R1#sh run
 Building configuration...
 !
-hostname R1
+hostname R2
 !
 !
 enable secret 5 $1$Gc3c$f2SmFX0gmzwRtcaaez/fJ0
