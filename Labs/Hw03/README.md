@@ -13,36 +13,27 @@
 
 ### Шаг 1: Разработка схемы адресации
 
-Subnet the network 192.168.1.0/24 to meet the following requirements:
-a.	One subnet, “Subnet A”, supporting 58 hosts (the client VLAN at R1).
-Subnet A:
-Type your answers here.
-Record the first IP address in the Addressing Table for R1 G0/0/1.100.
+#### Разделить сеть 192.168.1.0/24 в соответствии со следующими требованиями:
++ ##### Подсеть А поддерживает 58 хостов (клиентский VLAN на маршрутизаторе R1).
+Подсеть А: 192.168.1.1/26
++ ##### Подсеть В поддерживает 28 хостов (VLAN управления на маршрутизаторе R1).
+Подсеть В: 192.168.1.64/27
++ ##### Подсеть С поддерживает 12 хостов (клиентский VLAN на маршрутизаторе R2).
+Подсеть В: 192.168.1.96/28
 
-b.	One subnet, “Subnet B”, supporting 28 hosts (the management VLAN at R1). 
-Subnet B:
-Type your answers here.
-Record the first IP address in the Addressing Table for R1 G0/0/1.200. Record the second IP address in the Address Table for S1 VLAN 200 and enter the associated default gateway.
-
-c.	One subnet, “Subnet C”, supporting 12 hosts (the client network at R2).
-Subnet C:
-Type your answers here.
-Record the first IP address in the Addressing Table for R2 G0/0/1.
-
-
-|Device|Interface|IP Address|Subnet Mask    |Default Gateway|
-|:----:|:--------|:---------|:--------------|:-------------:|
-|R1	   |E0/0	 |10.0.0.1  |255.255.255.252|N/A
-|R1	   |E0/1	 |N/A	    |N/A	        |N/A
-|R1	   |E0/1.100 |	        |	            |N/A
-|R1	   |E0/1.200 |	        |	            |N/A
-|R1	   |E0/1.1000|N/A       |N/A	        |N/A
-|R2	   |E0/0	 |10.0.0.2  |255.255.255.252|N/A
-|R2	   |E0/1	 |	        |	            |N/A
-|S1	   |VLAN 200 |	        |	            |
-|S2	   |VLAN 1	 |	        |	            |
-|PC-A  |NIC	     |DHCP	    |DHCP	        |DHCP
-|PC-B  |NIC	     |DHCP	    |DHCP	        |DHCP
+|Device|Interface|IP Address  |Subnet Mask    |Default Gateway|
+|:----:|:--------|:-----------|:--------------|:-------------:|
+|R1	   |E0/0	 |10.0.0.1    |255.255.255.252|N/A            |
+|R1	   |E0/1	 |N/A	      |N/A	          |N/A            |
+|R1	   |E0/1.100 |192.168.1.1 |255.255.255.192|N/A            |
+|R1	   |E0/1.200 |192.168.1.65|255.255.255.224|N/A            |
+|R1	   |E0/1.1000|N/A         |N/A	          |N/A            |
+|R2	   |E0/0	 |10.0.0.2    |255.255.255.252|N/A            |
+|R2	   |E0/1	 |192.168.1.97|255.255.255.240|N/A            |
+|S1	   |VLAN 200 |192.168.1.66|255.255.255.224|192.168.1.65   |
+|S2	   |VLAN 1	 |	          |	              |               |
+|PC-A  |NIC	     |DHCP	      |DHCP	          |DHCP           |
+|PC-B  |NIC	     |DHCP	      |DHCP	          |DHCP           |
 
 ### Шаг 2: Коммутация сети по схеме
 ### Шаг 3: Настройка основных параметров для каждого маршрутизатора
