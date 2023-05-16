@@ -17,7 +17,28 @@ Subnet the network 192.168.1.0/24 to meet the following requirements:
 a.	One subnet, “Subnet A”, supporting 58 hosts (the client VLAN at R1).
 Subnet A:
 Type your answers here.
-Record the first IP address in the Addressing Table for R1 G0/0/1.100. 
+Record the first IP address in the Addressing Table for R1 G0/0/1.100.
+
+| Таблицы       | Это                | Круто |
+| ------------- |:------------------:|:------|
+| столбец 3     | выровнен вправо    | $1600 |
+| столбец 2     | выровнен по центру |   $12 |
+| зебра-строки  | прикольные         |    $1 |
+
+|Device|Interface|IP Address|Subnet Mask|Default Gateway|
+|------|---------|----------|---------------|-----------|
+|R1	   |G0/0/0	 |10.0.0.1	|255.255.255.252|N/A
+R1	G0/0/1	N/A	N/A	N/A
+R1	G0/0/1.100	blank	blank	N/A
+R1	G0/0/1.200	blank	blank	N/A
+R1	G0/0/1.1000	N/A	N/A	N/A
+R2	G0/0/0	10.0.0.2	255.255.255.252	N/A
+R2	G0/0/1	blank	blank	N/A
+S1	VLAN 200	blank	blank	blank
+S2	VLAN 1	blank	blank	blank
+PC-A	NIC	DHCP	DHCP	DHCP
+PC-B	NIC	DHCP	DHCP	DHCP
+
 
 b.	One subnet, “Subnet B”, supporting 28 hosts (the management VLAN at R1). 
 Subnet B:
