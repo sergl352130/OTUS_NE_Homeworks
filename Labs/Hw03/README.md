@@ -182,14 +182,11 @@ interface Ethernet0/0
  shutdown
 !
 interface Ethernet0/1
- switchport trunk allowed vlan 100,200,1000
- switchport trunk encapsulation dot1q
- switchport trunk native vlan 1000
- switchport mode trunk
 !
 interface Ethernet0/2
- switchport access vlan 100
+ switchport access vlan 999
  switchport mode access
+ shutdown
 !
 interface Ethernet0/3
  switchport access vlan 100
@@ -208,9 +205,9 @@ S1#sh vlan brief
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
 1    default                          active    Et0/0
-100  Clients                          active    Et0/2, Et0/3
+100  Clients                          active    Et0/3
 200  Management                       active
-999  Parking_Lot                      active    Et0/0
+999  Parking_Lot                      active    Et0/0, Et0/2
 1000 Native                           active
 1002 fddi-default                     act/unsup
 1003 token-ring-default               act/unsup
@@ -226,6 +223,18 @@ VLAN Name                             Status    Ports
 ### Шаг 9: На коммутаторе S1 настроить интерфейс Е0/1 в качестве транкового
 
 ```
+S1#sh run
+Building configuration...
+!
+interface Ethernet0/1
+ switchport trunk allowed vlan 100,200,1000
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 1000
+ switchport mode trunk
+!
+!
+end
+
 S1#sh int trunk
 
 Port        Mode             Encapsulation  Status        Native vlan
