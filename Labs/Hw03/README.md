@@ -531,3 +531,60 @@ DHCPNAK              0
 ![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/PC-A_DHCPv4.png?raw=true)
 
 ## Часть 3: Настройка и верификация ретрансляции DHCP на маршрутизаторе R2
+
+### Шаг 1: Настроить на маршрутизаторе R2 агента ретрансляции DHCP
+
+### R2:
+
+```
+R2#sh run
+Building configuration...
+!
+interface Ethernet0/1
+ description "to Clients"
+ ip address 192.168.1.97 255.255.255.240
+ ip helper-address 10.0.0.1
+!
+!
+end
+```
+
+### Шаг 2: Инициализировать на РС-B попытку получения IP адреса по протоколу DHCP
+
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/PC-B_DHCPv4.png?raw=true)
+
+### R1:
+
+```
+R1#show ip dhcp binding
+Bindings from all pools not associated with VRF:
+IP address          Client-ID/              Lease expiration        Type
+                    Hardware address/
+                    User name
+192.168.1.6         0150.0000.0700.00       May 22 2023 03:30 AM    Automatic
+192.168.1.102       0150.0000.0800.00       May 22 2023 03:48 AM    Automatic
+
+R1#show ip dhcp server statistics
+Memory usage         42081
+Address pools        2
+Database agents      0
+Automatic bindings   2
+Manual bindings      0
+Expired bindings     0
+Malformed messages   0
+Secure arp entries   0
+
+Message              Received
+BOOTREQUEST          0
+DHCPDISCOVER         9
+DHCPREQUEST          5
+DHCPDECLINE          0
+DHCPRELEASE          0
+DHCPINFORM           5
+
+Message              Sent
+BOOTREPLY            0
+DHCPOFFER            2
+DHCPACK              10
+DHCPNAK              0
+```
