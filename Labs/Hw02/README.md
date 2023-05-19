@@ -22,6 +22,8 @@
 S1#sh run
 Building configuration...
 !
+service password-encryption
+!
 hostname S1
 !
 !
@@ -53,7 +55,9 @@ end
 
 ```
 S2#sh run
-Building configuration...
+Building configuration...service password-encryption
+!
+service password-encryption
 !
 hostname S2
 !
@@ -87,6 +91,8 @@ end
 ```
 S3#sh run
 Building configuration...
+!
+service password-encryption
 !
 hostname S3
 !
@@ -535,7 +541,7 @@ Et0/3               Altn BLK 100       128.4    Shr
   1. #### Какой порт выбран протоколом STP в качестве корневого на каждом коммутаторе некорневого моста?
      + S3: E0/0 вместо E0/1; S2: E0/0 вместо E0/1.
   2. #### Почему протокол STP выбрал эти порты в качестве корневых?
-     + Потому что ротоколом STP принимается во внимание параметр Port ID, который включает Port Priority и номер порта. Port Priority одинаковые, а в целом Port ID меньший у портов S2:E0/0 и S2:E0/0, так как они подключены к портам корневого моста с наименьшими номерами (по схеме Et0/0 для связи с S2, и Et0/2 для связи с S3)
+     + Потому что протоколом STP принимается во внимание параметр Port ID, который включает Port Priority и номер порта. Port Priority одинаковые, а в целом Port ID меньший у портов S2:E0/0 и S2:E0/0, так как они подключены к портам корневого моста с наименьшими номерами (по схеме Et0/0 для связи с S2, и Et0/2 для связи с S3)
   
 
 

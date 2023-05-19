@@ -22,6 +22,8 @@
 R1#sh run
 Building configuration...
 !
+service password-encryption
+!
 hostname R1
 !
 !
@@ -55,6 +57,8 @@ end
 S1#sh ru
 Building configuration...
 !
+service password-encryption
+!
 hostname S1
 !
 !
@@ -84,6 +88,8 @@ end
 ```
 S2#sh ru
 Building configuration...
+!
+service password-encryption
 !
 hostname S2
 !
