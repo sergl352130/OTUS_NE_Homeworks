@@ -15,7 +15,7 @@
 
 #### Разделить сеть 192.168.1.0/24 в соответствии со следующими требованиями:
 + ##### Подсеть А поддерживает 58 хостов (клиентский VLAN на маршрутизаторе R1).
-Подсеть А: 192.168.1.1/26
+Подсеть А: 192.168.1.0/26
 + ##### Подсеть В поддерживает 28 хостов (VLAN управления на маршрутизаторе R1).
 Подсеть В: 192.168.1.64/27
 + ##### Подсеть С поддерживает 12 хостов (клиентский VLAN на маршрутизаторе R2).
@@ -438,3 +438,96 @@ Et0/1       100,200,1000
 
   2. #### На этом шаге какой IP-адрес получат компьютеры при подключении к сети постредством протокола DHCP?
      + PC-A IPv4 169.254.107.237/16, IPv6 fe80::580f:cafa:1385:6bed%11; PC-B IPv4 169.254.218.79/16, IPv6 fe80::d7f:5bc7:7477:da4f%11
+
+
+## Часть 2: Настройка и верификация двух DHCPv4 серверов на маршрутизаторе R1
+
+### Шаг 1: Настроить на маршрутизаторе R1 пулы DHCPv4 для двух подсетей
+### Шаг 2: Сохранить конфигурацию
+### Шаг 3: Проверить конфигурацию сервера DHCPv4
+
+### R1:
+
+```
+R1#sh run
+Building configuration...
+!
+ip dhcp excluded-address 192.168.1.1 192.168.1.5
+ip dhcp excluded-address 192.168.1.97 192.168.1.101
+!
+ip dhcp pool SubnetA
+ network 192.168.1.0 255.255.255.192
+ domain-name otus-lab.ru
+ default-router 192.168.1.1
+ lease 2 12 30
+!
+ip dhcp pool SubnetC
+ network 192.168.1.96 255.255.255.240
+ domain-name otus-lab.ru
+ default-router 192.168.1.97
+ lease 2 12 30
+!
+!
+end
+
+R1#show ip dhcp pool
+
+Pool SubnetA :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0
+ Total addresses                : 62
+ Leased addresses               : 1
+ Pending event                  : none
+ 1 subnet is currently in the pool :
+ Current index        IP address range                    Leased addresses
+ 192.168.1.7          192.168.1.1      - 192.168.1.62      1
+
+Pool SubnetC :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0
+ Total addresses                : 14
+ Leased addresses               : 0
+ Pending event                  : none
+ 1 subnet is currently in the pool :
+ Current index        IP address range                    Leased addresses
+ 192.168.1.97         192.168.1.97     - 192.168.1.110     0
+
+R1#show ip dhcp binding
+
+Bindings from all pools not associated with VRF:
+IP address          Client-ID/              Lease expiration        Type
+                    Hardware address/
+                    User name
+192.168.1.6         0150.0000.0700.00       May 20 2023 02:34 PM    Automatic
+
+R1#show ip dhcp server statistics
+
+Memory usage         33622
+Address pools        2
+Database agents      0
+Automatic bindings   1
+Manual bindings      0
+Expired bindings     0
+Malformed messages   0
+Secure arp entries   0
+
+Message              Received
+BOOTREQUEST          0
+DHCPDISCOVER         8
+DHCPREQUEST          1
+DHCPDECLINE          0
+DHCPRELEASE          0
+DHCPINFORM           0
+
+Message              Sent
+BOOTREPLY            0
+DHCPOFFER            1
+DHCPACK              1
+DHCPNAK              0
+```
+
+### Шаг 4: Инициализировать на РС-А попытку получения IP адреса по протококлу DHCP
+
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/PC-A_DHCPv4.png?raw=true)
+
+## Часть 3: Настройка и верификация ретрансляции DHCP на маршрутизаторе R2
