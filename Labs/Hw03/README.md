@@ -31,7 +31,7 @@
 |R2	   |E0/0	   |10.0.0.2    |255.255.255.252|N/A            |
 |R2	   |E0/1	   |192.168.1.97|255.255.255.240|N/A            |
 |S1	   |VLAN 200 |192.168.1.66|255.255.255.224|192.168.1.65   |
-|S2	   |VLAN 1	 |	          |	              |192.168.1.97   |
+|S2	   |VLAN 1	 |192.168.1.98|255.255.255.240|192.168.1.97   |
 |PC-A  |NIC	     |DHCP	      |DHCP	          |DHCP           |
 |PC-B  |NIC	     |DHCP	      |DHCP	          |DHCP           |
 
@@ -351,7 +351,7 @@ ip default-gateway 192.168.1.65
 !
 end
 
-S1#sh vlan brief
+S1#show vlan brief
 
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
@@ -360,6 +360,39 @@ VLAN Name                             Status    Ports
 200  Management                       active
 999  Parking_Lot                      active    Et0/0, Et0/2
 1000 Native                           active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup
+```
+
+#### S2:
+
+```
+S2#sh ru
+Building configuration...
+!
+interface Ethernet0/0
+!
+interface Ethernet0/1
+!
+interface Ethernet0/2
+!
+interface Ethernet0/3
+!
+interface Vlan1
+ ip address 192.168.1.98 255.255.255.240
+!
+ip default-gateway 192.168.1.97
+!
+!
+end
+
+S2#show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Et0/0, Et0/1, Et0/2, Et0/3
 1002 fddi-default                     act/unsup
 1003 token-ring-default               act/unsup
 1004 fddinet-default                  act/unsup
