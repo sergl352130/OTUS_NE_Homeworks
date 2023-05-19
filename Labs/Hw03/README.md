@@ -526,7 +526,7 @@ DHCPACK              1
 DHCPNAK              0
 ```
 
-### Шаг 4: Инициализировать на РС-А попытку получения IP адреса по протококлу DHCP
+### Шаг 4: Инициализировать на РС-А попытку получения IP адреса по протоколу DHCP
 
 ![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/PC-A_DHCPv4.png?raw=true)
 
