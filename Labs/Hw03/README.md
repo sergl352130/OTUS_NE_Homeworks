@@ -1,14 +1,23 @@
 # Лабораторная работа 03
-+ ## Настройка и внедрение DHCP v4/v6
++ ## Настройка и внедрение DHCPv4/v6
 ## Топология
 ![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/DHCP_topology.png?raw=true)
 
-## Цели:
+## Цели (DHCPv4):
 + ### Часть 1: Создание сети и настройка основных параметров устройств
 + ### Часть 2: Настройка и верификация двух DHCPv4 серверов на маршрутизаторе R1
 + ### Часть 3: Настройка и верификация ретрансляции DHCP на маршрутизаторе R2
 
-## Решение
+## Цели (DHCPv6):
++ ### Часть 1: Создание сети и настройка основных параметров устройств
++ ### Часть 2: Верификация присвоения адреса по протоколу SLAAC с маршрутизатора R1
++ ### Часть 3: Настройка и верификация Stateless DHCPv6 сервера на маршрутизаторе R1
++ ### Часть 4: Настройка и верификация Stateful DHCPv6 сервера на маршрутизаторе R1
++ ### Часть 5: Настройка и верификация ретрансляции DHCP на маршрутизаторе R2
+
+
+## Решение (DHCPv4)
+
 ## Часть 1: Создание сети и настройка основных параметров устройств
 
 ### Шаг 1: Разработка схемы адресации
@@ -77,7 +86,7 @@ end
 ### R2:
 
 ```
-R1#sh run
+R2#sh run
 Building configuration...
 !
 service password-encryption
@@ -588,3 +597,91 @@ DHCPOFFER            2
 DHCPACK              10
 DHCPNAK              0
 ```
+
+
+## Решение (DHCPv6)
+
+## Часть 1: Создание сети и настройка основных параметров устройств
+
+|Device|Interface|IPv6 Address         |
+|:----:|:--------|:--------------------|
+|R1	   |E0/0	   |2001:db8:acad:2::1/64|
+|      |E0/0     |fe80::1              |
+|R1	   |E0/1	   |2001:db8:acad:1::1/64|
+|      |E0/1     |fe80::1              |
+|R2	   |E0/0	   |2001:db8:acad:2::2/64|
+|      |E0/0     |fe80::2              |
+|R2	   |E0/1	   |2001:db8:acad:3::1/64|
+|      |E0/1     |fe80::1              |
+|PC-A  |NIC	     |DHCP	               |
+|PC-B  |NIC	     |DHCP	               |
+
+### Шаг 1: Коммутация сети по схеме
+### Шаг 2: Настройка основных параметров для каждого коммутатора
+
+#### S1 (аналогично DHCPv4)
+#### S2 (аналогично DHCPv4)
+
+### Шаг 3: Настройка основных параметров для каждого маршрутизатора
+### Шаг 4: Настройка интерфейсов и маршрутизации для каждого маршрутизатора
+
+### R1:
+
+```
+R1#sh run
+Building configuration...
+!
+ipv6 unicast-routing
+ipv6 cef
+!
+interface Ethernet0/0
+ description "to R2"
+ ip address 10.0.0.1 255.255.255.252
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:ACAD:2::1/64
+!
+interface Ethernet0/1
+ description "to Clients"
+ no ip address
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:ACAD:1::1/64
+!
+ip forward-protocol nd
+!
+ipv6 route ::/0 2001:DB8:ACAD:2::2
+!
+!
+end
+```
+
+### R2:
+
+```
+R2#sh run
+Building configuration...
+!
+ipv6 unicast-routing
+ipv6 cef
+!
+interface Ethernet0/0
+ description "to R1"
+ ip address 10.0.0.2 255.255.255.252
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:DB8:ACAD:2::2/64
+!
+interface Ethernet0/1
+ description "to Clients"
+ ip address 192.168.1.97 255.255.255.240
+ ip helper-address 10.0.0.1
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:ACAD:3::1/64
+!
+ip forward-protocol nd
+!
+ipv6 route ::/0 2001:DB8:ACAD:2::1
+!
+!
+end
+```
+
+### Часть 2: Верификация присвоения адреса по протоколу SLAAC с маршрутизатора R1
