@@ -642,9 +642,10 @@ interface Ethernet0/0
  ipv6 address FE80::1 link-local
  ipv6 address 2001:DB8:ACAD:2::1/64
 !
-interface Ethernet0/1
- description "to Clients"
- no ip address
+interface Ethernet0/1.100
+ description "Clients VLAN"
+ encapsulation dot1Q 100
+ ip address 192.168.1.1 255.255.255.192
  ipv6 address FE80::1 link-local
  ipv6 address 2001:DB8:ACAD:1::1/64
 !
@@ -698,3 +699,8 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 
 
 ### Часть 2: Верификация присвоения адреса по протоколу SLAAC с маршрутизатора R1
+
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/PC-A_SLAAC.png?raw=true)
+
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/PC-B_SLAAC.png?raw=true)
+
