@@ -607,13 +607,13 @@ DHCPNAK              0
 
 |Device|Interface|IPv6 Address         |
 |:----:|:--------|:--------------------|
-|R1	   |E0/0	   |2001:db8:acad:2::1/64|
+|R1	 |E0/0	  |2001:db8:acad:2::1/64|
 |      |E0/0     |fe80::1              |
-|R1	   |E0/1	   |2001:db8:acad:1::1/64|
-|      |E0/1     |fe80::1              |
-|R2	   |E0/0	   |2001:db8:acad:2::2/64|
+|R1	 |E0/1.100 |2001:db8:acad:1::1/64|
+|      |E0/1.100 |fe80::1              |
+|R2	 |E0/0	  |2001:db8:acad:2::2/64|
 |      |E0/0     |fe80::2              |
-|R2	   |E0/1	   |2001:db8:acad:3::1/64|
+|R2	 |E0/1	  |2001:db8:acad:3::1/64|
 |      |E0/1     |fe80::1              |
 |PC-A  |NIC	     |DHCP	               |
 |PC-B  |NIC	     |DHCP	               |
@@ -707,7 +707,7 @@ Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
 
 ## Часть 3: Настройка и верификация Stateless DHCPv6 сервера на маршрутизаторе R1
 
-### Шаг 1: Расширенная роверка конфигурации хоста PC-A
+### Шаг 1: Расширенная проверка конфигурации хоста PC-A
 
 ```
 Microsoft Windows [Version 6.1.7601]
@@ -835,3 +835,188 @@ Approximate round trip times in milli-seconds:
 ```
 
 ## Часть 4: Настройка и верификация Stateful DHCPv6 сервера на маршрутизаторе R1
+
+#### R1:
+
+```
+R1#sh run
+Building configuration...
+!
+ipv6 unicast-routing
+ipv6 cef
+ipv6 dhcp pool R1-Stateless
+ dns-server 2001:DB8:ACAD::254
+ domain-name stateless.com
+!
+ipv6 dhcp pool R2-Stateful
+ address prefix 2001:DB8:ACAD:3:AAA::/80
+ dns-server 2001:DB8:ACAD::254
+ domain-name statefull.com
+!
+interface Ethernet0/0
+ description "to R2"
+ ip address 10.0.0.1 255.255.255.252
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:ACAD:2::1/64
+ ipv6 dhcp server R2-Stateful
+!
+interface Ethernet0/1
+ description "to Clients"
+ no ip address
+!
+interface Ethernet0/1.100
+ description "Clients VLAN"
+ encapsulation dot1Q 100
+ ip address 192.168.1.1 255.255.255.192
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:ACAD:1::1/64
+ ipv6 nd other-config-flag
+ ipv6 dhcp server R1-Stateless
+!
+ip forward-protocol nd
+!
+ipv6 route ::/0 2001:DB8:ACAD:2::2
+!
+!
+end
+```
+
+## Часть 5: Настройка и верификация ретрансляции DHCP на маршрутизаторе R2
+
+### Шаг 1: Включение хоста PC-B и проверка выданного по протоколу SLAAC адреса
+
+#### PC-B:
+
+```
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\Users\user>ipconfig /all
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : user-PC (Win-PC-B)
+   Primary Dns Suffix  . . . . . . . :
+   Node Type . . . . . . . . . . . . : Hybrid
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+   DNS Suffix Search List. . . . . . : otus-lab.ru
+
+Ethernet adapter Local Area Connection:
+
+   Connection-specific DNS Suffix  . : otus-lab.ru
+   Description . . . . . . . . . . . : Intel(R) PRO/1000 MT Network Connection
+   Physical Address. . . . . . . . . : 50-00-00-06-00-00
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+   IPv6 Address. . . . . . . . . . . : 2001:db8:acad:3:c192:15d4:3ba5:957c(Preferred)
+   Temporary IPv6 Address. . . . . . : 2001:db8:acad:3:34a8:706e:57ed:2341(Preferred)
+   Link-local IPv6 Address . . . . . : fe80::c192:15d4:3ba5:957c%11(Preferred)
+   IPv4 Address. . . . . . . . . . . : 192.168.1.102(Preferred)
+   Subnet Mask . . . . . . . . . . . : 255.255.255.240
+   Lease Obtained. . . . . . . . . . : Thursday, May 25, 2023 10:11:06 PM
+   Lease Expires . . . . . . . . . . : Sunday, May 28, 2023 10:41:06 AM
+   Default Gateway . . . . . . . . . : fe80::1%11
+                                       192.168.1.97
+   DHCP Server . . . . . . . . . . . : 10.0.0.1
+   DNS Servers . . . . . . . . . . . : fec0:0:0:ffff::1%1
+                                       fec0:0:0:ffff::2%1
+                                       fec0:0:0:ffff::3%1
+   NetBIOS over Tcpip. . . . . . . . : Enabled
+```
+
+### Шаг 2: Настройка на маршрутизаторе R2 агента ретрансляции DHCPv6 для сети на интерфейсе Е0/1
+
+#### R2:
+
+```
+R2#sh run
+Building configuration...
+!
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+interface Ethernet0/0
+ description "to R1"
+ ip address 10.0.0.2 255.255.255.252
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:DB8:ACAD:2::2/64
+!
+interface Ethernet0/1
+ description "to Clients"
+ ip address 192.168.1.97 255.255.255.240
+ ip helper-address 10.0.0.1
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:ACAD:3::1/64
+ ipv6 nd managed-config-flag
+ ipv6 dhcp relay destination 2001:DB8:ACAD:2::1 Ethernet0/0
+!
+!
+ip forward-protocol nd
+!
+ipv6 route ::/0 2001:DB8:ACAD:2::1
+!
+!
+end
+```
+
+### Шаг 3: Инициализировать на РС-B попытку получения IPv6 адреса по протоколу DHCPv6
+
+#### PC-B:
+
+```
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+
+C:\Users\user>ipconfig /all
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : user-PC
+   Primary Dns Suffix  . . . . . . . :
+   Node Type . . . . . . . . . . . . : Hybrid
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+   DNS Suffix Search List. . . . . . : statefull.com
+
+Ethernet adapter Local Area Connection:
+
+   Connection-specific DNS Suffix  . : otus-lab.ru
+   Description . . . . . . . . . . . : Intel(R) PRO/1000 MT Network Connection
+   Physical Address. . . . . . . . . : 50-00-00-06-00-00
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+   IPv6 Address. . . . . . . . . . . : 2001:db8:acad:3:aaa:1bab:b96a:94b8(Preferred)
+   Lease Obtained. . . . . . . . . . : Thursday, May 25, 2023 10:40:48 PM
+   Lease Expires . . . . . . . . . . : Saturday, May 27, 2023 10:33:29 PM
+   IPv6 Address. . . . . . . . . . . : 2001:db8:acad:3:c192:15d4:3ba5:957c(Preferred)
+   Temporary IPv6 Address. . . . . . : 2001:db8:acad:3:2836:7ff6:c502:6d1c(Preferred)
+   Link-local IPv6 Address . . . . . : fe80::c192:15d4:3ba5:957c%11(Preferred)
+   IPv4 Address. . . . . . . . . . . : 192.168.1.102(Preferred)
+   Subnet Mask . . . . . . . . . . . : 255.255.255.240
+   Lease Obtained. . . . . . . . . . : Thursday, May 25, 2023 10:40:47 PM
+   Lease Expires . . . . . . . . . . : Sunday, May 28, 2023 11:10:47 AM
+   Default Gateway . . . . . . . . . : fe80::1%11
+                                       192.168.1.97
+   DHCP Server . . . . . . . . . . . : 10.0.0.1
+   DHCPv6 IAID . . . . . . . . . . . : 240126464
+   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-21-72-34-36-50-0A-00-01-00-00
+   DNS Servers . . . . . . . . . . . : 2001:db8:acad::254
+   NetBIOS over Tcpip. . . . . . . . : Enabled
+   Connection-specific DNS Suffix Search List :
+                                       statefull.com
+
+C:\Users\user>ping 2001:db8:acad:1::1
+
+Pinging 2001:db8:acad:1::1 with 32 bytes of data:
+Reply from 2001:db8:acad:1::1: time=1ms
+Reply from 2001:db8:acad:1::1: time=1ms
+Reply from 2001:db8:acad:1::1: time=1ms
+Reply from 2001:db8:acad:1::1: time=1ms
+
+Ping statistics for 2001:db8:acad:1::1:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 1ms, Average = 1ms
+```
