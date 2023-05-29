@@ -11,3 +11,7 @@
 ## Лабораторная работа 03
 + ### Настройка и внедрение DHCP v4/v6
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw03/README.md)
+
+## Лабораторная работа 04
++ ### Проектирование сети
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw04/README.md)
