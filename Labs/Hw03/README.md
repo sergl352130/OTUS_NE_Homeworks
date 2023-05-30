@@ -148,7 +148,7 @@ interface Ethernet0/1.200
 !
 interface Ethernet0/1.1000
  description "Native VLAN"
- encapsulation dot1Q 1000
+ encapsulation dot1Q 1000 native
 !
 interface Ethernet0/2
  no ip address
