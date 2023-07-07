@@ -55,7 +55,7 @@ end
 
 ```
 S2#sh run
-Building configuration...service password-encryption
+Building configuration...
 !
 service password-encryption
 !
