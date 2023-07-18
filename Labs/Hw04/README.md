@@ -43,12 +43,14 @@
 |Москва|
 |VPC1  |eth0     |DHCP	      |DHCP	          |DHCP           |
 |VPC7  |eth0     |DHCP	      |DHCP	          |DHCP           |
-|SW2   |Loopback0|10.111.3.2  |255.255.255.255|SW2 Mgmt       |
-|SW3   |Loopback0|10.111.3.3  |255.255.255.255|SW3 Mgmt       |
+|SW2   |VLAN111  |10.111.3.102|255.255.255.240|VLAN111 Mgmt   |
+|SW3   |VLAN111  |10.111.3.103|255.255.255.240|VLAN111 Mgmt   |
 |SW4   |Loopback0|10.111.3.4  |255.255.255.255|SW4 Mgmt       |
+|SW4   |VLAN111  |10.111.3.104|255.255.255.240|VLAN111 Mgmt   |
 |SW4   |E1/0	 |10.111.2.1  |255.255.255.252|p2p to R12     |
 |SW4   |Vlan11	 |10.111.0.1  |255.255.255.0  |Default gateway VLAN11|
 |SW5   |Loopback0|10.111.3.5  |255.255.255.255|SW5 Mgmt       |
+|SW5   |VLAN111  |10.111.3.105|255.255.255.240|VLAN111 Mgmt   |
 |SW5   |E1/0	 |10.111.2.5  |255.255.255.252|p2p to R13     |
 |SW5   |Vlan17	 |10.111.1.1  |255.255.255.0  |Default gateway VLAN17|
 |R12   |Loopback0|10.111.3.12 |255.255.255.255|R12 Mgmt       |
