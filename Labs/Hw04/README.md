@@ -149,12 +149,540 @@
 
 
 + #### 2: Настройка IP-адреса на каждом активном порту
-  + Выполнено.
+  + Примеры конфигураций:
+
+#### SW4:
+
+```
+!
+interface Loopback0
+ no shutdown
+ description SW4 Mgmt
+ ip address 10.111.3.4 255.255.255.255
+!
+interface Port-channel45
+ no shutdown
+ description to SW5
+ switchport trunk allowed vlan 11,17,77,111
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 77
+ switchport mode trunk
+!
+interface Ethernet0/0
+ no shutdown
+ description to SW3
+ switchport trunk allowed vlan 11,77,111
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 77
+ switchport mode trunk
+!
+interface Ethernet0/1
+ no shutdown
+ description to SW2
+ switchport trunk allowed vlan 17,77,111
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 77
+ switchport mode trunk
+!
+interface Ethernet0/2
+ no shutdown
+ switchport trunk allowed vlan 11,17,77,111
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 77
+ switchport mode trunk
+ channel-group 45 mode on
+!
+interface Ethernet0/3
+ no shutdown
+ switchport trunk allowed vlan 11,17,77,111
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 77
+ switchport mode trunk
+ channel-group 45 mode on
+!
+interface Ethernet1/0
+ no shutdown
+ description p2p to R12
+ no switchport
+ ip address 10.111.2.1 255.255.255.252
+ duplex auto
+!
+interface Ethernet1/1
+ no shutdown
+ switchport access vlan 99
+ switchport mode access
+ shutdown
+!
+interface Ethernet1/2
+ no shutdown
+ switchport access vlan 99
+ switchport mode access
+ shutdown
+!
+interface Ethernet1/3
+ no shutdown
+ switchport access vlan 99
+ switchport mode access
+ shutdown
+!
+interface Vlan11
+ no shutdown
+ description Default gateway VLAN11
+ ip address 10.111.0.1 255.255.255.0
+ ip helper-address 10.111.2.2 
+!
+interface Vlan111
+ no shutdown
+ description VLAN111 Mgmt
+ ip address 10.111.3.104 255.255.255.240
+!
+```
+
+#### R14:
+
+```
+!
+interface Loopback0
+ no shutdown
+ description R14 Mgmt
+ ip address 10.111.3.14 255.255.255.255
+!
+interface Ethernet0/0
+ no shutdown
+ description p2p to R12
+ ip address 10.111.2.10 255.255.255.252
+!
+interface Ethernet0/1
+ no shutdown
+ ip address 10.111.2.22 255.255.255.252
+!
+interface Ethernet0/2
+ no shutdown
+ description p2p to R15
+ ip address 10.111.2.25 255.255.255.252
+!
+interface Ethernet0/3
+ no shutdown
+ description p2p to R19
+ ip address 10.111.2.29 255.255.255.252
+!
+interface Ethernet1/0
+ no shutdown
+ description p2p to R22 Kitorn
+ ip address 22.22.22.2 255.255.255.252
+!
+```
+
 + #### 3: Настройка отдельного VLAN для каждого VPC в каждом офисе
-  + Выполнено.
+  
+#### SW3:
+
+```
+SW3#show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+11   VPC1                             active    Et0/2
+77   Native                           active
+99   Parking                          active    Et0/3, Et1/0, Et1/1, Et1/2
+                                                Et1/3
+111  Mgmt                             active
+
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+11   enet  100011     1500  -      -      -        -    -        0      0
+77   enet  100077     1500  -      -      -        -    -        0      0
+99   enet  100099     1500  -      -      -        -    -        0      0
+111  enet  100111     1500  -      -      -        -    -        0      0
+
+```
+
+#### SW2:
+
+```
+SW2#show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+17   VPC7                             active    Et0/2
+77   Native                           active
+99   Parking                          active    Et0/3, Et1/0, Et1/1, Et1/2
+                                                Et1/3
+111  Mgmt                             active
+
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+17   enet  100017     1500  -      -      -        -    -        0      0
+77   enet  100077     1500  -      -      -        -    -        0      0
+99   enet  100099     1500  -      -      -        -    -        0      0
+111  enet  100111     1500  -      -      -        -    -        0      0
+
+```
+
+#### SW9:
+
+```
+SW9#show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+18   VPC8                             active    Et0/0
+88   Native                           active
+99   Parking                          active    Et0/1, Et1/1, Et1/2, Et1/3
+112  Mgmt                             active
+
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+18   enet  100018     1500  -      -      -        -    -        0      0
+88   enet  100088     1500  -      -      -        -    -        0      0
+99   enet  100099     1500  -      -      -        -    -        0      0
+112  enet  100112     1500  -      -      -        -    -        0      0
+
+```
+
+#### SW10:
+
+```
+SW10#show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+10   VPC                              active    Et0/0
+88   Native                           active
+99   Parking                          active    Et0/1, Et1/1, Et1/2, Et1/3
+112  Mgmt                             active
+
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+10   enet  100010     1500  -      -      -        -    -        0      0
+88   enet  100088     1500  -      -      -        -    -        0      0
+99   enet  100099     1500  -      -      -        -    -        0      0
+112  enet  100112     1500  -      -      -        -    -        0      0
+
+```
+
+#### SW29:
+
+```
+SW29#show vlan
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active
+30   VPC30                            active    Et0/1
+31   VPC31                            active    Et0/2
+77   Native                           active
+99   Parking                          active    Et0/3
+111  Mgmt                             active
+
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+1    enet  100001     1500  -      -      -        -    -        0      0
+30   enet  100030     1500  -      -      -        -    -        0      0
+31   enet  100031     1500  -      -      -        -    -        0      0
+77   enet  100077     1500  -      -      -        -    -        0      0
+99   enet  100099     1500  -      -      -        -    -        0      0
+111  enet  100111     1500  -      -      -        -    -        0      0
+
+```
+
+
 + #### 4: Настройка интерфейсов VLAN/Loopback для управления сетевыми устройствами
-  + Выполнено.
+  + Примеры конфигураций в п.2.
 + #### 5: Настройка сетей офисов с целью предотвращения broadcast штормов и оптимального использования линков
-  + Выполнено.
+  + .
+
+#### SW4:
+
+```
+SW4#show spanning-tree
+
+VLAN0011
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24587
+             Address     aabb.cc00.4000
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24587  (priority 24576 sys-id-ext 11)
+             Address     aabb.cc00.4000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Desg FWD 100       128.1    Shr
+Po45                Desg FWD 56        128.65   Shr
+
+VLAN0017
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24593
+             Address     aabb.cc00.5000
+             Cost        56
+             Port        65 (Port-channel45)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32785  (priority 32768 sys-id-ext 17)
+             Address     aabb.cc00.4000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Desg FWD 100       128.2    Shr
+Po45                Root FWD 56        128.65   Shr
+
+VLAN0077
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24653
+             Address     aabb.cc00.4000
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24653  (priority 24576 sys-id-ext 77)
+             Address     aabb.cc00.4000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Desg FWD 100       128.1    Shr
+Et0/1               Desg FWD 100       128.2    Shr
+Po45                Desg FWD 56        128.65   Shr
+
+VLAN0111
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24687
+             Address     aabb.cc00.5000
+             Cost        56
+             Port        65 (Port-channel45)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32879  (priority 32768 sys-id-ext 111)
+             Address     aabb.cc00.4000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Desg FWD 100       128.1    Shr
+Et0/1               Desg FWD 100       128.2    Shr
+Po45                Root FWD 56        128.65   Shr
+
+```
+
+#### SW5:
+
+```
+SW5#show spanning-tree
+
+VLAN0011
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24587
+             Address     aabb.cc00.4000
+             Cost        56
+             Port        65 (Port-channel45)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32779  (priority 32768 sys-id-ext 11)
+             Address     aabb.cc00.5000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/1               Desg FWD 100       128.2    Shr
+Po45                Root FWD 56        128.65   Shr
+
+VLAN0017
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24593
+             Address     aabb.cc00.5000
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24593  (priority 24576 sys-id-ext 17)
+             Address     aabb.cc00.5000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Desg FWD 100       128.1    Shr
+Po45                Desg FWD 56        128.65   Shr
+
+VLAN0077
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24653
+             Address     aabb.cc00.4000
+             Cost        56
+             Port        65 (Port-channel45)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32845  (priority 32768 sys-id-ext 77)
+             Address     aabb.cc00.5000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Desg FWD 100       128.1    Shr
+Et0/1               Desg FWD 100       128.2    Shr
+Po45                Root FWD 56        128.65   Shr
+
+VLAN0111
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24687
+             Address     aabb.cc00.5000
+             This bridge is the root
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24687  (priority 24576 sys-id-ext 111)
+             Address     aabb.cc00.5000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Desg FWD 100       128.1    Shr
+Et0/1               Desg FWD 100       128.2    Shr
+Po45                Desg FWD 56        128.65   Shr
+
+```
+#### SW3:
+
+```
+SW3#show spanning-tree
+
+VLAN0011
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24587
+             Address     aabb.cc00.4000
+             Cost        100
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32779  (priority 32768 sys-id-ext 11)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 100       128.1    Shr
+Et0/1               Altn BLK 100       128.2    Shr
+Et0/2               Desg FWD 100       128.3    Shr
+
+VLAN0077
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24653
+             Address     aabb.cc00.4000
+             Cost        100
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32845  (priority 32768 sys-id-ext 77)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 100       128.1    Shr
+Et0/1               Altn BLK 100       128.2    Shr
+
+VLAN0111
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24687
+             Address     aabb.cc00.5000
+             Cost        100
+             Port        2 (Ethernet0/1)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32879  (priority 32768 sys-id-ext 111)
+             Address     aabb.cc00.3000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Altn BLK 100       128.1    Shr
+Et0/1               Root FWD 100       128.2    Shr
+
+```
+#### SW2:
+
+```
+SW2#show spanning-tree
+
+VLAN0017
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24593
+             Address     aabb.cc00.5000
+             Cost        100
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32785  (priority 32768 sys-id-ext 17)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 100       128.1    Shr
+Et0/1               Altn BLK 100       128.2    Shr
+Et0/2               Desg FWD 100       128.3    Shr
+
+VLAN0077
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24653
+             Address     aabb.cc00.4000
+             Cost        100
+             Port        2 (Ethernet0/1)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32845  (priority 32768 sys-id-ext 77)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Altn BLK 100       128.1    Shr
+Et0/1               Root FWD 100       128.2    Shr
+
+VLAN0111
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    24687
+             Address     aabb.cc00.5000
+             Cost        100
+             Port        1 (Ethernet0/0)
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32879  (priority 32768 sys-id-ext 111)
+             Address     aabb.cc00.2000
+             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  300 sec
+
+Interface           Role Sts Cost      Prio.Nbr Type
+------------------- ---- --- --------- -------- --------------------------------
+Et0/0               Root FWD 100       128.1    Shr
+Et0/1               Altn BLK 100       128.2    Shr
+
+```
 + #### 6: Настройка IPv4. IPv6 по желанию
   + Выполнено в части IPv4.
