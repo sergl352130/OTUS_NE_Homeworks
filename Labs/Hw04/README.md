@@ -282,8 +282,8 @@ interface Ethernet0/3
 !
 interface Ethernet1/0
  no shutdown
- description p2p to R22 Kitorn
- ip address 22.22.22.2 255.255.255.252
+ description to R22 Kitorn
+ ip address 22.111.22.14 255.255.255.0
 !
 ```
 
