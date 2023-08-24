@@ -19,3 +19,7 @@
 ## Лабораторная работа 05
 + ### Маршрутизация на основе политик (PBR)
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw05/README.md)
+
+## Лабораторная работа 06
++ ### OSPF. Фильтрация
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw06/README.md)
