@@ -23,3 +23,7 @@
 ## Лабораторная работа 06
 + ### OSPF. Фильтрация
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw06/README.md)
+
+## Проектная работа
++ ### Модернизация магистральной сети WAN на основе технологий MPLS/SR
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/README.md)
