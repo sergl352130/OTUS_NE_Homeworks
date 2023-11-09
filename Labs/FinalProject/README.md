@@ -106,7 +106,9 @@
 
 ![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic1.png?raw=true =240x240)
 
-У меня с этими QEMU Nic протокол IP не захотел запускаться, между нодами даже элементарный ping не ходил.
+<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic1.png" width="200" height="200">
+
+###### У меня с этими QEMU Nic протокол IP не захотел запускаться, между нодами даже элементарный ping не ходил.
 
 
 
