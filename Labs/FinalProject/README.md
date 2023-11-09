@@ -104,9 +104,7 @@
 
 ###### 2.4. Ещё одна сложность - возможно связанная с тем, что у меня процессор AMD (Ryzen 7 4800H), возможно дело и не в этом - ноды с образами CSR1000v по умолчанию создаются с виртуальными сетевыми интерфейсами (QEMU Nic) типа "tpl(vmxnet3)". 
 
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic1.png?raw=true =240x240)
-
-<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic1.png" width="200" height="200">
+<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic1.png" width="500" height="500">
 
 ###### У меня с этими QEMU Nic протокол IP не захотел запускаться, между нодами даже элементарный ping не ходил.
 
