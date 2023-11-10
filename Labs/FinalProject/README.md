@@ -151,11 +151,82 @@ interface GigabitEthernet4
 !
 router isis 111
 net 49.0111.0000.0000.0011.00
+```
 
+```
+CSR-Msk-PE1#show isis topology 
+
+Tag 111:
+
+IS-IS TID 0 paths to level-2 routers
+System Id            Metric     Next-Hop             Interface   SNPA
+CSR-Msk-PE1          --
+CSR-Msk-PE2          10         CSR-Msk-PE2          Gi2         5000.0004.0001 
+CSR-Msk-P1           10         CSR-Msk-P1           Gi1         5000.0006.0000 
+CSR-Msk-P2           20         CSR-Msk-PE2          Gi2         5000.0004.0001 
+                                CSR-Msk-P1           Gi1         5000.0006.0000 
+CSR-NN-P1            20         CSR-Msk-P1           Gi1         5000.0006.0000 
+CSR-NN-P2            20         CSR-Msk-P1           Gi1         5000.0006.0000 
+CSR-NN-PE1           30         CSR-Msk-P1           Gi1         5000.0006.0000 
+CSR-NN-PE2           30         CSR-Msk-P1           Gi1         5000.0006.0000 
+CSR-Msk-PE1#
+CSR-Msk-PE1#show ip route 
+
+      10.0.0.0/8 is variably subnetted, 22 subnets, 2 masks
+C        10.11.11.1/32 is directly connected, Loopback0
+C        10.11.12.0/30 is directly connected, GigabitEthernet2
+L        10.11.12.1/32 is directly connected, GigabitEthernet2
+i L2     10.12.12.1/32 [115/20] via 10.11.12.2, 01:26:52, GigabitEthernet2
+C        10.21.11.0/30 is directly connected, GigabitEthernet1
+L        10.21.11.2/32 is directly connected, GigabitEthernet1
+i L2     10.21.21.1/32 [115/20] via 10.21.11.1, 01:26:41, GigabitEthernet1
+i L2     10.21.22.0/30 [115/20] via 10.21.11.1, 01:26:41, GigabitEthernet1
+i L2     10.21.31.0/30 [115/20] via 10.21.11.1, 01:26:41, GigabitEthernet1
+i L2     10.21.32.0/30 [115/20] via 10.21.11.1, 01:26:41, GigabitEthernet1
+i L2     10.22.12.0/30 [115/20] via 10.11.12.2, 01:26:52, GigabitEthernet2
+i L2     10.22.22.1/32 [115/30] via 10.21.11.1, 01:26:14, GigabitEthernet1
+                       [115/30] via 10.11.12.2, 01:26:14, GigabitEthernet2
+i L2     10.22.31.0/30 [115/30] via 10.21.11.1, 01:26:14, GigabitEthernet1
+                       [115/30] via 10.11.12.2, 01:26:14, GigabitEthernet2
+i L2     10.22.32.0/30 [115/30] via 10.21.11.1, 01:26:14, GigabitEthernet1
+                       [115/30] via 10.11.12.2, 01:26:14, GigabitEthernet2
+i L2     10.31.31.1/32 [115/30] via 10.21.11.1, 01:26:14, GigabitEthernet1
+i L2     10.31.32.0/30 [115/30] via 10.21.11.1, 01:26:14, GigabitEthernet1
+i L2     10.31.41.0/30 [115/30] via 10.21.11.1, 01:26:14, GigabitEthernet1
+i L2     10.32.32.1/32 [115/30] via 10.21.11.1, 01:26:19, GigabitEthernet1
+i L2     10.32.42.0/30 [115/30] via 10.21.11.1, 01:26:19, GigabitEthernet1
+i L2     10.41.41.1/32 [115/40] via 10.21.11.1, 01:26:14, GigabitEthernet1
+i L2     10.41.42.0/30 [115/40] via 10.21.11.1, 01:26:14, GigabitEthernet1
+i L2     10.42.42.1/32 [115/40] via 10.21.11.1, 01:26:19, GigabitEthernet1
+CSR-Msk-PE1#
 ```
 
 + #### Шаг 4: Настройка MPLS и Segment Routing в связке с протоколом ISIS
 
 ##### 4.1. Руководства по настройке MPLS и SR
 
-##### 1. [Segment Routing Configuration Guide, Cisco IOS XE 17 | Access and Edge Routers](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/seg_routing/configuration/xe-17/segrt-xe-17-book.html)
+##### 1. [Segment Routing (общая информация)](https://www.segment-routing.net/)
+##### 2. [Segment Routing Configuration Guide, Cisco IOS XE 17 | Access and Edge Routers](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/seg_routing/configuration/xe-17/segrt-xe-17-book.html)
+##### 3. [Сети для самых маленьких. Часть десятая. Базовый MPLS](https://habr.com/ru/articles/246425/)
+##### 4. [Segment routing: как и почему](https://habr.com/ru/articles/317158/)
+
+##### 4.2. Настройка MPLS и SR
+
+##### CSR-Msk-PE1:
+
+```
+!
+segment-routing mpls
+ !
+ connected-prefix-sid-map
+  address-family ipv4
+   10.11.11.1/32 index 11 range 1 
+  exit-address-family
+ !
+ router isis 111
+ net 49.0111.0000.0000.0011.00
+ is-type level-2-only
+ metric-style wide
+ segment-routing mpls
+ !
+ ```
