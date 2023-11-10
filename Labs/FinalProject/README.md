@@ -158,4 +158,4 @@ net 49.0111.0000.0000.0011.00
 
 ###### 4.1. Руководства по настройке MPLS и SR
 
-1. [Segment Routing Configuration Guide, Cisco IOS XE 17 | Access and Edge Routers] (https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/seg_routing/configuration/xe-17/segrt-xe-17-book.html)
+1. [Segment Routing Configuration Guide, Cisco IOS XE 17 | Access and Edge Routers](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/seg_routing/configuration/xe-17/segrt-xe-17-book.html)
