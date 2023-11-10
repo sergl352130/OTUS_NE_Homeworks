@@ -102,11 +102,11 @@
 
 ###### 2.3. Следует иметь ввиду, что для каждого узла CSR1000v требуется 4 Мб оперативной памяти. Имеющихся у меня 30 Мб хватает под стенд с трудом, активно используется файл подкачки. Все ноды сразу стартовать не рекомендуется, 2/3 узлов при этом "зависает". Нужно запускать каждую ноду последовательно с контролем через консоль.
 
-###### 2.4. Ещё одна сложность - возможно связанная с тем, что у меня процессор AMD (Ryzen 7 4800H), возможно дело и не в этом - ноды с образами CSR1000v по умолчанию создаются с виртуальными сетевыми интерфейсами (QEMU Nic) типа "tpl(vmxnet3)". 
+###### 2.4. Ещё одна сложность - возможно связанная с тем, что у меня процессор AMD (Ryzen 7 4800H), возможно дело и не в этом - ноды с образами CSR1000v по умолчанию создаются с виртуальными сетевыми интерфейсами (QEMU Nic) "tpl(vmxnet3)". 
 
 <img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic1.png" width="500" height="600">
 
-###### У меня с этими QEMU Nic протокол IP не захотел запускаться, между нодами даже элементарный ping не ходил. Решение - сразу после создания каждой ноды необходимо зайти в меню редактирования настроек ноды и поменять QEMU Nic на "virtio-net-pci". С такими сетевыми интерфейсами всё работает корректно.
+###### У меня с этими QEMU Nic протокол IP не захотел запускаться, между нодами даже элементарный ping не ходил. Решение - сразу после создания каждой ноды необходимо зайти в меню редактирования настроек ноды и поменять QEMU Nic на "virtio-net-pci". С такими сетевыми интерфейсами всё работает корректно. В чем проблема - неизвестно, скорее всего дело в сбое драйвера виртуальной сетевой карты.
 
 <img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic2.png" width="500" height="600">
 
@@ -114,10 +114,48 @@
 
 + #### Шаг 4: Настройка протокола ISIS на каждом из MPLS/SR-маршрутизаторов и обеспечение full IP connectivity в SR-домене
 
-  + Примеры конфигураций:
-
 #### CSR-Msk-PE1:
 
 ```
+!
+version 17.3
+!
+hostname CSR-Msk-PE1
+!
+interface Loopback0
+ no shutdown
+ ip address 10.12.12.1 255.255.255.255
+ ip router isis 111
+!
+interface GigabitEthernet1
+ no shutdown
+ description To CSR-Msk-P2
+ ip address 10.22.12.2 255.255.255.252
+ ip router isis 111
+!
+interface GigabitEthernet2
+ no shutdown
+ description To CSR-Msk2-PE1
+ ip address 10.11.12.2 255.255.255.252
+ ip router isis 111
+!
+interface GigabitEthernet3
+ no shutdown
+ description To R-Msk-CE-info
+ ip address 10.12.2.1 255.255.255.252
+!
+interface GigabitEthernet4
+ no shutdown
+ description To R-Msk-CE-pay
+ ip address 10.12.1.1 255.255.255.252
+!
+router isis 111
+net 49.0111.0000.0000.0011.00
 
 ```
+
++ #### Шаг 4: Настройка MPLS и Segment Routing в связке с протоколом ISIS
+
+###### 4.1. Руководства по настройке MPLS и SR
+
+1. [Segment Routing Configuration Guide, Cisco IOS XE 17 | Access and Edge Routers] (https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/seg_routing/configuration/xe-17/segrt-xe-17-book.html)
