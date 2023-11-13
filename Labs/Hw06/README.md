@@ -300,6 +300,7 @@ hostname R19
 interface Loopback0
  description R19 Mgmt
  ip address 10.111.3.19 255.255.255.255
+ ip ospf 111 area 101
 !
 interface Ethernet0/3
  description p2p to R14
@@ -314,54 +315,213 @@ router ospf 111
 ```
 
 ```
-R14#show ip ospf database 
+R14#show ip ospf database
 
             OSPF Router with ID (10.111.3.14) (Process ID 111)
 
                 Router Link States (Area 0)
 
 Link ID         ADV Router      Age         Seq#       Checksum Link count
-10.111.3.12     10.111.3.12     1374        0x80000004 0x008B7C 5
-10.111.3.13     10.111.3.13     1335        0x80000005 0x00E003 5
-10.111.3.14     10.111.3.14     449         0x80000008 0x00A06C 7
-10.111.3.15     10.111.3.15     1333        0x80000007 0x005EAD 7
+10.111.3.12     10.111.3.12     892         0x80000007 0x00857F 5
+10.111.3.13     10.111.3.13     904         0x80000007 0x00DC05 5
+10.111.3.14     10.111.3.14     884         0x80000007 0x009677 7
+10.111.3.15     10.111.3.15     919         0x8000000C 0x0024E1 7
 
                 Summary Net Link States (Area 0)
 
 Link ID         ADV Router      Age         Seq#       Checksum
-10.111.2.0      10.111.3.12     1263        0x80000003 0x00D25D
-10.111.2.4      10.111.3.13     1832        0x80000002 0x00A685
-10.111.2.28     10.111.3.14     445         0x80000001 0x00B162
-10.111.3.4      10.111.3.12     1263        0x80000003 0x00BB6B
-10.111.3.5      10.111.3.13     1832        0x80000002 0x00AD78
+10.111.2.0      10.111.3.12     892         0x80000005 0x00CE5F
+10.111.2.4      10.111.3.13     904         0x80000005 0x00A088
+10.111.2.28     10.111.3.14     884         0x80000005 0x00A966
+10.111.2.32     10.111.3.15     919         0x80000003 0x007F8D
+10.111.3.4      10.111.3.12     892         0x80000005 0x00B76D
+10.111.3.5      10.111.3.13     904         0x80000005 0x00A77B
+10.111.3.19     10.111.3.14     331         0x80000001 0x001DFA
 
                 Router Link States (Area 101)
-
+          
 Link ID         ADV Router      Age         Seq#       Checksum Link count
-10.111.3.14     10.111.3.14     165         0x80000002 0x0041FD 2
-10.111.3.19     10.111.3.19     165         0x80000002 0x00C970 2
+10.111.3.14     10.111.3.14     884         0x80000006 0x003902 2
+10.111.3.19     10.111.3.19     337         0x80000007 0x008212 3
 
                 Summary Net Link States (Area 101)
 
 Link ID         ADV Router      Age         Seq#       Checksum
-0.0.0.0         10.111.3.14     317         0x80000001 0x007241
+0.0.0.0         10.111.3.14     884         0x80000005 0x006A45
+R14#show ip ospf database summary 0.0.0.0
+
+            OSPF Router with ID (10.111.3.14) (Process ID 111)
+
+                Summary Net Link States (Area 101)
+
+  LS age: 906
+  Options: (No TOS-capability, DC, Upward)
+  LS Type: Summary Links(Network)
+  Link State ID: 0.0.0.0 (summary Network Number)
+  Advertising Router: 10.111.3.14
+  LS Seq Number: 80000005
+  Checksum: 0x6A45
+  Length: 28
+  Network Mask: /0
+        MTID: 0         Metric: 1 
 ```
 
 ```
-R19#show ip ospf database 
+R19#show ip ospf database
 
             OSPF Router with ID (10.111.3.19) (Process ID 111)
 
                 Router Link States (Area 101)
 
 Link ID         ADV Router      Age         Seq#       Checksum Link count
-10.111.3.14     10.111.3.14     120         0x80000003 0x003FFE 2
-10.111.3.19     10.111.3.19     214         0x80000003 0x00C771 2
+10.111.3.14     10.111.3.14     733         0x80000006 0x003902 2
+10.111.3.19     10.111.3.19     184         0x80000007 0x008212 3
 
                 Summary Net Link States (Area 101)
 
 Link ID         ADV Router      Age         Seq#       Checksum
-0.0.0.0         10.111.3.14     364         0x80000002 0x007042
+0.0.0.0         10.111.3.14     733         0x80000005 0x006A45
+R19#show ip ospf database summary 0.0.0.0
+
+            OSPF Router with ID (10.111.3.19) (Process ID 111)
+
+                Summary Net Link States (Area 101)
+
+  Routing Bit Set on this LSA in topology Base with MTID 0
+  LS age: 828
+  Options: (No TOS-capability, DC, Upward)
+  LS Type: Summary Links(Network)
+  Link State ID: 0.0.0.0 (summary Network Number)
+  Advertising Router: 10.111.3.14
+  LS Seq Number: 80000005
+  Checksum: 0x6A45
+  Length: 28
+  Network Mask: /0
+        MTID: 0         Metric: 1 
 ```
 
 + #### Шаг 4: Маршрутизатор R20 находится в зоне 102 и получает все маршруты, кроме маршрутов до сетей зоны 101
+
+#### R15:
+
+```
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R15
+!
+interface Ethernet0/3
+ description p2p to R20
+ ip address 10.111.2.33 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 102
+!
+router ospf 111
+ router-id 10.111.3.15
+ area 102 filter-list prefix NOarea101 in
+!         
+ip prefix-list NOarea101 seq 5 deny 10.111.2.28/30
+ip prefix-list NOarea101 seq 10 deny 10.111.3.19/32
+ip prefix-list NOarea101 seq 15 permit 0.0.0.0/0 le 32
+!
+```
+
+#### R20:
+
+```
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R20
+!
+interface Ethernet0/3
+ description p2p to R15
+ ip address 10.111.2.34 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 102
+!
+router ospf 111
+ router-id 10.111.3.20
+!         
+```
+
+```
+R20#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 18 subnets, 2 masks
+O IA     10.111.2.0/30 [110/30] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.2.4/30 [110/30] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.2.8/30 [110/30] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.2.12/30 [110/20] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.2.16/30 [110/20] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.2.20/30 [110/30] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.2.24/30 [110/20] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.2.28/30 [110/30] via 10.111.2.33, 00:02:38, Ethernet0/3
+C        10.111.2.32/30 is directly connected, Ethernet0/3
+L        10.111.2.34/32 is directly connected, Ethernet0/3
+O IA     10.111.3.4/32 [110/31] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.3.5/32 [110/31] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.3.12/32 [110/21] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.3.13/32 [110/21] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.3.14/32 [110/21] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.3.15/32 [110/11] via 10.111.2.33, 01:17:20, Ethernet0/3
+O IA     10.111.3.19/32 [110/31] via 10.111.2.33, 00:00:26, Ethernet0/3
+C        10.111.3.20/32 is directly connected, Loopback0
+```
+
+```
+R15#configure terminal 
+Enter configuration commands, one per line.  End with CNTL/Z.
+R15(config)#router ospf 111
+R15(config-router)#area 102 filter-list prefix NOarea101 in
+```
+
+```
+R20#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 16 subnets, 2 masks
+O IA     10.111.2.0/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.2.4/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.2.8/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.2.12/30 [110/20] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.2.16/30 [110/20] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.2.20/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.2.24/30 [110/20] via 10.111.2.33, 01:29:40, Ethernet0/3
+C        10.111.2.32/30 is directly connected, Ethernet0/3
+L        10.111.2.34/32 is directly connected, Ethernet0/3
+O IA     10.111.3.4/32 [110/31] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.3.5/32 [110/31] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.3.12/32 [110/21] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.3.13/32 [110/21] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.3.14/32 [110/21] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.3.15/32 [110/11] via 10.111.2.33, 01:29:40, Ethernet0/3
+C        10.111.3.20/32 is directly connected, Loopback0
+```
