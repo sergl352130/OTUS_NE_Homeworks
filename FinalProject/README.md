@@ -1,7 +1,7 @@
 # Проектная работа
 + ## Модернизация магистральной сети WAN на основе технологий MPLS/SR
 ## Топология
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/WAN-SR-MPBGP_topology.png?raw=true)
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/FinalProject/WAN-SR-MPBGP_topology.png?raw=true)
 
 ## Цели:
 + ### Часть 1: Изучение особенностей построения транспортных сетей MPLS на основе технологии SR
@@ -35,61 +35,61 @@
 |VPC-Msk-info |eth0     |10.0.2.2     |255.255.255.0  |                |
 |R-Msk-CE-pay |Loopback0|10.1.1.1     |255.255.255.255|                |
 |R-Msk-CE-pay |E0/0     |10.0.1.1     |255.255.255.0  |To VPC-Msk-pay  |
-|R-Msk-CE-pay |E0/2	    |10.12.1.2    |255.255.255.252|To CSR-Msk-PE2  |
-|R-Msk-CE-pay |E0/3	    |10.11.1.2    |255.255.255.252|To CSR-Msk-PE1  |
+|R-Msk-CE-pay |E0/2	|10.12.1.2    |255.255.255.252|To CSR-Msk-PE2  |
+|R-Msk-CE-pay |E0/3     |10.11.1.2    |255.255.255.252|To CSR-Msk-PE1  |
 |R-Msk-CE-info|Loopback0|10.2.2.1     |255.255.255.255|                |
 |R-Msk-CE-info|E0/0     |10.0.2.1     |255.255.255.0  |To VPC-Msk-info |
-|R-Msk-CE-info|E0/2	    |10.11.2.2    |255.255.255.252|To CSR-Msk-PE1  |
-|R-Msk-CE-info|E0/3	    |10.12.2.2    |255.255.255.252|To CSR-Msk-PE2  |
+|R-Msk-CE-info|E0/2	|10.11.2.2    |255.255.255.252|To CSR-Msk-PE1  |
+|R-Msk-CE-info|E0/3	|10.12.2.2    |255.255.255.252|To CSR-Msk-PE2  |
 |CSR-Msk-PE1  |Loopback0|10.11.11.1   |255.255.255.255|                |
 |CSR-Msk-PE1  |Gi1      |10.21.11.2   |255.255.255.252|To CSR-Msk-P1   |
-|CSR-Msk-PE1  |Gi2	    |10.11.12.1   |255.255.255.252|To CSR-Msk-PE2  |
-|CSR-Msk-PE1  |Gi3	    |10.11.1.1    |255.255.255.252|To R-Msk-CE-pay |
-|CSR-Msk-PE1  |Gi4	    |10.11.2.1    |255.255.255.252|To R-Msk-CE-info|
+|CSR-Msk-PE1  |Gi2	|10.11.12.1   |255.255.255.252|To CSR-Msk-PE2  |
+|CSR-Msk-PE1  |Gi3	|10.11.1.1    |255.255.255.252|To R-Msk-CE-pay |
+|CSR-Msk-PE1  |Gi4	|10.11.2.1    |255.255.255.252|To R-Msk-CE-info|
 |CSR-Msk-PE2  |Loopback0|10.12.12.1   |255.255.255.255|                |
 |CSR-Msk-PE2  |Gi1      |10.22.12.2   |255.255.255.252|To CSR-Msk-P2   |
-|CSR-Msk-PE2  |Gi2	    |10.11.12.2   |255.255.255.252|To CSR-Msk-PE1  |
-|CSR-Msk-PE2  |Gi3	    |10.12.2.1    |255.255.255.252|To R-Msk-CE-info|
-|CSR-Msk-PE2  |Gi4	    |10.12.1.1    |255.255.255.252|To R-Msk-CE-pay |
+|CSR-Msk-PE2  |Gi2	|10.11.12.2   |255.255.255.252|To CSR-Msk-PE1  |
+|CSR-Msk-PE2  |Gi3	|10.12.2.1    |255.255.255.252|To R-Msk-CE-info|
+|CSR-Msk-PE2  |Gi4	|10.12.1.1    |255.255.255.252|To R-Msk-CE-pay |
 |CSR-Msk-P1   |Loopback0|10.21.21.1   |255.255.255.255|                |
 |CSR-Msk-P1   |Gi1      |10.21.11.1   |255.255.255.252|To CSR-Msk-PE1  |
-|CSR-Msk-P1   |Gi2	    |10.21.22.1   |255.255.255.252|To CSR-Msk-P2   |
-|CSR-Msk-P1   |Gi3	    |10.21.31.1   |255.255.255.252|To CSR-NN-P1    |
-|CSR-Msk-P1   |Gi4	    |10.11.32.1   |255.255.255.252|To CSR-NN-P2    |
+|CSR-Msk-P1   |Gi2	|10.21.22.1   |255.255.255.252|To CSR-Msk-P2   |
+|CSR-Msk-P1   |Gi3	|10.21.31.1   |255.255.255.252|To CSR-NN-P1    |
+|CSR-Msk-P1   |Gi4	|10.11.32.1   |255.255.255.252|To CSR-NN-P2    |
 |CSR-Msk-P2   |Loopback0|10.22.22.1   |255.255.255.255|                |
 |CSR-Msk-P2   |Gi1      |10.22.12.1   |255.255.255.252|To CSR-Msk-PE2  |
-|CSR-Msk-P2   |Gi2	    |10.21.22.2   |255.255.255.252|To CSR-Msk-P1   |
-|CSR-Msk-P2   |Gi3	    |10.22.32.1   |255.255.255.252|To CSR-NN-P2    |
-|CSR-Msk-P2   |Gi4	    |10.22.31.1   |255.255.255.252|To CSR-NN-P1    |
+|CSR-Msk-P2   |Gi2	|10.21.22.2   |255.255.255.252|To CSR-Msk-P1   |
+|CSR-Msk-P2   |Gi3	|10.22.32.1   |255.255.255.252|To CSR-NN-P2    |
+|CSR-Msk-P2   |Gi4	|10.22.31.1   |255.255.255.252|To CSR-NN-P1    |
 |Нижний Новгород|
 |CSR-NN-P1    |Loopback0|10.31.31.1   |255.255.255.255|                |
 |CSR-NN-P1    |Gi1      |10.31.41.1   |255.255.255.252|To CSR-NN-PE1   |
-|CSR-NN-P1    |Gi2	    |10.31.32.1   |255.255.255.252|To CSR-NN-P2    |
-|CSR-NN-P1    |Gi3	    |10.21.31.2   |255.255.255.252|To CSR-Msk-P1   |
-|CSR-NN-P1    |Gi4	    |10.22.31.2   |255.255.255.252|To CSR-Msk-P2   |
+|CSR-NN-P1    |Gi2	|10.31.32.1   |255.255.255.252|To CSR-NN-P2    |
+|CSR-NN-P1    |Gi3	|10.21.31.2   |255.255.255.252|To CSR-Msk-P1   |
+|CSR-NN-P1    |Gi4	|10.22.31.2   |255.255.255.252|To CSR-Msk-P2   |
 |CSR-NN-P2    |Loopback0|10.32.32.1   |255.255.255.255|                |
 |CSR-NN-P2    |Gi1      |10.32.42.1   |255.255.255.252|To CSR-NN-PE2   |
-|CSR-NN-P2    |Gi2	    |10.31.32.2   |255.255.255.252|To CSR-NN-P1    |
-|CSR-NN-P2    |Gi3	    |10.22.32.2   |255.255.255.252|To CSR-Msk-P2   |
-|CSR-NN-P2    |Gi4	    |10.21.32.2   |255.255.255.252|To CSR-Msk-P1   |
+|CSR-NN-P2    |Gi2	|10.31.32.2   |255.255.255.252|To CSR-NN-P1    |
+|CSR-NN-P2    |Gi3	|10.22.32.2   |255.255.255.252|To CSR-Msk-P2   |
+|CSR-NN-P2    |Gi4	|10.21.32.2   |255.255.255.252|To CSR-Msk-P1   |
 |CSR-NN-PE1   |Loopback0|10.41.41.1   |255.255.255.255|                |
 |CSR-NN-PE1   |Gi1      |10.31.41.2   |255.255.255.252|To CSR-NN-P1    |
-|CSR-NN-PE1   |Gi2	    |10.41.42.1   |255.255.255.252|To CSR-NN-PE2   |
-|CSR-NN-PE1   |Gi3	    |10.41.3.1    |255.255.255.252|To R-NN-CE-pay  |
-|CSR-NN-PE1   |Gi4	    |10.41.4.1    |255.255.255.252|To R-NN-CE-info |
+|CSR-NN-PE1   |Gi2	|10.41.42.1   |255.255.255.252|To CSR-NN-PE2   |
+|CSR-NN-PE1   |Gi3	|10.41.3.1    |255.255.255.252|To R-NN-CE-pay  |
+|CSR-NN-PE1   |Gi4	|10.41.4.1    |255.255.255.252|To R-NN-CE-info |
 |CSR-NN-PE2   |Loopback0|10.42.42.1   |255.255.255.255|                |
 |CSR-NN-PE2   |Gi1      |10.32.42.2   |255.255.255.252|To CSR-NN-P2    |
-|CSR-NN-PE2   |Gi2	    |10.41.42.2   |255.255.255.252|To CSR-NN-PE1   |
-|CSR-NN-PE2   |Gi3	    |10.42.4.1    |255.255.255.252|To R-NN-CE-info |
-|CSR-NN-PE2   |Gi4	    |10.42.3.1    |255.255.255.252|To R-NN-CE-pay  |
+|CSR-NN-PE2   |Gi2	|10.41.42.2   |255.255.255.252|To CSR-NN-PE1   |
+|CSR-NN-PE2   |Gi3	|10.42.4.1    |255.255.255.252|To R-NN-CE-info |
+|CSR-NN-PE2   |Gi4	|10.42.3.1    |255.255.255.252|To R-NN-CE-pay  |
 |R-NN-CE-pay  |Loopback0|10.3.3.1     |255.255.255.255|                |
 |R-NN-CE-pay  |E0/0     |10.0.3.1     |255.255.255.0  |To VPC-NN-pay   |
-|R-NN-CE-pay  |E0/2	    |10.42.3.2    |255.255.255.252|To CSR-NN-PE2   |
-|R-NN-CE-pay  |E0/3	    |10.41.3.2    |255.255.255.252|To CSR-NN-PE1   |
+|R-NN-CE-pay  |E0/2	|10.42.3.2    |255.255.255.252|To CSR-NN-PE2   |
+|R-NN-CE-pay  |E0/3	|10.41.3.2    |255.255.255.252|To CSR-NN-PE1   |
 |R-NN-CE-info |Loopback0|10.4.4.1     |255.255.255.255|                |
 |R-NN-CE-info |E0/0     |10.0.4.1     |255.255.255.0  |To VPC-NN-info  |
-|R-NN-CE-info |E0/2	    |10.41.4.2    |255.255.255.252|To CSR-NN-PE1   |
-|R-NN-CE-info |E0/3	    |10.42.4.2    |255.255.255.252|To CSR-NN-PE2   |
+|R-NN-CE-info |E0/2	|10.41.4.2    |255.255.255.252|To CSR-NN-PE1   |
+|R-NN-CE-info |E0/3	|10.42.4.2    |255.255.255.252|To CSR-NN-PE2   |
 |VPC-NN-pay   |eth0     |10.0.3.2     |255.255.255.0  |                |
 |VPC-NN-info  |eth0     |10.0.4.2     |255.255.255.0  |                |
 
@@ -104,11 +104,11 @@
 
 ##### 2.4. Ещё одна сложность - возможно связанная с тем, что у меня процессор AMD (Ryzen 7 4800H), возможно дело и не в этом - ноды с образами CSR1000v по умолчанию создаются с виртуальными сетевыми интерфейсами (QEMU Nic) "tpl(vmxnet3)". 
 
-<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic1.png" width="500" height="600">
+<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/FinalProject/QEMU_Nic1.png" width="500" height="600">
 
 ##### У меня с этими QEMU Nic протокол IP не захотел запускаться, между нодами даже элементарный ping не ходил. Решение - сразу после создания каждой ноды необходимо зайти в меню редактирования настроек ноды и поменять QEMU Nic на "virtio-net-pci". С такими сетевыми интерфейсами всё работает корректно. В чем проблема - неизвестно, скорее всего дело в сбое драйвера виртуальной сетевой карты.
 
-<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/FinalProject/QEMU_Nic2.png" width="500" height="600">
+<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/FinalProject/QEMU_Nic2.png" width="500" height="600">
 
 + #### Шаг 3: Настройка IP-адреса на каждом активном порту
 
