@@ -24,3 +24,7 @@
 + ### OSPF. Фильтрация
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw06/README.md)
 
+## Лабораторная работа 07
++ ### ISIS
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw07/README.md)
+
