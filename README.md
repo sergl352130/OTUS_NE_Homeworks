@@ -28,3 +28,7 @@
 + ### ISIS
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw07/README.md)
 
+## Лабораторная работа 08
++ ### EIGRP
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw08/README.md)
+
