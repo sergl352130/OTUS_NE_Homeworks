@@ -1,7 +1,7 @@
 # Лабораторная работа 08
 + ## EIGRP
 ## Топология
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw06/Network_topology_OSPF.png?raw=true)
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw08/Network_topology_EIGRP.png?raw=true)
 
 ## Цели:
 + ### Настройка EIGRP в офисе Санкт-Петербург
@@ -13,7 +13,7 @@
 + #### Шаг 4: Для настройки сети использовать EIGRP named-mode для настройки сети
 
 
-#### R23:
+#### R18:
 
 ```
 

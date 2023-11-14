@@ -1,7 +1,7 @@
 # Лабораторная работа 07
 + ## ISIS
 ## Топология
-![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw06/Network_topology_OSPF.png?raw=true)
+![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw07/Network_topology_ISIS.png?raw=true)
 
 ## Цели:
 + ### Настройка IS-IS в офисе Триада
