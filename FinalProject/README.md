@@ -104,11 +104,11 @@
 
 ##### 2.4. Ещё одна сложность - возможно связанная с тем, что у меня процессор AMD (Ryzen 7 4800H), возможно дело и не в этом - ноды с образами CSR1000v по умолчанию создаются с виртуальными сетевыми интерфейсами (QEMU Nic) "tpl(vmxnet3)". 
 
-<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/FinalProject/QEMU_Nic1.png" width="500" height="600">
+<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/FinalProject/QEMU_Nic1.png" width="400" height="500">
 
 ##### У меня с этими QEMU Nic протокол IP не захотел запускаться, между нодами даже элементарный ping не ходил. Решение - сразу после создания каждой ноды необходимо зайти в меню редактирования настроек ноды и поменять QEMU Nic на "virtio-net-pci". С такими сетевыми интерфейсами всё работает корректно. В чем проблема - неизвестно, скорее всего дело в сбое драйвера виртуальной сетевой карты.
 
-<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/FinalProject/QEMU_Nic2.png" width="500" height="600">
+<img src="https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/FinalProject/QEMU_Nic2.png" width="400" height="500">
 
 + #### Шаг 3: Настройка IP-адреса на каждом активном порту
 
