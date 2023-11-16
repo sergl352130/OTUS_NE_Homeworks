@@ -39,12 +39,16 @@ router eigrp SPB
  address-family ipv4 unicast autonomous-system 112
   !
   topology base
+   redistribute static
   exit-af-topology
   network 10.112.2.16 0.0.0.3
   network 10.112.2.20 0.0.0.3
   network 10.112.3.18 0.0.0.0
   eigrp router-id 10.112.3.18
  exit-address-family
+!
+ip route 0.0.0.0 0.0.0.0 44.112.24.24
+ip route 0.0.0.0 0.0.0.0 44.112.26.26 5
 !
 ```
 
@@ -60,24 +64,23 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        a - application route
        + - replicated route, % - next hop override
 
-Gateway of last resort is 10.112.2.21 to network 0.0.0.0
+Gateway of last resort is 44.112.24.24 to network 0.0.0.0
 
-D*EX  0.0.0.0/0 [170/1536000] via 10.112.2.21, 00:46:02, Ethernet0/1
-      10.0.0.0/8 is variably subnetted, 13 subnets, 3 masks
-D        10.112.0.0/24 [90/1541120] via 10.112.2.17, 00:11:40, Ethernet0/0
-D        10.112.1.0/24 [90/1541120] via 10.112.2.21, 00:13:24, Ethernet0/1
-D        10.112.2.0/24 [90/1536000] via 10.112.2.21, 07:47:45, Ethernet0/1
-                       [90/1536000] via 10.112.2.17, 07:47:45, Ethernet0/0
+S*    0.0.0.0/0 [1/0] via 44.112.24.24
+      10.0.0.0/8 is variably subnetted, 12 subnets, 3 masks
+D        10.112.0.0/24 [90/1541120] via 10.112.2.17, 00:48:59, Ethernet0/0
+D        10.112.2.0/24 [90/1536000] via 10.112.2.21, 00:49:29, Ethernet0/1
+                       [90/1536000] via 10.112.2.17, 00:49:29, Ethernet0/0
 C        10.112.2.16/30 is directly connected, Ethernet0/0
 L        10.112.2.18/32 is directly connected, Ethernet0/0
 C        10.112.2.20/30 is directly connected, Ethernet0/1
 L        10.112.2.22/32 is directly connected, Ethernet0/1
-D        10.112.3.9/32 [90/1536640] via 10.112.2.17, 07:47:41, Ethernet0/0
-D        10.112.3.10/32 [90/1536640] via 10.112.2.21, 07:47:41, Ethernet0/1
-D        10.112.3.16/32 [90/1024640] via 10.112.2.21, 07:47:41, Ethernet0/1
-D        10.112.3.17/32 [90/1024640] via 10.112.2.17, 07:47:41, Ethernet0/0
+D        10.112.3.9/32 [90/1536640] via 10.112.2.17, 00:49:24, Ethernet0/0
+D        10.112.3.10/32 [90/1536640] via 10.112.2.21, 00:49:24, Ethernet0/1
+D        10.112.3.16/32 [90/1024640] via 10.112.2.21, 00:49:24, Ethernet0/1
+D        10.112.3.17/32 [90/1024640] via 10.112.2.17, 00:49:24, Ethernet0/0
 C        10.112.3.18/32 is directly connected, Loopback0
-D        10.112.3.32/32 [90/1536640] via 10.112.2.21, 07:47:41, Ethernet0/1
+D        10.112.3.32/32 [90/1536640] via 10.112.2.21, 00:49:24, Ethernet0/1
       44.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
 C        44.112.24.0/24 is directly connected, Ethernet1/0
 L        44.112.24.18/32 is directly connected, Ethernet1/0
@@ -93,6 +96,7 @@ Routing Protocol is "eigrp 112"
   Incoming update filter list for all interfaces is not set
   Default networks flagged in outgoing updates
   Default networks accepted from incoming updates
+  Redistributing: static
   EIGRP-IPv4 VR(SPB) Address-Family Protocol for AS(112)
     Metric weight K1=1, K2=0, K3=1, K4=0, K5=0 K6=0
     Metric rib-scale 128
@@ -105,8 +109,8 @@ Routing Protocol is "eigrp 112"
       Maximum path: 4
       Maximum hopcount 100
       Maximum metric variance 1
-      Total Prefix Count: 12
-      Total Redist Count: 0
+      Total Prefix Count: 11
+      Total Redist Count: 1
 
   Automatic Summarization: disabled
   Maximum path: 4
@@ -116,8 +120,8 @@ Routing Protocol is "eigrp 112"
     10.112.3.18/32
   Routing Information Sources:
     Gateway         Distance      Last Update
-    10.112.2.17           90      00:13:06
-    10.112.2.21           90      00:13:06
+    10.112.2.17           90      00:20:17
+    10.112.2.21           90      00:20:17
   Distance: internal 90 external 170
 ```
 
@@ -176,7 +180,7 @@ router eigrp SPB
 ```
 
 ```
-R17#show ip route 
+R17#show ip route
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
        N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
@@ -187,28 +191,27 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        a - application route
        + - replicated route, % - next hop override
 
-Gateway of last resort is 10.112.2.6 to network 0.0.0.0
+Gateway of last resort is 10.112.2.18 to network 0.0.0.0
 
-D*EX  0.0.0.0/0 [170/1536000] via 10.112.2.6, 00:37:24, Ethernet0/2
-      10.0.0.0/8 is variably subnetted, 16 subnets, 3 masks
-D        10.112.0.0/24 [90/1029120] via 10.112.2.1, 00:03:02, Ethernet1/0
-D        10.112.1.0/24 [90/1541120] via 10.112.2.6, 00:04:46, Ethernet0/2
-D        10.112.2.0/24 is a summary, 07:39:07, Null0
+D*EX  0.0.0.0/0 [170/1536000] via 10.112.2.18, 00:05:42, Ethernet0/0
+      10.0.0.0/8 is variably subnetted, 15 subnets, 3 masks
+D        10.112.0.0/24 [90/1029120] via 10.112.2.1, 00:51:58, Ethernet1/0
+D        10.112.2.0/24 is a summary, 00:52:29, Null0
 C        10.112.2.0/30 is directly connected, Ethernet1/0
 L        10.112.2.2/32 is directly connected, Ethernet1/0
 C        10.112.2.4/30 is directly connected, Ethernet0/2
 L        10.112.2.5/32 is directly connected, Ethernet0/2
 C        10.112.2.16/30 is directly connected, Ethernet0/0
 L        10.112.2.17/32 is directly connected, Ethernet0/0
-D        10.112.2.20/30 [90/1536000] via 10.112.2.18, 07:39:08, Ethernet0/0
-D        10.112.3.9/32 [90/1024640] via 10.112.2.1, 07:39:03, Ethernet1/0
-D        10.112.3.10/32 [90/1536640] via 10.112.2.6, 07:39:04, Ethernet0/2
-D        10.112.3.16/32 [90/1024640] via 10.112.2.6, 07:39:04, Ethernet0/2
+D        10.112.2.20/30 [90/1536000] via 10.112.2.18, 00:52:29, Ethernet0/0
+D        10.112.3.9/32 [90/1024640] via 10.112.2.1, 00:52:25, Ethernet1/0
+D        10.112.3.10/32 [90/1536640] via 10.112.2.6, 00:52:23, Ethernet0/2
+D        10.112.3.16/32 [90/1024640] via 10.112.2.6, 00:52:23, Ethernet0/2
 C        10.112.3.17/32 is directly connected, Loopback0
-D        10.112.3.18/32 [90/1024640] via 10.112.2.18, 07:39:04, Ethernet0/0
-D        10.112.3.32/32 [90/1536640] via 10.112.2.6, 07:39:04, Ethernet0/2
+D        10.112.3.18/32 [90/1024640] via 10.112.2.18, 00:52:25, Ethernet0/0
+D        10.112.3.32/32 [90/1536640] via 10.112.2.6, 00:52:23, Ethernet0/2
 
-R17#                 
+R17#
 R17#show ip protocols
 *** IP Routing is NSF aware ***
 
@@ -229,7 +232,7 @@ Routing Protocol is "eigrp 112"
       Maximum path: 4
       Maximum hopcount 100
       Maximum metric variance 1
-      Total Prefix Count: 14
+      Total Prefix Count: 13
       Total Redist Count: 0
 
   Automatic Summarization: disabled
@@ -244,9 +247,9 @@ Routing Protocol is "eigrp 112"
     10.112.3.17/32
   Routing Information Sources:
     Gateway         Distance      Last Update
-    10.112.2.18           90      00:16:04
-    10.112.2.1            90      00:16:04
-    10.112.2.6            90      00:16:04
+    10.112.2.18           90      00:05:58
+    10.112.2.1            90      00:05:58
+    10.112.2.6            90      00:05:58
   Distance: internal 90 external 170
 ```
 
@@ -303,8 +306,7 @@ router eigrp SPB
   !
   topology base
    default-metric 10000 100 255 1 1500
-   distribute-list prefix R32 out Ethernet0/3
-   redistribute static
+   distribute-list prefix R32 out Ethernet0/3   
   exit-af-topology
   network 10.112.2.4 0.0.0.3
   network 10.112.2.8 0.0.0.3
@@ -314,15 +316,13 @@ router eigrp SPB
   eigrp router-id 10.112.3.16
  exit-address-family
 !
-ip route 0.0.0.0 0.0.0.0 Ethernet0/3
-!
 ip prefix-list R32 seq 5 permit 0.0.0.0/0
 ip prefix-list R32 seq 10 deny 0.0.0.0/0 le 32
 !
 ```
 
 ```
-R16#sh ip route
+R16#show ip route
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
        N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
@@ -333,29 +333,27 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        a - application route
        + - replicated route, % - next hop override
 
-Gateway of last resort is 0.0.0.0 to network 0.0.0.0
+Gateway of last resort is 10.112.2.22 to network 0.0.0.0
 
-S*    0.0.0.0/0 is directly connected, Ethernet0/3
-      10.0.0.0/8 is variably subnetted, 18 subnets, 3 masks
-D        10.112.0.0/24 [90/1541120] via 10.112.2.5, 00:17:33, Ethernet0/2
-D        10.112.1.0/24 [90/1029120] via 10.112.2.9, 00:19:17, Ethernet1/0
-D        10.112.2.0/24 is a summary, 07:53:38, Null0
+D*EX  0.0.0.0/0 [170/1536000] via 10.112.2.22, 00:09:02, Ethernet0/1
+      10.0.0.0/8 is variably subnetted, 17 subnets, 3 masks
+D        10.112.0.0/24 [90/1541120] via 10.112.2.5, 00:55:19, Ethernet0/2
+D        10.112.2.0/24 is a summary, 00:55:49, Null0
 C        10.112.2.4/30 is directly connected, Ethernet0/2
 L        10.112.2.6/32 is directly connected, Ethernet0/2
 C        10.112.2.8/30 is directly connected, Ethernet1/0
 L        10.112.2.10/32 is directly connected, Ethernet1/0
-D        10.112.2.16/30 [90/1536000] via 10.112.2.22, 07:53:38, Ethernet0/1
+D        10.112.2.16/30 [90/1536000] via 10.112.2.22, 00:55:49, Ethernet0/1
 C        10.112.2.20/30 is directly connected, Ethernet0/1
 L        10.112.2.21/32 is directly connected, Ethernet0/1
 C        10.112.2.24/30 is directly connected, Ethernet0/3
 L        10.112.2.25/32 is directly connected, Ethernet0/3
-D        10.112.3.9/32 [90/1536640] via 10.112.2.5, 07:53:33, Ethernet0/2
-D        10.112.3.10/32 [90/1024640] via 10.112.2.9, 07:53:35, Ethernet1/0
+D        10.112.3.9/32 [90/1536640] via 10.112.2.5, 00:55:45, Ethernet0/2
+D        10.112.3.10/32 [90/1024640] via 10.112.2.9, 00:55:44, Ethernet1/0
 C        10.112.3.16/32 is directly connected, Loopback0
-D        10.112.3.17/32 [90/1024640] via 10.112.2.5, 07:53:33, Ethernet0/2
-D        10.112.3.18/32 [90/1024640] via 10.112.2.22, 07:53:38, Ethernet0/1
-D        10.112.3.32/32 [90/1024640] via 10.112.2.26, 07:53:38, Ethernet0/3
-
+D        10.112.3.17/32 [90/1024640] via 10.112.2.5, 00:55:49, Ethernet0/2
+D        10.112.3.18/32 [90/1024640] via 10.112.2.22, 00:55:46, Ethernet0/1
+D        10.112.3.32/32 [90/1024640] via 10.112.2.26, 00:55:44, Ethernet0/3
 R16#
 R16#show ip protocols
 *** IP Routing is NSF aware ***
@@ -366,7 +364,6 @@ Routing Protocol is "eigrp 112"
   Incoming update filter list for all interfaces is not set
   Default networks flagged in outgoing updates
   Default networks accepted from incoming updates
-  Redistributing: static
   EIGRP-IPv4 VR(SPB) Address-Family Protocol for AS(112)
     Metric weight K1=1, K2=0, K3=1, K4=0, K5=0 K6=0
     Metric rib-scale 128
@@ -380,8 +377,8 @@ Routing Protocol is "eigrp 112"
       Maximum hopcount 100
       Maximum metric variance 1
       Default redistribution metric is 10000 100 255 1 1500
-      Total Prefix Count: 15
-      Total Redist Count: 1
+      Total Prefix Count: 14
+      Total Redist Count: 0
 
   Automatic Summarization: disabled
   Address Summarization:
@@ -397,10 +394,10 @@ Routing Protocol is "eigrp 112"
     10.112.3.16/32
   Routing Information Sources:
     Gateway         Distance      Last Update
-    10.112.2.26           90      00:40:15
-    10.112.2.22           90      00:18:39
-    10.112.2.9            90      00:18:39
-    10.112.2.5            90      00:18:39
+    10.112.2.26           90      00:09:11
+    10.112.2.22           90      00:09:11
+    10.112.2.9            90      00:09:11
+    10.112.2.5            90      00:09:11
   Distance: internal 90 external 170
 ```
 
@@ -450,12 +447,11 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is 10.112.2.25 to network 0.0.0.0
 
-D*EX  0.0.0.0/0 [170/1536000] via 10.112.2.25, 00:43:52, Ethernet0/3
+D*EX  0.0.0.0/0 [170/2048000] via 10.112.2.25, 00:13:27, Ethernet0/3
       10.0.0.0/8 is variably subnetted, 3 subnets, 2 masks
 C        10.112.2.24/30 is directly connected, Ethernet0/3
 L        10.112.2.26/32 is directly connected, Ethernet0/3
 C        10.112.3.32/32 is directly connected, Loopback0
-
 R32#
 R32#show ip protocols
 *** IP Routing is NSF aware ***
@@ -487,7 +483,7 @@ Routing Protocol is "eigrp 112"
     10.112.3.32/32
   Routing Information Sources:
     Gateway         Distance      Last Update
-    10.112.2.25           90      00:43:35
+    10.112.2.25           90      00:13:38
   Distance: internal 90 external 170
 ```
 
@@ -545,22 +541,20 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is 10.112.2.2 to network 0.0.0.0
 
-D*EX  0.0.0.0/0 [170/2048000] via 10.112.2.2, 00:57:37, Ethernet1/0
-      10.0.0.0/8 is variably subnetted, 12 subnets, 3 masks
+D*EX  0.0.0.0/0 [170/2048000] via 10.112.2.2, 00:17:57, Ethernet1/0
+      10.0.0.0/8 is variably subnetted, 11 subnets, 3 masks
 C        10.112.0.0/24 is directly connected, Vlan18
 L        10.112.0.1/32 is directly connected, Vlan18
-D        10.112.1.0/24 [90/2053120] via 10.112.2.2, 00:24:59, Ethernet1/0
-D        10.112.2.0/24 [90/1536000] via 10.112.2.2, 07:59:16, Ethernet1/0
+D        10.112.2.0/24 [90/1536000] via 10.112.2.2, 01:04:40, Ethernet1/0
 C        10.112.2.0/30 is directly connected, Ethernet1/0
 L        10.112.2.1/32 is directly connected, Ethernet1/0
 C        10.112.3.9/32 is directly connected, Loopback0
-D        10.112.3.10/32 [90/2048640] via 10.112.2.2, 07:59:11, Ethernet1/0
-D        10.112.3.16/32 [90/1536640] via 10.112.2.2, 07:59:11, Ethernet1/0
-D        10.112.3.17/32 [90/1024640] via 10.112.2.2, 07:59:16, Ethernet1/0
-D        10.112.3.18/32 [90/1536640] via 10.112.2.2, 07:59:16, Ethernet1/0
-D        10.112.3.32/32 [90/2048640] via 10.112.2.2, 07:59:11, Ethernet1/0
-
-SW9#
+D        10.112.3.10/32 [90/2048640] via 10.112.2.2, 01:04:40, Ethernet1/0
+D        10.112.3.16/32 [90/1536640] via 10.112.2.2, 01:04:40, Ethernet1/0
+D        10.112.3.17/32 [90/1024640] via 10.112.2.2, 01:04:40, Ethernet1/0
+D        10.112.3.18/32 [90/1536640] via 10.112.2.2, 01:04:40, Ethernet1/0
+          
+SW9#                               
 SW9#show ip protocols
 *** IP Routing is NSF aware ***
 
@@ -582,7 +576,7 @@ Routing Protocol is "eigrp 112"
       Maximum path: 4
       Maximum hopcount 100
       Maximum metric variance 1
-      Total Prefix Count: 11
+      Total Prefix Count: 10
       Total Redist Count: 0
 
   Automatic Summarization: disabled
@@ -593,7 +587,7 @@ Routing Protocol is "eigrp 112"
     10.112.3.9/32
   Routing Information Sources:
     Gateway         Distance      Last Update
-    10.112.2.2            90      00:25:08
+    10.112.2.2            90      00:18:30
   Distance: internal 90 external 170
 ```
 
@@ -651,21 +645,20 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is 10.112.2.10 to network 0.0.0.0
 
-D*EX  0.0.0.0/0 [170/1536000] via 10.112.2.10, 01:00:08, Ethernet1/0
+D*EX  0.0.0.0/0 [170/2048000] via 10.112.2.10, 00:19:24, Ethernet1/0
       10.0.0.0/8 is variably subnetted, 12 subnets, 3 masks
-D        10.112.0.0/24 [90/2053120] via 10.112.2.10, 00:25:46, Ethernet1/0
+D        10.112.0.0/24 [90/2053120] via 10.112.2.10, 01:05:40, Ethernet1/0
 C        10.112.1.0/24 is directly connected, Vlan10
 L        10.112.1.1/32 is directly connected, Vlan10
-D        10.112.2.0/24 [90/1536000] via 10.112.2.10, 08:01:48, Ethernet1/0
+D        10.112.2.0/24 [90/1536000] via 10.112.2.10, 01:06:10, Ethernet1/0
 C        10.112.2.8/30 is directly connected, Ethernet1/0
 L        10.112.2.9/32 is directly connected, Ethernet1/0
-D        10.112.3.9/32 [90/2048640] via 10.112.2.10, 08:01:47, Ethernet1/0
+D        10.112.3.9/32 [90/2048640] via 10.112.2.10, 01:06:05, Ethernet1/0
 C        10.112.3.10/32 is directly connected, Loopback0
-D        10.112.3.16/32 [90/1024640] via 10.112.2.10, 08:01:48, Ethernet1/0
-D        10.112.3.17/32 [90/1536640] via 10.112.2.10, 08:01:48, Ethernet1/0
-D        10.112.3.18/32 [90/1536640] via 10.112.2.10, 08:01:48, Ethernet1/0
-D        10.112.3.32/32 [90/1536640] via 10.112.2.10, 08:01:48, Ethernet1/0
-
+D        10.112.3.16/32 [90/1024640] via 10.112.2.10, 01:06:05, Ethernet1/0
+D        10.112.3.17/32 [90/1536640] via 10.112.2.10, 01:06:05, Ethernet1/0
+D        10.112.3.18/32 [90/1536640] via 10.112.2.10, 01:06:05, Ethernet1/0
+D        10.112.3.32/32 [90/1536640] via 10.112.2.10, 01:06:05, Ethernet1/0
 SW10#
 SW10#show ip protocols
 *** IP Routing is NSF aware ***
@@ -688,17 +681,16 @@ Routing Protocol is "eigrp 112"
       Maximum path: 4
       Maximum hopcount 100
       Maximum metric variance 1
-      Total Prefix Count: 11
+      Total Prefix Count: 10
       Total Redist Count: 0
 
   Automatic Summarization: disabled
   Maximum path: 4
   Routing for Networks:
-    10.112.1.0/24
     10.112.2.8/30
     10.112.3.10/32
   Routing Information Sources:
     Gateway         Distance      Last Update
-    10.112.2.10           90      00:25:57
+    10.112.2.10           90      00:19:34
   Distance: internal 90 external 170
 ```
