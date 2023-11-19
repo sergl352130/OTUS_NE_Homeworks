@@ -32,3 +32,7 @@
 + ### EIGRP
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw08/README.md)
 
+## Лабораторная работа 09
++ ### BGP. Основы
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw09/README.md)
+
