@@ -9,7 +9,7 @@
 + ### Организовать полную IP связность всех сетей
 
 ### Этапы:
-+ #### Шаг 1: Настройка iBGP в офисом Москва между маршрутизаторами R14 и R15
++ #### Шаг 1: Настройка iBGP в офисе Москва между маршрутизаторами R14 и R15
 + #### Шаг 2: Настройка iBGP в провайдере Триада, с использованием RR
 + #### Шаг 3: Настройка офиса Москва так, чтобы приоритетным провайдером стал Ламас
 + #### Шаг 4: Настройка офиса С.-Петербург так, чтобы трафик до любого офиса распределялся по двум линкам одновременно
@@ -24,6 +24,17 @@ no service password-encryption
 !
 hostname R14
 !
+interface Loopback0
+ description R14 Mgmt
+ ip address 10.111.3.14 255.255.255.255
+ ip ospf 111 area 0
+!
+interface Ethernet0/2
+ description p2p to R15
+ ip address 10.111.2.25 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 0
+!
 interface Ethernet1/0
  description to R22 Kitorn
  ip address 22.111.22.14 255.255.255.0
@@ -32,6 +43,9 @@ router bgp 1001
  bgp router-id 10.111.3.14
  bgp log-neighbor-changes
  network 22.111.22.0 mask 255.255.255.0
+ neighbor 10.111.3.15 remote-as 1001
+ neighbor 10.111.3.15 update-source Loopback0
+ neighbor 10.111.3.15 next-hop-self
  neighbor 22.111.22.22 remote-as 101
 !
 ```
@@ -50,6 +64,17 @@ no service password-encryption
 !
 hostname R15
 !
+interface Loopback0
+ description R15 Mgmt
+ ip address 10.111.3.15 255.255.255.255
+ ip ospf 111 area 0
+!
+interface Ethernet0/2
+ description p2p to R14
+ ip address 10.111.2.26 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 0
+!
 interface Ethernet1/0
  description to R21 Lamas
  ip address 33.111.21.15 255.255.255.0
@@ -58,6 +83,9 @@ router bgp 1001
  bgp router-id 10.111.3.15
  bgp log-neighbor-changes
  network 33.111.21.0 mask 255.255.255.0
+ neighbor 10.111.3.14 remote-as 1001
+ neighbor 10.111.3.14 update-source Loopback0
+ neighbor 10.111.3.14 next-hop-self
  neighbor 33.111.21.21 remote-as 301
 !
 ```
