@@ -115,15 +115,54 @@ interface Ethernet1/1
 router bgp 2042
  bgp router-id 10.112.3.18
  bgp log-neighbor-changes
+ bgp bestpath as-path multipath-relax
  network 44.112.24.0 mask 255.255.255.0
  network 44.112.26.0 mask 255.255.255.0
  neighbor 44.112.24.24 remote-as 520
  neighbor 44.112.26.26 remote-as 520
+ maximum-paths 2
 !
 ```
 
 ```
+R18#show ip bgp summary
+BGP router identifier 10.112.3.18, local AS number 2042
+BGP table version is 25, main routing table version 25
+9 network entries using 1260 bytes of memory
+12 path entries using 960 bytes of memory
+3 multipath network entries and 6 multipath paths
+6/6 BGP path/bestpath attribute entries using 864 bytes of memory
+4 BGP AS-PATH entries using 96 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 3180 total bytes of memory
+BGP activity 10/1 prefixes, 20/8 paths, scan interval 60 secs
 
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+44.112.24.24    4          520     187     188       25    0    0 02:42:34        7
+44.112.26.26    4          520     188     188       25    0    0 02:42:33        3
+R18#
+R18#show ip bgp
+BGP table version is 25, local router ID is 10.112.3.18
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.22.22.22/32   44.112.24.24                           0 520 301 101 i
+ *>  10.33.33.21/32   44.112.24.24                           0 520 301 i
+ *>  22.111.22.0/24   44.112.24.24                           0 520 301 1001 i
+ *>  33.111.21.0/24   44.112.24.24                           0 520 301 1001 i
+ *>  44.112.24.0/24   0.0.0.0                  0         32768 i
+ *>  44.112.26.0/24   0.0.0.0                  0         32768 i
+ *m  44.114.25.0/24   44.112.24.24                           0 520 i
+ *>                   44.112.26.26                           0 520 i
+ *m  44.114.26.0/24   44.112.24.24                           0 520 i
+ *>                   44.112.26.26             0             0 520 i
+ *m  44.115.25.0/24   44.112.24.24                           0 520 i
+ *>                   44.112.26.26                           0 520 i
 ```
 
 #### R21:
