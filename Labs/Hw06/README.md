@@ -579,6 +579,11 @@ no service password-encryption
 !
 hostname R20
 !
+interface Loopback0
+ description R20 Mgmt
+ ip address 10.111.3.20 255.255.255.255
+ ip ospf 111 area 102
+!
 interface Ethernet0/3
  description p2p to R15
  ip address 10.111.2.34 255.255.255.252
@@ -646,21 +651,24 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is not set
 
-      10.0.0.0/8 is variably subnetted, 16 subnets, 2 masks
-O IA     10.111.2.0/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.2.4/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.2.8/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.2.12/30 [110/20] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.2.16/30 [110/20] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.2.20/30 [110/30] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.2.24/30 [110/20] via 10.111.2.33, 01:29:40, Ethernet0/3
+      10.0.0.0/8 is variably subnetted, 19 subnets, 4 masks
+O IA     10.111.0.0/24 [110/31] via 10.111.2.33, 01:38:56, Ethernet0/3
+O IA     10.111.1.0/24 [110/31] via 10.111.2.33, 01:38:57, Ethernet0/3
+O IA     10.111.2.0/30 [110/30] via 10.111.2.33, 01:39:23, Ethernet0/3
+O IA     10.111.2.4/30 [110/30] via 10.111.2.33, 01:39:23, Ethernet0/3
+O IA     10.111.2.8/30 [110/30] via 10.111.2.33, 01:39:25, Ethernet0/3
+O IA     10.111.2.12/30 [110/20] via 10.111.2.33, 01:39:25, Ethernet0/3
+O IA     10.111.2.16/30 [110/20] via 10.111.2.33, 01:39:25, Ethernet0/3
+O IA     10.111.2.20/30 [110/30] via 10.111.2.33, 01:39:25, Ethernet0/3
+O IA     10.111.2.24/30 [110/20] via 10.111.2.33, 01:39:25, Ethernet0/3
 C        10.111.2.32/30 is directly connected, Ethernet0/3
 L        10.111.2.34/32 is directly connected, Ethernet0/3
-O IA     10.111.3.4/32 [110/31] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.3.5/32 [110/31] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.3.12/32 [110/21] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.3.13/32 [110/21] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.3.14/32 [110/21] via 10.111.2.33, 01:29:40, Ethernet0/3
-O IA     10.111.3.15/32 [110/11] via 10.111.2.33, 01:29:40, Ethernet0/3
+O IA     10.111.3.4/32 [110/31] via 10.111.2.33, 01:39:13, Ethernet0/3
+O IA     10.111.3.5/32 [110/31] via 10.111.2.33, 01:39:24, Ethernet0/3
+O IA     10.111.3.12/32 [110/21] via 10.111.2.33, 01:39:25, Ethernet0/3
+O IA     10.111.3.13/32 [110/21] via 10.111.2.33, 01:39:25, Ethernet0/3
+O IA     10.111.3.14/32 [110/21] via 10.111.2.33, 01:39:25, Ethernet0/3
+O IA     10.111.3.15/32 [110/11] via 10.111.2.33, 01:39:25, Ethernet0/3
 C        10.111.3.20/32 is directly connected, Loopback0
+O IA     10.111.3.96/28 [110/31] via 10.111.2.33, 01:39:13, Ethernet0/3
 ```
