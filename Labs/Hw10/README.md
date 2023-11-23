@@ -156,9 +156,6 @@ router bgp 301
  bgp router-id 10.33.33.21
  bgp log-neighbor-changes
  network 10.33.33.21 mask 255.255.255.255
- network 33.22.21.0 mask 255.255.255.0
- network 33.111.21.0 mask 255.255.255.0
- network 44.33.24.0 mask 255.255.255.0
  neighbor 33.22.21.22 remote-as 101
  neighbor 33.111.21.15 remote-as 1001
  neighbor 44.33.24.24 remote-as 520
@@ -199,9 +196,6 @@ router bgp 101
  bgp router-id 10.22.22.22
  bgp log-neighbor-changes
  network 10.22.22.22 mask 255.255.255.255
- network 22.111.22.0 mask 255.255.255.0
- network 33.22.21.0 mask 255.255.255.0
- network 44.22.23.0 mask 255.255.255.0
  neighbor 22.111.22.14 remote-as 1001
  neighbor 33.22.21.21 remote-as 301
  neighbor 44.22.23.23 remote-as 520
@@ -222,14 +216,29 @@ no service password-encryption
 !
 hostname R23
 !
+interface Loopback0
+ description R23 Mgmt
+ ip address 10.44.44.23 255.255.255.255
+ ip router isis 44
+!         
 interface Ethernet0/0
  description to R22 Kitorn
  ip address 44.22.23.23 255.255.255.0
 !
+interface Ethernet0/1
+ description p2p to R25
+ ip address 10.44.44.1 255.255.255.252
+ ip router isis 44
+!
+interface Ethernet0/2
+ description p2p to R24
+ ip address 10.44.44.5 255.255.255.252
+ ip router isis 44
+!
 router bgp 520
  bgp router-id 10.44.44.23
  bgp log-neighbor-changes
- network 44.22.23.0 mask 255.255.255.0
+ neighbor 10.44.44.25 remote-as 520
  neighbor 44.22.23.22 remote-as 101
 !
 ```
@@ -248,9 +257,24 @@ no service password-encryption
 !
 hostname R24
 !
+interface Loopback0
+ description R24 Mgmt
+ ip address 10.44.44.24 255.255.255.255
+ ip router isis 44
+!
 interface Ethernet0/0
  description to R21 Lamas
  ip address 44.33.24.24 255.255.255.0
+!
+interface Ethernet0/1
+ description p2p to R26
+ ip address 10.44.44.9 255.255.255.252
+ ip router isis 44
+!
+interface Ethernet0/2
+ description p2p to R23
+ ip address 10.44.44.6 255.255.255.252
+ ip router isis 44
 !
 interface Ethernet1/0
  description to R18 SPb
@@ -259,10 +283,60 @@ interface Ethernet1/0
 router bgp 520
  bgp router-id 10.44.44.24
  bgp log-neighbor-changes
- network 44.33.24.0 mask 255.255.255.0
- network 44.112.24.0 mask 255.255.255.0
+ neighbor 10.44.44.25 remote-as 520
  neighbor 44.33.24.21 remote-as 301
  neighbor 44.112.24.18 remote-as 2042
+!
+```
+
+```
+
+```
+
+#### R25:
+
+```
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R25
+!
+interface Loopback0
+ description R25 Mgmt
+ ip address 10.44.44.25 255.255.255.255
+ ip router isis 44
+!
+interface Ethernet0/1
+ description p2p to R23
+ ip address 10.44.44.2 255.255.255.252
+ ip router isis 44
+!
+interface Ethernet0/2
+ description p2p to R26
+ ip address 10.44.44.13 255.255.255.252
+ ip router isis 44
+!
+interface Ethernet1/0
+ description to R27 Lab-gi
+ ip address 44.115.25.25 255.255.255.0
+!
+interface Ethernet1/1
+ description to R28 Chok
+ ip address 44.114.25.25 255.255.255.0
+!
+router bgp 520
+ bgp log-neighbor-changes
+ network 44.114.25.0 mask 255.255.255.0
+ network 44.115.25.0 mask 255.255.255.0
+ neighbor RR-Triada peer-group
+ neighbor RR-Triada remote-as 520
+ neighbor RR-Triada update-source Loopback0
+ neighbor RR-Triada route-reflector-client
+ neighbor 10.44.44.23 peer-group RR-Triada
+ neighbor 10.44.44.24 peer-group RR-Triada
+ neighbor 10.44.44.26 peer-group RR-Triada
 !
 ```
 
@@ -280,6 +354,25 @@ no service password-encryption
 !
 hostname R26
 !
+interface Loopback0
+ description R26 Mgmt
+ ip address 10.44.44.26 255.255.255.255
+ ip router isis 44
+!         
+interface Ethernet0/1
+ description p2p to R24
+ ip address 10.44.44.10 255.255.255.252
+ ip router isis 44
+!
+interface Ethernet0/2
+ description p2p to R25
+ ip address 10.44.44.14 255.255.255.252
+ ip router isis 44
+!
+interface Ethernet1/0
+ description to R28 Chok
+ ip address 44.114.26.26 255.255.255.0
+!
 interface Ethernet1/1
  description to R18 SPb
  ip address 44.112.26.26 255.255.255.0
@@ -287,7 +380,8 @@ interface Ethernet1/1
 router bgp 520
  bgp router-id 10.44.44.26
  bgp log-neighbor-changes
- network 44.112.26.0 mask 255.255.255.0
+ network 44.114.26.0 mask 255.255.255.0
+ neighbor 10.44.44.25 remote-as 520
  neighbor 44.112.26.18 remote-as 2042
 !
 ```
