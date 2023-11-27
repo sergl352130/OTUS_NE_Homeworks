@@ -43,6 +43,7 @@ router bgp 1001
  bgp router-id 10.111.3.14
  bgp log-neighbor-changes
  network 22.111.22.0 mask 255.255.255.0
+ redistribute ospf 111
  neighbor 10.111.3.15 remote-as 1001
  neighbor 10.111.3.15 update-source Loopback0
  neighbor 10.111.3.15 next-hop-self
@@ -51,7 +52,179 @@ router bgp 1001
 ```
 
 ```
+R14#show ip bgp summary
+BGP router identifier 10.111.3.14, local AS number 1001
+BGP table version is 68, main routing table version 68
+40 network entries using 5600 bytes of memory
+78 path entries using 6240 bytes of memory
+20/11 BGP path/bestpath attribute entries using 2880 bytes of memory
+8 BGP AS-PATH entries using 208 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 14928 total bytes of memory
+BGP activity 40/0 prefixes, 79/1 paths, scan interval 60 secs
 
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.111.3.15     4         1001     144     138       68    0    0 01:49:08       39
+22.111.22.22    4          101     128     136       68    0    0 01:49:23       18
+R14#
+R14#show ip bgp
+BGP table version is 68, local router ID is 10.111.3.14
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>i 10.22.22.22/32   10.111.3.15              0   1000      0 301 101 i
+ *                    22.111.22.22             0             0 101 i
+ *   10.33.33.21/32   22.111.22.22                           0 101 301 i
+ *>i                  10.111.3.15              0   1000      0 301 i
+ *>  10.111.0.0/24    10.111.2.9              21         32768 ?
+ * i                  10.111.3.15             21    100      0 ?
+ *>  10.111.1.0/24    10.111.2.21             21         32768 ?
+ * i                  10.111.3.15             21    100      0 ?
+ *>  10.111.2.0/30    10.111.2.9              20         32768 ?
+ * i                  10.111.3.15             20    100      0 ?
+ *>  10.111.2.4/30    10.111.2.21             20         32768 ?
+ * i                  10.111.3.15             20    100      0 ?
+ *>  10.111.2.8/30    0.0.0.0                  0         32768 ?
+ * i                  10.111.3.15             20    100      0 ?
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.111.2.12/30   10.111.2.9              20         32768 ?
+ * i                  10.111.3.15              0    100      0 ?
+ *>  10.111.2.16/30   10.111.2.21             20         32768 ?
+ * i                  10.111.3.15              0    100      0 ?
+ *>  10.111.2.20/30   0.0.0.0                  0         32768 ?
+ * i                  10.111.3.15             20    100      0 ?
+ *>  10.111.2.24/30   0.0.0.0                  0         32768 ?
+ * i                  10.111.3.15              0    100      0 ?
+ *>  10.111.2.28/30   0.0.0.0                  0         32768 ?
+ * i                  10.111.3.15             20    100      0 ?
+ *>  10.111.2.32/30   10.111.2.26             20         32768 ?
+ * i                  10.111.3.15              0    100      0 ?
+ *>  10.111.3.4/32    10.111.2.9              21         32768 ?
+ * i                  10.111.3.15             21    100      0 ?
+ *>  10.111.3.5/32    10.111.2.21             21         32768 ?
+ * i                  10.111.3.15             21    100      0 ?
+ *>  10.111.3.12/32   10.111.2.9              11         32768 ?
+ * i                  10.111.3.15             11    100      0 ?
+ *>  10.111.3.13/32   10.111.2.21             11         32768 ?
+ * i                  10.111.3.15             11    100      0 ?
+ *>  10.111.3.14/32   0.0.0.0                  0         32768 ?
+ * i                  10.111.3.15             11    100      0 ?
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.111.3.15/32   10.111.2.26             11         32768 ?
+ * i                  10.111.3.15              0    100      0 ?
+ *>  10.111.3.19/32   10.111.2.30             11         32768 ?
+ * i                  10.111.3.15             21    100      0 ?
+ *>  10.111.3.20/32   10.111.2.26             21         32768 ?
+ * i                  10.111.3.15             11    100      0 ?
+ *>  10.111.3.96/28   10.111.2.9              21         32768 ?
+ * i                  10.111.3.15             21    100      0 ?
+ *   10.112.0.0/24    22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.1.0/24    22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.2.0/24    22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.2.16/30   22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.2.20/30   22.111.22.22                           0 101 301 520 2042 ?
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.3.9/32    22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.3.10/32   22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.3.16/32   22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.3.17/32   22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.3.18/32   22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *   10.112.3.32/32   22.111.22.22                           0 101 301 520 2042 ?
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 ?
+ *>  22.111.22.0/24   0.0.0.0                  0         32768 i
+ *>i 33.111.21.0/24   10.111.3.15              0    100      0 i
+ *   44.112.24.0/24   22.111.22.22                           0 101 301 520 2042 i
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 i
+ *   44.112.26.0/24   22.111.22.22                           0 101 301 520 2042 i
+ *>i                  10.111.3.15              0   1000      0 301 520 2042 i
+ *>i 44.114.25.0/24   10.111.3.15              0   1000      0 301 520 i
+ *                    22.111.22.22                           0 101 520 i
+ *>i 44.114.26.0/24   10.111.3.15              0   1000      0 301 520 i
+ *                    22.111.22.22                           0 101 520 i
+ *>i 44.115.25.0/24   10.111.3.15              0   1000      0 301 520 i
+ *                    22.111.22.22                           0 101 520 i
+R14#
+R14#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 37 subnets, 4 masks
+B        10.22.22.22/32 [200/0] via 10.111.3.15, 00:15:23
+B        10.33.33.21/32 [200/0] via 10.111.3.15, 00:15:23
+O IA     10.111.0.0/24 [110/21] via 10.111.2.9, 01:49:17, Ethernet0/0
+O IA     10.111.1.0/24 [110/21] via 10.111.2.21, 01:49:17, Ethernet0/1
+O IA     10.111.2.0/30 [110/20] via 10.111.2.9, 01:49:44, Ethernet0/0
+O IA     10.111.2.4/30 [110/20] via 10.111.2.21, 01:49:44, Ethernet0/1
+C        10.111.2.8/30 is directly connected, Ethernet0/0
+L        10.111.2.10/32 is directly connected, Ethernet0/0
+O        10.111.2.12/30 [110/20] via 10.111.2.26, 01:49:44, Ethernet0/2
+                        [110/20] via 10.111.2.9, 01:49:44, Ethernet0/0
+O        10.111.2.16/30 [110/20] via 10.111.2.26, 01:49:44, Ethernet0/2
+                        [110/20] via 10.111.2.21, 01:49:44, Ethernet0/1
+C        10.111.2.20/30 is directly connected, Ethernet0/1
+L        10.111.2.22/32 is directly connected, Ethernet0/1
+C        10.111.2.24/30 is directly connected, Ethernet0/2
+L        10.111.2.25/32 is directly connected, Ethernet0/2
+C        10.111.2.28/30 is directly connected, Ethernet0/3
+L        10.111.2.29/32 is directly connected, Ethernet0/3
+O IA     10.111.2.32/30 [110/20] via 10.111.2.26, 01:49:44, Ethernet0/2
+O IA     10.111.3.4/32 [110/21] via 10.111.2.9, 01:49:44, Ethernet0/0
+O IA     10.111.3.5/32 [110/21] via 10.111.2.21, 01:49:44, Ethernet0/1
+O        10.111.3.12/32 [110/11] via 10.111.2.9, 01:49:44, Ethernet0/0
+O        10.111.3.13/32 [110/11] via 10.111.2.21, 01:49:44, Ethernet0/1
+C        10.111.3.14/32 is directly connected, Loopback0
+O        10.111.3.15/32 [110/11] via 10.111.2.26, 01:49:44, Ethernet0/2
+O        10.111.3.19/32 [110/11] via 10.111.2.30, 01:49:44, Ethernet0/3
+O IA     10.111.3.20/32 [110/21] via 10.111.2.26, 01:49:44, Ethernet0/2
+O IA     10.111.3.96/28 [110/21] via 10.111.2.21, 01:49:18, Ethernet0/1
+                        [110/21] via 10.111.2.9, 01:49:44, Ethernet0/0
+B        10.112.0.0/24 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.1.0/24 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.2.0/24 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.2.16/30 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.2.20/30 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.3.9/32 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.3.10/32 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.3.16/32 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.3.17/32 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.3.18/32 [200/0] via 10.111.3.15, 00:03:55
+B        10.112.3.32/32 [200/0] via 10.111.3.15, 00:03:55
+      22.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        22.111.22.0/24 is directly connected, Ethernet1/0
+L        22.111.22.14/32 is directly connected, Ethernet1/0
+      33.0.0.0/24 is subnetted, 1 subnets
+B        33.111.21.0 [200/0] via 10.111.3.15, 01:48:45
+      44.0.0.0/24 is subnetted, 5 subnets
+B        44.112.24.0 [200/0] via 10.111.3.15, 00:15:23
+B        44.112.26.0 [200/0] via 10.111.3.15, 00:15:23
+B        44.114.25.0 [200/0] via 10.111.3.15, 00:15:23
+B        44.114.26.0 [200/0] via 10.111.3.15, 00:15:23
+B        44.115.25.0 [200/0] via 10.111.3.15, 00:15:23
 ```
 
 #### R15:
@@ -83,15 +256,173 @@ router bgp 1001
  bgp router-id 10.111.3.15
  bgp log-neighbor-changes
  network 33.111.21.0 mask 255.255.255.0
+ redistribute ospf 111
  neighbor 10.111.3.14 remote-as 1001
  neighbor 10.111.3.14 update-source Loopback0
  neighbor 10.111.3.14 next-hop-self
  neighbor 33.111.21.21 remote-as 301
+ neighbor 33.111.21.21 route-map R21-Lamas-IN in
+!
+route-map R21-Lamas-IN permit 10
+ set local-preference 1000
 !
 ```
 
 ```
+R15#show ip bgp summary
+BGP router identifier 10.111.3.15, local AS number 1001
+BGP table version is 52, main routing table version 52
+40 network entries using 5600 bytes of memory
+60 path entries using 4800 bytes of memory
+20/11 BGP path/bestpath attribute entries using 2880 bytes of memory
+4 BGP AS-PATH entries using 96 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 13376 total bytes of memory
+BGP activity 40/0 prefixes, 64/4 paths, scan interval 60 secs
 
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.111.3.14     4         1001     139     145       52    0    0 01:50:38       21
+33.111.21.21    4          301     144     136       52    0    0 01:50:52       18
+R15#    
+R15#show ip bgp
+BGP table version is 52, local router ID is 10.111.3.15
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.22.22.22/32   33.111.21.21                 1000      0 301 101 i
+ *>  10.33.33.21/32   33.111.21.21             0   1000      0 301 i
+ * i 10.111.0.0/24    10.111.3.14             21    100      0 ?
+ *>                   10.111.2.13             21         32768 ?
+ * i 10.111.1.0/24    10.111.3.14             21    100      0 ?
+ *>                   10.111.2.17             21         32768 ?
+ * i 10.111.2.0/30    10.111.3.14             20    100      0 ?
+ *>                   10.111.2.13             20         32768 ?
+ * i 10.111.2.4/30    10.111.3.14             20    100      0 ?
+ *>                   10.111.2.17             20         32768 ?
+ * i 10.111.2.8/30    10.111.3.14              0    100      0 ?
+ *>                   10.111.2.13             20         32768 ?
+ * i 10.111.2.12/30   10.111.3.14             20    100      0 ?
+ *>                   0.0.0.0                  0         32768 ?
+     Network          Next Hop            Metric LocPrf Weight Path
+ * i 10.111.2.16/30   10.111.3.14             20    100      0 ?
+ *>                   0.0.0.0                  0         32768 ?
+ * i 10.111.2.20/30   10.111.3.14              0    100      0 ?
+ *>                   10.111.2.17             20         32768 ?
+ * i 10.111.2.24/30   10.111.3.14              0    100      0 ?
+ *>                   0.0.0.0                  0         32768 ?
+ * i 10.111.2.28/30   10.111.3.14              0    100      0 ?
+ *>                   10.111.2.25             20         32768 ?
+ * i 10.111.2.32/30   10.111.3.14             20    100      0 ?
+ *>                   0.0.0.0                  0         32768 ?
+ * i 10.111.3.4/32    10.111.3.14             21    100      0 ?
+ *>                   10.111.2.13             21         32768 ?
+ * i 10.111.3.5/32    10.111.3.14             21    100      0 ?
+ *>                   10.111.2.17             21         32768 ?
+ * i 10.111.3.12/32   10.111.3.14             11    100      0 ?
+ *>                   10.111.2.13             11         32768 ?
+ * i 10.111.3.13/32   10.111.3.14             11    100      0 ?
+ *>                   10.111.2.17             11         32768 ?
+ * i 10.111.3.14/32   10.111.3.14              0    100      0 ?
+ *>                   10.111.2.25             11         32768 ?
+ * i 10.111.3.15/32   10.111.3.14             11    100      0 ?
+ *>                   0.0.0.0                  0         32768 ?
+     Network          Next Hop            Metric LocPrf Weight Path
+ * i 10.111.3.19/32   10.111.3.14             11    100      0 ?
+ *>                   10.111.2.25             21         32768 ?
+ * i 10.111.3.20/32   10.111.3.14             21    100      0 ?
+ *>                   10.111.2.34             11         32768 ?
+ * i 10.111.3.96/28   10.111.3.14             21    100      0 ?
+ *>                   10.111.2.13             21         32768 ?
+ *>  10.112.0.0/24    33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.1.0/24    33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.2.0/24    33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.2.16/30   33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.2.20/30   33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.3.9/32    33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.3.10/32   33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.3.16/32   33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.3.17/32   33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.3.18/32   33.111.21.21                 1000      0 301 520 2042 ?
+ *>  10.112.3.32/32   33.111.21.21                 1000      0 301 520 2042 ?
+ *>i 22.111.22.0/24   10.111.3.14              0    100      0 i
+ *>  33.111.21.0/24   0.0.0.0                  0         32768 i
+ *>  44.112.24.0/24   33.111.21.21                 1000      0 301 520 2042 i
+ *>  44.112.26.0/24   33.111.21.21                 1000      0 301 520 2042 i
+ *>  44.114.25.0/24   33.111.21.21                 1000      0 301 520 i
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  44.114.26.0/24   33.111.21.21                 1000      0 301 520 i
+ *>  44.115.25.0/24   33.111.21.21                 1000      0 301 520 i
+R15#
+R15#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      10.0.0.0/8 is variably subnetted, 37 subnets, 4 masks
+B        10.22.22.22/32 [20/0] via 33.111.21.21, 00:16:51
+B        10.33.33.21/32 [20/0] via 33.111.21.21, 00:16:51
+O IA     10.111.0.0/24 [110/21] via 10.111.2.13, 01:50:46, Ethernet0/1
+O IA     10.111.1.0/24 [110/21] via 10.111.2.17, 01:50:46, Ethernet0/0
+O IA     10.111.2.0/30 [110/20] via 10.111.2.13, 01:51:13, Ethernet0/1
+O IA     10.111.2.4/30 [110/20] via 10.111.2.17, 01:51:13, Ethernet0/0
+O        10.111.2.8/30 [110/20] via 10.111.2.25, 01:51:13, Ethernet0/2
+                       [110/20] via 10.111.2.13, 01:51:13, Ethernet0/1
+C        10.111.2.12/30 is directly connected, Ethernet0/1
+L        10.111.2.14/32 is directly connected, Ethernet0/1
+C        10.111.2.16/30 is directly connected, Ethernet0/0
+L        10.111.2.18/32 is directly connected, Ethernet0/0
+O        10.111.2.20/30 [110/20] via 10.111.2.25, 01:51:13, Ethernet0/2
+                        [110/20] via 10.111.2.17, 01:51:13, Ethernet0/0
+C        10.111.2.24/30 is directly connected, Ethernet0/2
+L        10.111.2.26/32 is directly connected, Ethernet0/2
+O IA     10.111.2.28/30 [110/20] via 10.111.2.25, 01:51:13, Ethernet0/2
+C        10.111.2.32/30 is directly connected, Ethernet0/3
+L        10.111.2.33/32 is directly connected, Ethernet0/3
+O IA     10.111.3.4/32 [110/21] via 10.111.2.13, 01:51:13, Ethernet0/1
+O IA     10.111.3.5/32 [110/21] via 10.111.2.17, 01:51:13, Ethernet0/0
+O        10.111.3.12/32 [110/11] via 10.111.2.13, 01:51:13, Ethernet0/1
+O        10.111.3.13/32 [110/11] via 10.111.2.17, 01:51:13, Ethernet0/0
+O        10.111.3.14/32 [110/11] via 10.111.2.25, 01:51:13, Ethernet0/2
+C        10.111.3.15/32 is directly connected, Loopback0
+O IA     10.111.3.19/32 [110/21] via 10.111.2.25, 01:51:13, Ethernet0/2
+O        10.111.3.20/32 [110/11] via 10.111.2.34, 01:51:13, Ethernet0/3
+O IA     10.111.3.96/28 [110/21] via 10.111.2.17, 01:50:46, Ethernet0/0
+                        [110/21] via 10.111.2.13, 01:51:13, Ethernet0/1
+B        10.112.0.0/24 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.1.0/24 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.2.0/24 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.2.16/30 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.2.20/30 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.3.9/32 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.3.10/32 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.3.16/32 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.3.17/32 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.3.18/32 [20/0] via 33.111.21.21, 00:05:24
+B        10.112.3.32/32 [20/0] via 33.111.21.21, 00:05:24
+      22.0.0.0/24 is subnetted, 1 subnets
+B        22.111.22.0 [200/0] via 10.111.3.14, 01:50:14
+      33.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        33.111.21.0/24 is directly connected, Ethernet1/0
+L        33.111.21.15/32 is directly connected, Ethernet1/0
+      44.0.0.0/24 is subnetted, 5 subnets
+B        44.112.24.0 [20/0] via 33.111.21.21, 00:16:51
+B        44.112.26.0 [20/0] via 33.111.21.21, 00:16:51
+B        44.114.25.0 [20/0] via 33.111.21.21, 00:16:51
+B        44.114.26.0 [20/0] via 33.111.21.21, 00:16:51
+B        44.115.25.0 [20/0] via 33.111.21.21, 00:16:51
 ```
 
 #### R18:
@@ -118,6 +449,7 @@ router bgp 2042
  bgp bestpath as-path multipath-relax
  network 44.112.24.0 mask 255.255.255.0
  network 44.112.26.0 mask 255.255.255.0
+ redistribute eigrp 112
  neighbor 44.112.24.24 remote-as 520
  neighbor 44.112.26.26 remote-as 520
  maximum-paths 2
@@ -127,23 +459,23 @@ router bgp 2042
 ```
 R18#show ip bgp summary
 BGP router identifier 10.112.3.18, local AS number 2042
-BGP table version is 25, main routing table version 25
-9 network entries using 1260 bytes of memory
-12 path entries using 960 bytes of memory
+BGP table version is 45, main routing table version 45
+40 network entries using 5600 bytes of memory
+43 path entries using 3440 bytes of memory
 3 multipath network entries and 6 multipath paths
-6/6 BGP path/bestpath attribute entries using 864 bytes of memory
+12/12 BGP path/bestpath attribute entries using 1728 bytes of memory
 4 BGP AS-PATH entries using 96 bytes of memory
 0 BGP route-map cache entries using 0 bytes of memory
 0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 3180 total bytes of memory
-BGP activity 10/1 prefixes, 20/8 paths, scan interval 60 secs
+BGP using 10864 total bytes of memory
+BGP activity 40/0 prefixes, 43/0 paths, scan interval 60 secs
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-44.112.24.24    4          520     187     188       25    0    0 02:42:34        7
-44.112.26.26    4          520     188     188       25    0    0 02:42:33        3
+44.112.24.24    4          520     133     132       45    0    0 01:47:03       27
+44.112.26.26    4          520     122     132       45    0    0 01:47:02        3
 R18#
 R18#show ip bgp
-BGP table version is 25, local router ID is 10.112.3.18
+BGP table version is 45, local router ID is 10.112.3.18
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -153,9 +485,42 @@ RPKI validation codes: V valid, I invalid, N Not found
      Network          Next Hop            Metric LocPrf Weight Path
  *>  10.22.22.22/32   44.112.24.24                           0 520 301 101 i
  *>  10.33.33.21/32   44.112.24.24                           0 520 301 i
+ *>  10.111.0.0/24    44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.1.0/24    44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.0/30    44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.4/30    44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.8/30    44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.12/30   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.16/30   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.20/30   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.24/30   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.28/30   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.2.32/30   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.4/32    44.112.24.24                           0 520 301 1001 ?
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.111.3.5/32    44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.12/32   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.13/32   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.14/32   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.15/32   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.19/32   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.20/32   44.112.24.24                           0 520 301 1001 ?
+ *>  10.111.3.96/28   44.112.24.24                           0 520 301 1001 ?
+ *>  10.112.0.0/24    10.112.2.17        1541120         32768 ?
+ *>  10.112.1.0/24    10.112.2.21        1541120         32768 ?
+ *>  10.112.2.0/24    10.112.2.17        1536000         32768 ?
+ *>  10.112.2.16/30   0.0.0.0                  0         32768 ?
+ *>  10.112.2.20/30   0.0.0.0                  0         32768 ?
+ *>  10.112.3.9/32    10.112.2.17        1536640         32768 ?
+ *>  10.112.3.10/32   10.112.2.21        1536640         32768 ?
+ *>  10.112.3.16/32   10.112.2.21        1024640         32768 ?
+ *>  10.112.3.17/32   10.112.2.17        1024640         32768 ?
+ *>  10.112.3.18/32   0.0.0.0                  0         32768 ?
+ *>  10.112.3.32/32   10.112.2.21        1536640         32768 ?
  *>  22.111.22.0/24   44.112.24.24                           0 520 301 1001 i
  *>  33.111.21.0/24   44.112.24.24                           0 520 301 1001 i
  *>  44.112.24.0/24   0.0.0.0                  0         32768 i
+     Network          Next Hop            Metric LocPrf Weight Path
  *>  44.112.26.0/24   0.0.0.0                  0         32768 i
  *m  44.114.25.0/24   44.112.24.24                           0 520 i
  *>                   44.112.26.26                           0 520 i
@@ -163,6 +528,73 @@ RPKI validation codes: V valid, I invalid, N Not found
  *>                   44.112.26.26             0             0 520 i
  *m  44.115.25.0/24   44.112.24.24                           0 520 i
  *>                   44.112.26.26                           0 520 i
+R18#
+R18#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 44.112.24.24 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 44.112.24.24
+      10.0.0.0/8 is variably subnetted, 35 subnets, 4 masks
+B        10.22.22.22/32 [20/0] via 44.112.24.24, 01:46:50
+B        10.33.33.21/32 [20/0] via 44.112.24.24, 01:46:50
+B        10.111.0.0/24 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.1.0/24 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.0/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.4/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.8/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.12/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.16/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.20/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.24/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.28/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.2.32/30 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.4/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.5/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.12/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.13/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.14/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.15/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.19/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.20/32 [20/0] via 44.112.24.24, 00:11:25
+B        10.111.3.96/28 [20/0] via 44.112.24.24, 00:11:25
+D        10.112.0.0/24 [90/1541120] via 10.112.2.17, 01:47:26, Ethernet0/0
+D        10.112.1.0/24 [90/1541120] via 10.112.2.21, 01:47:53, Ethernet0/1
+D        10.112.2.0/24 [90/1536000] via 10.112.2.21, 01:47:57, Ethernet0/1
+                       [90/1536000] via 10.112.2.17, 01:47:57, Ethernet0/0
+C        10.112.2.16/30 is directly connected, Ethernet0/0
+L        10.112.2.18/32 is directly connected, Ethernet0/0
+C        10.112.2.20/30 is directly connected, Ethernet0/1
+L        10.112.2.22/32 is directly connected, Ethernet0/1
+D        10.112.3.9/32 [90/1536640] via 10.112.2.17, 01:47:52, Ethernet0/0
+D        10.112.3.10/32 [90/1536640] via 10.112.2.21, 01:47:53, Ethernet0/1
+D        10.112.3.16/32 [90/1024640] via 10.112.2.21, 01:47:57, Ethernet0/1
+D        10.112.3.17/32 [90/1024640] via 10.112.2.17, 01:47:52, Ethernet0/0
+C        10.112.3.18/32 is directly connected, Loopback0
+D        10.112.3.32/32 [90/1536640] via 10.112.2.21, 01:47:57, Ethernet0/1
+      22.0.0.0/24 is subnetted, 1 subnets
+B        22.111.22.0 [20/0] via 44.112.24.24, 01:45:48
+      33.0.0.0/24 is subnetted, 1 subnets
+B        33.111.21.0 [20/0] via 44.112.24.24, 01:46:19
+      44.0.0.0/8 is variably subnetted, 7 subnets, 2 masks
+C        44.112.24.0/24 is directly connected, Ethernet1/0
+L        44.112.24.18/32 is directly connected, Ethernet1/0
+C        44.112.26.0/24 is directly connected, Ethernet1/1
+L        44.112.26.18/32 is directly connected, Ethernet1/1
+B        44.114.25.0/24 [20/0] via 44.112.26.26, 01:46:19
+                        [20/0] via 44.112.24.24, 01:46:19
+B        44.114.26.0/24 [20/0] via 44.112.26.26, 01:46:19
+                        [20/0] via 44.112.24.24, 01:46:19
+B        44.115.25.0/24 [20/0] via 44.112.26.26, 01:46:19
+                        [20/0] via 44.112.24.24, 01:46:19
 ```
 
 #### R21:
