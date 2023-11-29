@@ -36,3 +36,7 @@
 + ### BGP. Основы
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw09/README.md)
 
+## Лабораторная работа 10
++ ### iBGP
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw10/README.md)
+
