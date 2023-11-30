@@ -270,13 +270,97 @@ router bgp 2042
  bgp bestpath as-path multipath-relax
  network 10.112.3.18 mask 255.255.255.255
  neighbor 44.112.24.24 remote-as 520
+ neighbor 44.112.24.24 route-map Triada-OUT out
  neighbor 44.112.26.26 remote-as 520
+ neighbor 44.112.26.26 route-map Triada-OUT out
  maximum-paths 2
+!
+ip prefix-list Triada-OUT seq 5 permit 10.112.0.0/16 le 32
+ip prefix-list Triada-OUT seq 10 deny 0.0.0.0/0 le 32
+!
+route-map Triada-OUT permit 10
+ match ip address prefix-list Triada-OUT
 !
 ```
 
 ```
+R18#show ip bgp neighbors 44.112.24.24 advertised-routes
+BGP table version is 20, local router ID is 10.112.3.18
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
 
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.22.22.22/32   44.112.24.24                           0 520 301 101 i
+ *>  10.33.33.21/32   44.112.24.24                           0 520 301 i
+ *>  10.44.44.23/32   44.112.24.24                           0 520 i
+ *>  10.44.44.24/32   44.112.24.24             0             0 520 i
+ *>  10.44.44.25/32   44.112.24.24                           0 520 i
+ *>  10.44.44.26/32   44.112.26.26             0             0 520 i
+ *>  10.111.3.14/32   44.112.24.24                           0 520 301 1001 i
+ *>  10.111.3.15/32   44.112.24.24                           0 520 301 1001 i
+ *>  10.112.3.18/32   0.0.0.0                  0         32768 i
+ *>  44.114.25.0/24   44.112.24.24                           0 520 i
+ *>  44.114.26.0/24   44.112.26.26             0             0 520 i
+ *>  44.115.25.0/24   44.112.24.24                           0 520 i
+
+Total number of prefixes 12 
+R18#
+R18#show ip bgp neighbors 44.112.26.26 advertised-routes
+BGP table version is 20, local router ID is 10.112.3.18
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.22.22.22/32   44.112.24.24                           0 520 301 101 i
+ *>  10.33.33.21/32   44.112.24.24                           0 520 301 i
+ *>  10.44.44.23/32   44.112.24.24                           0 520 i
+ *>  10.44.44.24/32   44.112.24.24             0             0 520 i
+ *>  10.44.44.25/32   44.112.24.24                           0 520 i
+ *>  10.44.44.26/32   44.112.26.26             0             0 520 i
+ *>  10.111.3.14/32   44.112.24.24                           0 520 301 1001 i
+ *>  10.111.3.15/32   44.112.24.24                           0 520 301 1001 i
+ *>  10.112.3.18/32   0.0.0.0                  0         32768 i
+ *>  44.114.25.0/24   44.112.24.24                           0 520 i
+ *>  44.114.26.0/24   44.112.26.26             0             0 520 i
+ *>  44.115.25.0/24   44.112.24.24                           0 520 i
+
+Total number of prefixes 12 
+```
+
+##### После применения фильтрации транзитного трафика на R18:
+
+```
+R18#show ip bgp neighbors 44.112.24.24 advertised-routes
+BGP table version is 20, local router ID is 10.112.3.18
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.112.3.18/32   0.0.0.0                  0         32768 i
+
+Total number of prefixes 1 
+R18#
+R18#show ip bgp neighbors 44.112.26.26 advertised-routes
+BGP table version is 20, local router ID is 10.112.3.18
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.112.3.18/32   0.0.0.0                  0         32768 i
+
+Total number of prefixes 1 
 ```
 
 #### R21:
