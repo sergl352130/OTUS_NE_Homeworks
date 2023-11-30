@@ -59,7 +59,47 @@ route-map R22-Kitorn-OUT permit 10
 ```
 
 ```
+R14#show ip bgp neighbors 22.111.22.22 advertised-routes 
+BGP table version is 21, local router ID is 10.111.3.14
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
 
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>i 10.22.22.22/32   10.111.3.15              0   1000      0 301 101 i
+ *>i 10.33.33.21/32   10.111.3.15              0   1000      0 301 i
+ *>i 10.44.44.23/32   10.111.3.15              0   1000      0 301 520 i
+ *>i 10.44.44.24/32   10.111.3.15              0   1000      0 301 520 i
+ *>i 10.44.44.25/32   10.111.3.15              0   1000      0 301 520 i
+ *>i 10.44.44.26/32   10.111.3.15              0   1000      0 301 520 i
+ *>  10.111.3.14/32   0.0.0.0                  0         32768 i
+ r>i 10.111.3.15/32   10.111.3.15              0    100      0 i
+ *>i 10.112.3.18/32   10.111.3.15              0   1000      0 301 520 2042 i
+ *>i 44.114.25.0/24   10.111.3.15              0   1000      0 301 520 i
+ *>i 44.114.26.0/24   10.111.3.15              0   1000      0 301 520 i
+ *>i 44.115.25.0/24   10.111.3.15              0   1000      0 301 520 i
+
+Total number of prefixes 12
+```
+
+##### После применения фильтрации транзитного трафика на R14:
+
+```                                                   
+R14#show ip bgp neighbors 22.111.22.22 advertised-routes 
+BGP table version is 21, local router ID is 10.111.3.14
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.111.3.14/32   0.0.0.0                  0         32768 i
+ r>i 10.111.3.15/32   10.111.3.15              0    100      0 i
+
+Total number of prefixes 2 
 ```
 
 #### R15:
