@@ -48,9 +48,12 @@ router bgp 1001
  neighbor 10.111.3.15 update-source Loopback0
  neighbor 10.111.3.15 next-hop-self
  neighbor 22.111.22.22 remote-as 101
- neighbor 22.111.22.22 route-map R22-Kitorn-PREP out
 !
-route-map R22-Kitorn-PREP permit 10
+ip as-path access-list 1 permit ^$
+ip as-path access-list 1 deny .*
+!
+route-map R22-Kitorn-OUT permit 10
+ match as-path 1
  set as-path prepend 1001 1001
 !
 ```
@@ -217,7 +220,153 @@ router bgp 101
 ```
 
 ```
+R22#sh ip bgp
+BGP table version is 21, local router ID is 10.22.22.22
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
 
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.22.22.22/32   0.0.0.0                  0         32768 i
+ *   10.33.33.21/32   22.111.22.14                           0 1001 301 i         (!!!)
+ *>                   33.22.21.21              0             0 301 i
+ *   10.44.44.23/32   22.111.22.14                           0 1001 301 520 i     (!!!)
+ *                    33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23              0             0 520 i
+ *   10.44.44.24/32   22.111.22.14                           0 1001 301 520 i     (!!!)
+ *>                   44.22.23.23                            0 520 i
+ *                    33.22.21.21                            0 301 520 i
+ *   10.44.44.25/32   22.111.22.14                           0 1001 301 520 i     (!!!)
+ *                    33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   10.44.44.26/32   22.111.22.14                           0 1001 301 520 i     (!!!)
+ *                    33.22.21.21                            0 301 520 i
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>                   44.22.23.23                            0 520 i
+ *   10.111.3.14/32   33.22.21.21                            0 301 1001 i
+ *>                   22.111.22.14             0             0 1001 i
+ *>  10.111.3.15/32   22.111.22.14                           0 1001 i
+ *                    33.22.21.21                            0 301 1001 i
+ *   10.112.3.18/32   22.111.22.14                           0 1001 301 520 2042 i (!!!)
+ *>                   33.22.21.21                            0 301 520 2042 i
+ *   44.114.25.0/24   22.111.22.14                           0 1001 301 520 i      (!!!)
+ *                    33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   44.114.26.0/24   22.111.22.14                           0 1001 301 520 i      (!!!)
+ *                    33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   44.115.25.0/24   22.111.22.14                           0 1001 301 520 i      (!!!)
+ *                    33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+R22#  
+R22#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      10.0.0.0/32 is subnetted, 9 subnets
+C        10.22.22.22 is directly connected, Loopback0
+B        10.33.33.21 [20/0] via 33.22.21.21, 04:25:27
+B        10.44.44.23 [20/0] via 44.22.23.23, 04:25:17
+B        10.44.44.24 [20/0] via 44.22.23.23, 04:24:46
+B        10.44.44.25 [20/0] via 44.22.23.23, 04:24:46
+B        10.44.44.26 [20/0] via 44.22.23.23, 04:24:46
+B        10.111.3.14 [20/0] via 22.111.22.14, 00:03:27
+B        10.111.3.15 [20/0] via 22.111.22.14, 00:03:27
+B        10.112.3.18 [20/0] via 33.22.21.21, 04:24:25
+      22.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        22.111.22.0/24 is directly connected, Ethernet1/0
+L        22.111.22.22/32 is directly connected, Ethernet1/0
+      33.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        33.22.21.0/24 is directly connected, Ethernet0/1
+L        33.22.21.22/32 is directly connected, Ethernet0/1
+      44.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+C        44.22.23.0/24 is directly connected, Ethernet0/0
+L        44.22.23.22/32 is directly connected, Ethernet0/0
+B        44.114.25.0/24 [20/0] via 44.22.23.23, 04:24:46
+B        44.114.26.0/24 [20/0] via 44.22.23.23, 04:24:46
+B        44.115.25.0/24 [20/0] via 44.22.23.23, 04:24:46
+```
+##### После применения фильтрации транзитного трафика на R14:
+
+```
+R22#show ip bgp
+BGP table version is 23, local router ID is 10.22.22.22
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.22.22.22/32   0.0.0.0                  0         32768 i
+ *>  10.33.33.21/32   33.22.21.21              0             0 301 i
+ *   10.44.44.23/32   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23              0             0 520 i
+ *>  10.44.44.24/32   44.22.23.23                            0 520 i
+ *                    33.22.21.21                            0 301 520 i
+ *   10.44.44.25/32   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   10.44.44.26/32   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *>  10.111.3.14/32   33.22.21.21                            0 301 1001 i
+ *                    22.111.22.14             0             0 1001 1001 1001 i
+ *   10.111.3.15/32   22.111.22.14                           0 1001 1001 1001 i
+ *>                   33.22.21.21                            0 301 1001 i
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.112.3.18/32   33.22.21.21                            0 301 520 2042 i
+ *   44.114.25.0/24   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   44.114.26.0/24   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   44.115.25.0/24   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+R22#
+R22#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is not set
+
+      10.0.0.0/32 is subnetted, 9 subnets
+C        10.22.22.22 is directly connected, Loopback0
+B        10.33.33.21 [20/0] via 33.22.21.21, 04:28:19
+B        10.44.44.23 [20/0] via 44.22.23.23, 04:28:09
+B        10.44.44.24 [20/0] via 44.22.23.23, 04:27:38
+B        10.44.44.25 [20/0] via 44.22.23.23, 04:27:38
+B        10.44.44.26 [20/0] via 44.22.23.23, 04:27:38
+B        10.111.3.14 [20/0] via 33.22.21.21, 00:00:51
+B        10.111.3.15 [20/0] via 33.22.21.21, 00:00:51
+B        10.112.3.18 [20/0] via 33.22.21.21, 04:27:17
+      22.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        22.111.22.0/24 is directly connected, Ethernet1/0
+L        22.111.22.22/32 is directly connected, Ethernet1/0
+      33.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        33.22.21.0/24 is directly connected, Ethernet0/1
+L        33.22.21.22/32 is directly connected, Ethernet0/1
+      44.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
+C        44.22.23.0/24 is directly connected, Ethernet0/0
+L        44.22.23.22/32 is directly connected, Ethernet0/0
+B        44.114.25.0/24 [20/0] via 44.22.23.23, 04:27:38
+B        44.114.26.0/24 [20/0] via 44.22.23.23, 04:27:38
+B        44.115.25.0/24 [20/0] via 44.22.23.23, 04:27:38
 ```
 
 #### R23:
