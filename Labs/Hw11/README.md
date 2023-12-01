@@ -270,6 +270,24 @@ B        44.114.26.0 [20/0] via 33.111.21.21, 05:13:15
 B        44.115.25.0 [20/0] via 33.111.21.21, 05:13:15
 ```
 
+##### После включения default route и применения фильтрации исходящих маршрутов на R21:
+
+```       
+R15#show ip bgp
+BGP table version is 31, local router ID is 10.111.3.15
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  0.0.0.0          33.111.21.21                 1000      0 301 i
+ r>i 10.111.3.14/32   10.111.3.14              0    100      0 i
+ *>  10.111.3.15/32   0.0.0.0                  0         32768 i
+ *>  10.112.3.18/32   33.111.21.21                 1000      0 301 520 2042 i
+```
+
 #### R18:
 
 ```
@@ -423,12 +441,67 @@ router bgp 301
  network 10.33.33.21 mask 255.255.255.255
  neighbor 33.22.21.22 remote-as 101
  neighbor 33.111.21.15 remote-as 1001
+ neighbor 33.111.21.15 default-originate
+ neighbor 33.111.21.15 route-map Lamas-OUT out
  neighbor 44.33.24.24 remote-as 520
+!
+ip prefix-list Lamas-OUT seq 5 permit 10.112.0.0/16 le 32
+ip prefix-list Lamas-OUT seq 10 deny 0.0.0.0/0 le 32
+!
+route-map Lamas-OUT permit 10
+ match ip address prefix-list Lamas-OUT
 !
 ```
 
-```
+##### После включения default route и применения фильтрации исходящих маршрутов на R21:
 
+```
+R21#show ip bgp neighbors 33.111.21.15 advertised-routes
+BGP table version is 15, local router ID is 10.33.33.21
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+Originating default network 0.0.0.0                                          (!!!)
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  10.112.3.18/32   44.33.24.24                            0 520 2042 i    (!!!)
+
+Total number of prefixes 1 
+R21#
+R21#show ip bgp
+BGP table version is 15, local router ID is 10.33.33.21
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+     0.0.0.0          0.0.0.0                                0 i             (!!!)
+ *   10.22.22.22/32   44.33.24.24                            0 520 101 i
+ *>                   33.22.21.22              0             0 101 i
+ *>  10.33.33.21/32   0.0.0.0                  0         32768 i
+ *>  10.44.44.23/32   44.33.24.24                            0 520 i
+ *                    33.22.21.22                            0 101 520 i
+ *   10.44.44.24/32   33.22.21.22                            0 101 520 i
+ *>                   44.33.24.24              0             0 520 i
+ *   10.44.44.25/32   33.22.21.22                            0 101 520 i
+ *>                   44.33.24.24                            0 520 i
+ *   10.44.44.26/32   33.22.21.22                            0 101 520 i
+ *>                   44.33.24.24                            0 520 i
+ *>  10.111.3.14/32   33.111.21.15                           0 1001 i
+ *>  10.111.3.15/32   33.111.21.15             0             0 1001 i
+ *   10.112.3.18/32   33.22.21.22                            0 101 520 2042 i
+ *>                   44.33.24.24                            0 520 2042 i
+ *   44.114.25.0/24   33.22.21.22                            0 101 520 i
+ *>                   44.33.24.24                            0 520 i
+ *   44.114.26.0/24   33.22.21.22                            0 101 520 i
+ *>                   44.33.24.24                            0 520 i
+ *   44.115.25.0/24   33.22.21.22                            0 101 520 i
+ *>                   44.33.24.24                            0 520 i
 ```
 
 #### R22:
@@ -677,199 +750,4 @@ RPKI validation codes: V valid, I invalid, N Not found
  *>                   44.22.23.23                            0 520 i
  *   44.115.25.0/24   33.22.21.21                            0 301 520 i
  *>                   44.22.23.23                            0 520 i
-```
-
-
-#### R23:
-
-```
-version 15.4
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
-!
-hostname R23
-!
-interface Loopback0
- description R23 Mgmt
- ip address 10.44.44.23 255.255.255.255
- ip router isis 44
-!         
-interface Ethernet0/0
- description to R22 Kitorn
- ip address 44.22.23.23 255.255.255.0
-!
-interface Ethernet0/1
- description p2p to R25
- ip address 10.44.44.1 255.255.255.252
- ip router isis 44
-!
-interface Ethernet0/2
- description p2p to R24
- ip address 10.44.44.5 255.255.255.252
- ip router isis 44
-!
-router bgp 520
- bgp router-id 10.44.44.23
- bgp log-neighbor-changes
- network 10.44.44.23 mask 255.255.255.255
- neighbor 10.44.44.25 remote-as 520
- neighbor 10.44.44.25 update-source Loopback0
- neighbor 10.44.44.25 next-hop-self
- neighbor 44.22.23.22 remote-as 101
-!
-```
-
-```
-
-```
-
-#### R24:
-
-```
-version 15.4
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
-!
-hostname R24
-!
-interface Loopback0
- description R24 Mgmt
- ip address 10.44.44.24 255.255.255.255
- ip router isis 44
-!
-interface Ethernet0/0
- description to R21 Lamas
- ip address 44.33.24.24 255.255.255.0
-!
-interface Ethernet0/1
- description p2p to R26
- ip address 10.44.44.9 255.255.255.252
- ip router isis 44
-!
-interface Ethernet0/2
- description p2p to R23
- ip address 10.44.44.6 255.255.255.252
- ip router isis 44
-!
-interface Ethernet1/0
- description to R18 SPb
- ip address 44.112.24.24 255.255.255.0
-!
-router bgp 520
- bgp router-id 10.44.44.24
- bgp log-neighbor-changes
- network 10.44.44.24 mask 255.255.255.255
- neighbor 10.44.44.25 remote-as 520
- neighbor 10.44.44.25 update-source Loopback0
- neighbor 10.44.44.25 next-hop-self
- neighbor 44.33.24.21 remote-as 301
- neighbor 44.112.24.18 remote-as 2042
-!
-```
-
-```
-
-```
-
-#### R25:
-
-```
-version 15.4
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
-!
-hostname R25
-!
-interface Loopback0
- description R25 Mgmt
- ip address 10.44.44.25 255.255.255.255
- ip router isis 44
-!
-interface Ethernet0/1
- description p2p to R23
- ip address 10.44.44.2 255.255.255.252
- ip router isis 44
-!
-interface Ethernet0/2
- description p2p to R26
- ip address 10.44.44.13 255.255.255.252
- ip router isis 44
-!
-interface Ethernet1/0
- description to R27 Lab-gi
- ip address 44.115.25.25 255.255.255.0
-!
-interface Ethernet1/1
- description to R28 Chok
- ip address 44.114.25.25 255.255.255.0
-!
-router bgp 520
- bgp log-neighbor-changes
- network 10.44.44.25 mask 255.255.255.255
- network 44.114.25.0 mask 255.255.255.0
- network 44.115.25.0 mask 255.255.255.0
- neighbor RR-Triada peer-group
- neighbor RR-Triada remote-as 520
- neighbor RR-Triada update-source Loopback0
- neighbor RR-Triada route-reflector-client
- neighbor 10.44.44.23 peer-group RR-Triada
- neighbor 10.44.44.24 peer-group RR-Triada
- neighbor 10.44.44.26 peer-group RR-Triada
-!
-```
-
-```
-
-```
-
-#### R26:
-
-```
-version 15.4
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
-!
-hostname R26
-!
-interface Loopback0
- description R26 Mgmt
- ip address 10.44.44.26 255.255.255.255
- ip router isis 44
-!         
-interface Ethernet0/1
- description p2p to R24
- ip address 10.44.44.10 255.255.255.252
- ip router isis 44
-!
-interface Ethernet0/2
- description p2p to R25
- ip address 10.44.44.14 255.255.255.252
- ip router isis 44
-!
-interface Ethernet1/0
- description to R28 Chok
- ip address 44.114.26.26 255.255.255.0
-!
-interface Ethernet1/1
- description to R18 SPb
- ip address 44.112.26.26 255.255.255.0
-!
-router bgp 520
- bgp router-id 10.44.44.26
- bgp log-neighbor-changes
- network 10.44.44.26 mask 255.255.255.255
- network 44.114.26.0 mask 255.255.255.0
- neighbor 10.44.44.25 remote-as 520
- neighbor 10.44.44.25 update-source Loopback0
- neighbor 10.44.44.25 next-hop-self
- neighbor 44.112.26.18 remote-as 2042
-!
-```
-
-```
-
 ```
