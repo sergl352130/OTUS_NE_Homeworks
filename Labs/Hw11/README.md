@@ -623,6 +623,8 @@ router bgp 520
  bgp log-neighbor-changes
  network 10.44.44.23 mask 255.255.255.255
  neighbor 10.44.44.25 remote-as 520
+ neighbor 10.44.44.25 update-source Loopback0
+ neighbor 10.44.44.25 next-hop-self
  neighbor 44.22.23.22 remote-as 101
 !
 ```
@@ -669,6 +671,8 @@ router bgp 520
  bgp log-neighbor-changes
  network 10.44.44.24 mask 255.255.255.255
  neighbor 10.44.44.25 remote-as 520
+ neighbor 10.44.44.25 update-source Loopback0
+ neighbor 10.44.44.25 next-hop-self
  neighbor 44.33.24.21 remote-as 301
  neighbor 44.112.24.18 remote-as 2042
 !
@@ -769,6 +773,8 @@ router bgp 520
  network 10.44.44.26 mask 255.255.255.255
  network 44.114.26.0 mask 255.255.255.0
  neighbor 10.44.44.25 remote-as 520
+ neighbor 10.44.44.25 update-source Loopback0
+ neighbor 10.44.44.25 next-hop-self
  neighbor 44.112.26.18 remote-as 2042
 !
 ```
