@@ -463,11 +463,14 @@ router bgp 101
  network 10.22.22.22 mask 255.255.255.255
  neighbor 22.111.22.14 remote-as 1001
  neighbor 22.111.22.14 default-originate
- neighbor 22.111.22.14 prefix-list Nothing-OUT out
+ neighbor 22.111.22.14 route-map Nothing-OUT out
  neighbor 33.22.21.21 remote-as 301
  neighbor 44.22.23.23 remote-as 520
 !
 ip prefix-list Nothing-OUT seq 5 deny 0.0.0.0/0 le 32
+!
+route-map Nothing-OUT permit 10
+ match ip address prefix-list Nothing-OUT
 !
 ```
 
