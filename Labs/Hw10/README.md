@@ -469,23 +469,23 @@ router bgp 301
 ```
 R21#show ip bgp summary
 BGP router identifier 10.33.33.21, local AS number 301
-BGP table version is 104, main routing table version 104
+BGP table version is 14, main routing table version 14
 12 network entries using 1680 bytes of memory
-19 path entries using 1520 bytes of memory
-8/7 BGP path/bestpath attribute entries using 1152 bytes of memory
-5 BGP AS-PATH entries using 120 bytes of memory
+21 path entries using 1680 bytes of memory
+10/7 BGP path/bestpath attribute entries using 1440 bytes of memory
+7 BGP AS-PATH entries using 168 bytes of memory
 0 BGP route-map cache entries using 0 bytes of memory
 0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 4472 total bytes of memory
-BGP activity 46/34 prefixes, 98/79 paths, scan interval 60 secs
+BGP using 4968 total bytes of memory
+BGP activity 12/0 prefixes, 22/1 paths, scan interval 60 secs
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-33.22.21.22     4          101     653     650      104    0    0 09:25:04        8
-33.111.21.15    4         1001     649     666      104    0    0 09:25:00        2
-44.33.24.24     4          520     650     648      104    0    0 09:25:04        8
+33.22.21.22     4          101      92      94       14    0    0 01:16:34        9
+33.111.21.15    4         1001      88      94       14    0    0 01:16:35        2
+44.33.24.24     4          520      93      94       14    0    0 01:16:37        9
 R21#
 R21#show ip bgp
-BGP table version is 104, local router ID is 10.33.33.21
+BGP table version is 14, local router ID is 10.33.33.21
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -493,7 +493,8 @@ Origin codes: i - IGP, e - EGP, ? - incomplete
 RPKI validation codes: V valid, I invalid, N Not found
 
      Network          Next Hop            Metric LocPrf Weight Path
- *>  10.22.22.22/32   33.22.21.22              0             0 101 i
+ *   10.22.22.22/32   44.33.24.24                            0 520 101 i
+ *>                   33.22.21.22              0             0 101 i
  *>  10.33.33.21/32   0.0.0.0                  0         32768 i
  *>  10.44.44.23/32   44.33.24.24                            0 520 i
  *                    33.22.21.22                            0 101 520 i
@@ -505,9 +506,10 @@ RPKI validation codes: V valid, I invalid, N Not found
  *>                   44.33.24.24                            0 520 i
  *>  10.111.3.14/32   33.111.21.15                           0 1001 i
  *>  10.111.3.15/32   33.111.21.15             0             0 1001 i
- *>  10.112.3.18/32   44.33.24.24                            0 520 2042 i
- *   44.114.25.0/24   33.22.21.22                            0 101 520 i
+ *   10.112.3.18/32   33.22.21.22                            0 101 520 2042 i
+ *>                   44.33.24.24                            0 520 2042 i
      Network          Next Hop            Metric LocPrf Weight Path
+ *   44.114.25.0/24   33.22.21.22                            0 101 520 i
  *>                   44.33.24.24                            0 520 i
  *   44.114.26.0/24   33.22.21.22                            0 101 520 i
  *>                   44.33.24.24                            0 520 i
@@ -528,15 +530,15 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 Gateway of last resort is not set
 
       10.0.0.0/32 is subnetted, 9 subnets
-B        10.22.22.22 [20/0] via 33.22.21.22, 09:24:23
+B        10.22.22.22 [20/0] via 33.22.21.22, 01:16:31
 C        10.33.33.21 is directly connected, Loopback0
-B        10.44.44.23 [20/0] via 44.33.24.24, 00:15:55
-B        10.44.44.24 [20/0] via 44.33.24.24, 00:14:54
-B        10.44.44.25 [20/0] via 44.33.24.24, 00:13:59
-B        10.44.44.26 [20/0] via 44.33.24.24, 00:13:29
-B        10.111.3.14 [20/0] via 33.111.21.15, 00:46:25
-B        10.111.3.15 [20/0] via 33.111.21.15, 00:45:25
-B        10.112.3.18 [20/0] via 44.33.24.24, 00:43:10
+B        10.44.44.23 [20/0] via 44.33.24.24, 01:16:08
+B        10.44.44.24 [20/0] via 44.33.24.24, 01:16:31
+B        10.44.44.25 [20/0] via 44.33.24.24, 01:16:08
+B        10.44.44.26 [20/0] via 44.33.24.24, 01:16:08
+B        10.111.3.14 [20/0] via 33.111.21.15, 01:16:24
+B        10.111.3.15 [20/0] via 33.111.21.15, 01:16:24
+B        10.112.3.18 [20/0] via 44.33.24.24, 01:16:08
       33.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
 C        33.22.21.0/24 is directly connected, Ethernet0/1
 L        33.22.21.21/32 is directly connected, Ethernet0/1
@@ -545,9 +547,9 @@ L        33.111.21.21/32 is directly connected, Ethernet1/0
       44.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
 C        44.33.24.0/24 is directly connected, Ethernet0/0
 L        44.33.24.21/32 is directly connected, Ethernet0/0
-B        44.114.25.0/24 [20/0] via 44.33.24.24, 09:24:31
-B        44.114.26.0/24 [20/0] via 44.33.24.24, 09:24:31
-B        44.115.25.0/24 [20/0] via 44.33.24.24, 09:24:31
+B        44.114.25.0/24 [20/0] via 44.33.24.24, 01:16:08
+B        44.114.26.0/24 [20/0] via 44.33.24.24, 01:16:08
+B        44.115.25.0/24 [20/0] via 44.33.24.24, 01:16:08
 ```
 
 #### R22:
@@ -589,23 +591,23 @@ router bgp 101
 ```
 R22#show ip bgp summary
 BGP router identifier 10.22.22.22, local AS number 101
-BGP table version is 161, main routing table version 161
+BGP table version is 16, main routing table version 16
 12 network entries using 1680 bytes of memory
-30 path entries using 2400 bytes of memory
-12/6 BGP path/bestpath attribute entries using 1728 bytes of memory
-9 BGP AS-PATH entries using 264 bytes of memory
+34 path entries using 2720 bytes of memory
+15/6 BGP path/bestpath attribute entries using 2160 bytes of memory
+12 BGP AS-PATH entries using 336 bytes of memory
 0 BGP route-map cache entries using 0 bytes of memory
 0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 6072 total bytes of memory
-BGP activity 46/34 prefixes, 136/106 paths, scan interval 60 secs
+BGP using 6896 total bytes of memory
+BGP activity 12/0 prefixes, 34/0 paths, scan interval 60 secs
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-22.111.22.14    4         1001     118     102      161    0    0 00:38:21       11
-33.22.21.21     4          301     640     643      161    0    0 09:15:51       11
-44.22.23.23     4          520     628     652      161    0    0 09:15:54        7
+22.111.22.14    4         1001      88      88       16    0    0 01:11:52       11
+33.22.21.21     4          301      88      87       16    0    0 01:11:51       11
+44.22.23.23     4          520      87      87       16    0    0 01:11:55       11
 R22#
-R22#show ip bgp        
-BGP table version is 161, local router ID is 10.22.22.22
+R22#show ip bgp
+BGP table version is 16, local router ID is 10.22.22.22
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -614,39 +616,43 @@ RPKI validation codes: V valid, I invalid, N Not found
 
      Network          Next Hop            Metric LocPrf Weight Path
  *>  10.22.22.22/32   0.0.0.0                  0         32768 i
- *   10.33.33.21/32   22.111.22.14                           0 1001 1001 1001 301 i
+ *   10.33.33.21/32   44.22.23.23                            0 520 301 i
+ *                    22.111.22.14                           0 1001 1001 1001 301 i
  *>                   33.22.21.21              0             0 301 i
  *   10.44.44.23/32   22.111.22.14                           0 1001 1001 1001 301 520 i
  *                    33.22.21.21                            0 301 520 i
  *>                   44.22.23.23              0             0 520 i
  *   10.44.44.24/32   22.111.22.14                           0 1001 1001 1001 301 520 i
- *                    33.22.21.21                            0 301 520 i
  *>                   44.22.23.23                            0 520 i
+ *                    33.22.21.21                            0 301 520 i
  *   10.44.44.25/32   22.111.22.14                           0 1001 1001 1001 301 520 i
      Network          Next Hop            Metric LocPrf Weight Path
- *>                   44.22.23.23                            0 520 i
  *                    33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
  *   10.44.44.26/32   22.111.22.14                           0 1001 1001 1001 301 520 i
  *                    33.22.21.21                            0 301 520 i
  *>                   44.22.23.23                            0 520 i
- *   10.111.3.14/32   22.111.22.14             0             0 1001 1001 1001 i
+ *   10.111.3.14/32   44.22.23.23                            0 520 301 1001 i
  *>                   33.22.21.21                            0 301 1001 i
- *>  10.111.3.15/32   33.22.21.21                            0 301 1001 i
+ *                    22.111.22.14             0             0 1001 1001 1001 i
+ *   10.111.3.15/32   44.22.23.23                            0 520 301 1001 i
  *                    22.111.22.14                           0 1001 1001 1001 i
- *   10.112.3.18/32   22.111.22.14                           0 1001 1001 1001 301 520 2042 i
- *>                   33.22.21.21                            0 301 520 2042 i
+ *>                   33.22.21.21                            0 301 1001 i
+ *>  10.112.3.18/32   44.22.23.23                            0 520 2042 i
+ *                    22.111.22.14                           0 1001 1001 1001 301 520 2042 i
+ *                    33.22.21.21                            0 301 520 2042 i
  *   44.114.25.0/24   22.111.22.14                           0 1001 1001 1001 301 520 i
  *                    33.22.21.21                            0 301 520 i
  *>                   44.22.23.23                            0 520 i
  *   44.114.26.0/24   22.111.22.14                           0 1001 1001 1001 301 520 i
- *                    33.22.21.21                            0 301 520 i
- *>                   44.22.23.23                            0 520 i
- *   44.115.25.0/24   22.111.22.14                           0 1001 1001 1001 301 520 i
      Network          Next Hop            Metric LocPrf Weight Path
  *                    33.22.21.21                            0 301 520 i
  *>                   44.22.23.23                            0 520 i
+ *   44.115.25.0/24   22.111.22.14                           0 1001 1001 1001 301 520 i
+ *                    33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
 R22#
-R22#show ip route      
+R22#show ip route
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
        N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
@@ -661,14 +667,14 @@ Gateway of last resort is not set
 
       10.0.0.0/32 is subnetted, 9 subnets
 C        10.22.22.22 is directly connected, Loopback0
-B        10.33.33.21 [20/0] via 33.22.21.21, 09:15:15
-B        10.44.44.23 [20/0] via 44.22.23.23, 00:06:46
-B        10.44.44.24 [20/0] via 44.22.23.23, 00:05:46
-B        10.44.44.25 [20/0] via 44.22.23.23, 00:04:50
-B        10.44.44.26 [20/0] via 44.22.23.23, 00:04:20
-B        10.111.3.14 [20/0] via 33.22.21.21, 00:18:29
-B        10.111.3.15 [20/0] via 33.22.21.21, 00:18:29
-B        10.112.3.18 [20/0] via 33.22.21.21, 00:34:02
+B        10.33.33.21 [20/0] via 33.22.21.21, 01:11:44
+B        10.44.44.23 [20/0] via 44.22.23.23, 01:11:45
+B        10.44.44.24 [20/0] via 44.22.23.23, 01:11:23
+B        10.44.44.25 [20/0] via 44.22.23.23, 01:11:23
+B        10.44.44.26 [20/0] via 44.22.23.23, 01:11:23
+B        10.111.3.14 [20/0] via 33.22.21.21, 01:11:13
+B        10.111.3.15 [20/0] via 33.22.21.21, 01:11:13
+B        10.112.3.18 [20/0] via 44.22.23.23, 00:38:15
       22.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
 C        22.111.22.0/24 is directly connected, Ethernet1/0
 L        22.111.22.22/32 is directly connected, Ethernet1/0
@@ -678,9 +684,9 @@ L        33.22.21.22/32 is directly connected, Ethernet0/1
       44.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
 C        44.22.23.0/24 is directly connected, Ethernet0/0
 L        44.22.23.22/32 is directly connected, Ethernet0/0
-B        44.114.25.0/24 [20/0] via 44.22.23.23, 09:15:15
-B        44.114.26.0/24 [20/0] via 44.22.23.23, 09:14:55
-B        44.115.25.0/24 [20/0] via 44.22.23.23, 09:15:15
+B        44.114.25.0/24 [20/0] via 44.22.23.23, 01:11:23
+B        44.114.26.0/24 [20/0] via 44.22.23.23, 01:11:23
+B        44.115.25.0/24 [20/0] via 44.22.23.23, 01:11:23
 ```
 
 #### R23:
@@ -717,30 +723,31 @@ router bgp 520
  bgp log-neighbor-changes
  network 10.44.44.23 mask 255.255.255.255
  neighbor 10.44.44.25 remote-as 520
+ neighbor 10.44.44.25 next-hop-self
  neighbor 44.22.23.22 remote-as 101
 !
 ```
 
 ```
-R23#show ip bgp summary
+R23#show ip bgp summary 
 BGP router identifier 10.44.44.23, local AS number 520
-BGP table version is 120, main routing table version 120
-11 network entries using 1540 bytes of memory
-11 path entries using 880 bytes of memory
-5/5 BGP path/bestpath attribute entries using 720 bytes of memory
+BGP table version is 18, main routing table version 18
+12 network entries using 1680 bytes of memory
+15 path entries using 1200 bytes of memory
+8/6 BGP path/bestpath attribute entries using 1152 bytes of memory
 2 BGP rrinfo entries using 48 bytes of memory
-3 BGP AS-PATH entries using 72 bytes of memory
+6 BGP AS-PATH entries using 144 bytes of memory
 0 BGP route-map cache entries using 0 bytes of memory
 0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 3260 total bytes of memory
-BGP activity 32/21 prefixes, 32/21 paths, scan interval 60 secs
+BGP using 4224 total bytes of memory
+BGP activity 12/0 prefixes, 16/1 paths, scan interval 60 secs
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.44.44.25     4          520     628     637      120    0    0 09:14:05        6
-44.22.23.22     4          101     650     626      120    0    0 09:14:04        4
+10.44.44.25     4          520      62      62       18    0    0 00:46:02       10
+44.22.23.22     4          101      59      58       18    0    0 00:45:57        4
 R23#
 R23#show ip bgp
-BGP table version is 120, local router ID is 10.44.44.23
+BGP table version is 18, local router ID is 10.44.44.23
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -749,17 +756,21 @@ RPKI validation codes: V valid, I invalid, N Not found
 
      Network          Next Hop            Metric LocPrf Weight Path
  *>  10.22.22.22/32   44.22.23.22              0             0 101 i
- *>  10.33.33.21/32   44.22.23.22                            0 101 301 i
+ *>i 10.33.33.21/32   10.44.44.24              0    100      0 301 i
+ *                    44.22.23.22                            0 101 301 i
  *>  10.44.44.23/32   0.0.0.0                  0         32768 i
  r>i 10.44.44.24/32   10.44.44.24              0    100      0 i
  r>i 10.44.44.25/32   10.44.44.25              0    100      0 i
  r>i 10.44.44.26/32   10.44.44.26              0    100      0 i
- *>  10.111.3.14/32   44.22.23.22                            0 101 301 1001 i
- *>  10.111.3.15/32   44.22.23.22                            0 101 301 1001 i
+ *>i 10.111.3.14/32   10.44.44.24              0    100      0 301 1001 i
+ *                    44.22.23.22                            0 101 301 1001 i
+ *>i 10.111.3.15/32   10.44.44.24              0    100      0 301 1001 i
+ *                    44.22.23.22                            0 101 301 1001 i
+ *>i 10.112.3.18/32   10.44.44.26              0    100      0 2042 i
  *>i 44.114.25.0/24   10.44.44.25              0    100      0 i
  *>i 44.114.26.0/24   10.44.44.26              0    100      0 i
+     Network          Next Hop            Metric LocPrf Weight Path
  *>i 44.115.25.0/24   10.44.44.25              0    100      0 i
-R23#
 R23#show ip route
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
@@ -773,28 +784,29 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is not set
 
-      10.0.0.0/8 is variably subnetted, 14 subnets, 2 masks
-B        10.22.22.22/32 [20/0] via 44.22.23.22, 09:13:16
-B        10.33.33.21/32 [20/0] via 44.22.23.22, 09:13:16
+      10.0.0.0/8 is variably subnetted, 15 subnets, 2 masks
+B        10.22.22.22/32 [20/0] via 44.22.23.22, 00:45:31
+B        10.33.33.21/32 [200/0] via 10.44.44.24, 00:12:02
 C        10.44.44.0/30 is directly connected, Ethernet0/1
 L        10.44.44.1/32 is directly connected, Ethernet0/1
 C        10.44.44.4/30 is directly connected, Ethernet0/2
 L        10.44.44.5/32 is directly connected, Ethernet0/2
-i L2     10.44.44.8/30 [115/20] via 10.44.44.6, 09:14:27, Ethernet0/2
-i L1     10.44.44.12/30 [115/20] via 10.44.44.2, 09:14:27, Ethernet0/1
+i L2     10.44.44.8/30 [115/20] via 10.44.44.6, 00:46:37, Ethernet0/2
+i L1     10.44.44.12/30 [115/20] via 10.44.44.2, 00:46:37, Ethernet0/1
 C        10.44.44.23/32 is directly connected, Loopback0
-i L2     10.44.44.24/32 [115/20] via 10.44.44.6, 09:14:27, Ethernet0/2
-i L1     10.44.44.25/32 [115/20] via 10.44.44.2, 09:14:27, Ethernet0/1
-i L2     10.44.44.26/32 [115/30] via 10.44.44.6, 09:14:17, Ethernet0/2
-                        [115/30] via 10.44.44.2, 09:14:17, Ethernet0/1
-B        10.111.3.14/32 [20/0] via 44.22.23.22, 00:16:30
-B        10.111.3.15/32 [20/0] via 44.22.23.22, 00:16:30
+i L2     10.44.44.24/32 [115/20] via 10.44.44.6, 00:46:37, Ethernet0/2
+i L1     10.44.44.25/32 [115/20] via 10.44.44.2, 00:46:37, Ethernet0/1
+i L2     10.44.44.26/32 [115/30] via 10.44.44.6, 00:46:27, Ethernet0/2
+                        [115/30] via 10.44.44.2, 00:46:27, Ethernet0/1
+B        10.111.3.14/32 [200/0] via 10.44.44.24, 00:12:02
+B        10.111.3.15/32 [200/0] via 10.44.44.24, 00:12:02
+B        10.112.3.18/32 [200/0] via 10.44.44.26, 00:12:00
       44.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
 C        44.22.23.0/24 is directly connected, Ethernet0/0
 L        44.22.23.23/32 is directly connected, Ethernet0/0
-B        44.114.25.0/24 [200/0] via 10.44.44.25, 09:13:26
-B        44.114.26.0/24 [200/0] via 10.44.44.26, 09:13:24
-B        44.115.25.0/24 [200/0] via 10.44.44.25, 09:13:26
+B        44.114.25.0/24 [200/0] via 10.44.44.25, 00:45:36
+B        44.114.26.0/24 [200/0] via 10.44.44.26, 00:45:33
+B        44.115.25.0/24 [200/0] via 10.44.44.25, 00:45:36
 ```
 
 #### R24:
@@ -835,6 +847,7 @@ router bgp 520
  bgp log-neighbor-changes
  network 10.44.44.24 mask 255.255.255.255
  neighbor 10.44.44.25 remote-as 520
+ neighbor 10.44.44.25 next-hop-self
  neighbor 44.33.24.21 remote-as 301
  neighbor 44.112.24.18 remote-as 2042
 !
@@ -843,24 +856,24 @@ router bgp 520
 ```
 R24#show ip bgp summary
 BGP router identifier 10.44.44.24, local AS number 520
-BGP table version is 102, main routing table version 102
+BGP table version is 14, main routing table version 14
 12 network entries using 1680 bytes of memory
-12 path entries using 960 bytes of memory
-6/6 BGP path/bestpath attribute entries using 864 bytes of memory
+14 path entries using 1120 bytes of memory
+8/6 BGP path/bestpath attribute entries using 1152 bytes of memory
 2 BGP rrinfo entries using 48 bytes of memory
-4 BGP AS-PATH entries using 96 bytes of memory
+5 BGP AS-PATH entries using 120 bytes of memory
 0 BGP route-map cache entries using 0 bytes of memory
 0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 3648 total bytes of memory
-BGP activity 46/34 prefixes, 46/34 paths, scan interval 60 secs
+BGP using 4120 total bytes of memory
+BGP activity 12/0 prefixes, 14/0 paths, scan interval 60 secs
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.44.44.25     4          520     626     639      102    0    0 09:14:07        6
-44.33.24.21     4          301     636     638      102    0    0 09:14:02        4
-44.112.24.18    4         2042     665     662      102    0    0 09:14:01        1
+10.44.44.25     4          520      66      67       14    0    0 00:48:50        8
+44.33.24.21     4          301      63      62       14    0    0 00:48:46        4
+44.112.24.18    4         2042      62      63       14    0    0 00:48:52        1
 R24#
-R24#show ip bgp
-BGP table version is 102, local router ID is 10.44.44.24
+R24#show ip bgp        
+BGP table version is 14, local router ID is 10.44.44.24
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -868,7 +881,8 @@ Origin codes: i - IGP, e - EGP, ? - incomplete
 RPKI validation codes: V valid, I invalid, N Not found
 
      Network          Next Hop            Metric LocPrf Weight Path
- *>  10.22.22.22/32   44.33.24.21                            0 301 101 i
+ *>i 10.22.22.22/32   10.44.44.23              0    100      0 101 i
+ *                    44.33.24.21                            0 301 101 i
  *>  10.33.33.21/32   44.33.24.21              0             0 301 i
  r>i 10.44.44.23/32   10.44.44.23              0    100      0 i
  *>  10.44.44.24/32   0.0.0.0                  0         32768 i
@@ -876,7 +890,8 @@ RPKI validation codes: V valid, I invalid, N Not found
  r>i 10.44.44.26/32   10.44.44.26              0    100      0 i
  *>  10.111.3.14/32   44.33.24.21                            0 301 1001 i
  *>  10.111.3.15/32   44.33.24.21                            0 301 1001 i
- *>  10.112.3.18/32   44.112.24.18             0             0 2042 i
+ * i 10.112.3.18/32   10.44.44.26              0    100      0 2042 i
+ *>                   44.112.24.18             0             0 2042 i
  *>i 44.114.25.0/24   10.44.44.25              0    100      0 i
  *>i 44.114.26.0/24   10.44.44.26              0    100      0 i
  *>i 44.115.25.0/24   10.44.44.25              0    100      0 i
@@ -895,30 +910,30 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 Gateway of last resort is not set
 
       10.0.0.0/8 is variably subnetted, 15 subnets, 2 masks
-B        10.22.22.22/32 [20/0] via 44.33.24.21, 09:12:55
-B        10.33.33.21/32 [20/0] via 44.33.24.21, 09:13:23
-i L2     10.44.44.0/30 [115/20] via 10.44.44.5, 09:14:28, Ethernet0/2
+B        10.22.22.22/32 [200/0] via 10.44.44.23, 00:16:27
+B        10.33.33.21/32 [20/0] via 44.33.24.21, 00:49:58
+i L2     10.44.44.0/30 [115/20] via 10.44.44.5, 00:51:06, Ethernet0/2
 C        10.44.44.4/30 is directly connected, Ethernet0/2
 L        10.44.44.6/32 is directly connected, Ethernet0/2
 C        10.44.44.8/30 is directly connected, Ethernet0/1
 L        10.44.44.9/32 is directly connected, Ethernet0/1
-i L2     10.44.44.12/30 [115/20] via 10.44.44.10, 09:14:28, Ethernet0/1
-i L2     10.44.44.23/32 [115/20] via 10.44.44.5, 09:14:28, Ethernet0/2
+i L2     10.44.44.12/30 [115/20] via 10.44.44.10, 00:51:06, Ethernet0/1
+i L2     10.44.44.23/32 [115/20] via 10.44.44.5, 00:51:06, Ethernet0/2
 C        10.44.44.24/32 is directly connected, Loopback0
-i L2     10.44.44.25/32 [115/30] via 10.44.44.10, 09:14:17, Ethernet0/1
-                        [115/30] via 10.44.44.5, 09:14:17, Ethernet0/2
-i L2     10.44.44.26/32 [115/20] via 10.44.44.10, 09:14:28, Ethernet0/1
-B        10.111.3.14/32 [20/0] via 44.33.24.21, 00:35:18
-B        10.111.3.15/32 [20/0] via 44.33.24.21, 00:34:18
-B        10.112.3.18/32 [20/0] via 44.112.24.18, 00:32:03
+i L2     10.44.44.25/32 [115/30] via 10.44.44.10, 00:51:04, Ethernet0/1
+                        [115/30] via 10.44.44.5, 00:51:04, Ethernet0/2
+i L2     10.44.44.26/32 [115/20] via 10.44.44.10, 00:51:06, Ethernet0/1
+B        10.111.3.14/32 [20/0] via 44.33.24.21, 00:49:27
+B        10.111.3.15/32 [20/0] via 44.33.24.21, 00:49:27
+B        10.112.3.18/32 [20/0] via 44.112.24.18, 00:50:00
       44.0.0.0/8 is variably subnetted, 7 subnets, 2 masks
 C        44.33.24.0/24 is directly connected, Ethernet0/0
 L        44.33.24.24/32 is directly connected, Ethernet0/0
 C        44.112.24.0/24 is directly connected, Ethernet1/0
 L        44.112.24.24/32 is directly connected, Ethernet1/0
-B        44.114.25.0/24 [200/0] via 10.44.44.25, 09:13:23
-B        44.114.26.0/24 [200/0] via 10.44.44.26, 09:13:23
-B        44.115.25.0/24 [200/0] via 10.44.44.25, 09:13:23
+B        44.114.25.0/24 [200/0] via 10.44.44.25, 00:50:03
+B        44.114.26.0/24 [200/0] via 10.44.44.26, 00:50:00
+B        44.115.25.0/24 [200/0] via 10.44.44.25, 00:50:03
 ```
 
 #### R25:
@@ -972,23 +987,23 @@ router bgp 520
 ```
 R25#show ip bgp summary
 BGP router identifier 10.44.44.25, local AS number 520
-BGP table version is 8, main routing table version 8
+BGP table version is 15, main routing table version 15
 12 network entries using 1680 bytes of memory
-17 path entries using 1360 bytes of memory
-9/2 BGP path/bestpath attribute entries using 1296 bytes of memory
-7 BGP AS-PATH entries using 168 bytes of memory
+13 path entries using 1040 bytes of memory
+6/6 BGP path/bestpath attribute entries using 864 bytes of memory
+4 BGP AS-PATH entries using 96 bytes of memory
 0 BGP route-map cache entries using 0 bytes of memory
 0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 4504 total bytes of memory
-BGP activity 46/34 prefixes, 85/68 paths, scan interval 60 secs
+BGP using 3680 total bytes of memory
+BGP activity 12/0 prefixes, 17/4 paths, scan interval 60 secs
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.44.44.23     4          520     641     633        8    0    0 09:17:45        5
-10.44.44.24     4          520     643     630        8    0    0 09:17:47        6
-10.44.44.26     4          520     633     632        8    0    0 09:17:41        3
+10.44.44.23     4          520      66      66       15    0    0 00:49:15        2
+10.44.44.24     4          520      67      66       15    0    0 00:49:13        5
+10.44.44.26     4          520      64      67       15    0    0 00:49:11        3
 R25#
 R25#show ip bgp        
-BGP table version is 8, local router ID is 10.44.44.25
+BGP table version is 15, local router ID is 10.44.44.25
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -996,26 +1011,21 @@ Origin codes: i - IGP, e - EGP, ? - incomplete
 RPKI validation codes: V valid, I invalid, N Not found
 
      Network          Next Hop            Metric LocPrf Weight Path
- * i 10.22.22.22/32   44.33.24.21              0    100      0 301 101 i
- * i                  44.22.23.22              0    100      0 101 i
- * i 10.33.33.21/32   44.22.23.22              0    100      0 101 301 i
- * i                  44.33.24.21              0    100      0 301 i
+ *>i 10.22.22.22/32   10.44.44.23              0    100      0 101 i
+ *>i 10.33.33.21/32   10.44.44.24              0    100      0 301 i
  r>i 10.44.44.23/32   10.44.44.23              0    100      0 i
  r>i 10.44.44.24/32   10.44.44.24              0    100      0 i
  *>  10.44.44.25/32   0.0.0.0                  0         32768 i
  r>i 10.44.44.26/32   10.44.44.26              0    100      0 i
- * i 10.111.3.14/32   44.22.23.22              0    100      0 101 301 1001 i
- * i                  44.33.24.21              0    100      0 301 1001 i
- * i 10.111.3.15/32   44.22.23.22              0    100      0 101 301 1001 i
- * i                  44.33.24.21              0    100      0 301 1001 i
- * i 10.112.3.18/32   44.112.24.18             0    100      0 2042 i
- * i                  44.112.26.18             0    100      0 2042 i
-     Network          Next Hop            Metric LocPrf Weight Path
+ *>i 10.111.3.14/32   10.44.44.24              0    100      0 301 1001 i
+ *>i 10.111.3.15/32   10.44.44.24              0    100      0 301 1001 i
+ *>i 10.112.3.18/32   10.44.44.26              0    100      0 2042 i
+ * i                  10.44.44.24              0    100      0 2042 i
  *>  44.114.25.0/24   0.0.0.0                  0         32768 i
  *>i 44.114.26.0/24   10.44.44.26              0    100      0 i
  *>  44.115.25.0/24   0.0.0.0                  0         32768 i
 R25#
-R25#show ip route      
+R25#show ip route
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
        N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
@@ -1028,24 +1038,29 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is not set
 
-      10.0.0.0/8 is variably subnetted, 12 subnets, 3 masks
+      10.0.0.0/8 is variably subnetted, 17 subnets, 3 masks
+B        10.22.22.22/32 [200/0] via 10.44.44.23, 00:18:22
+B        10.33.33.21/32 [200/0] via 10.44.44.24, 00:18:23
 C        10.44.44.0/30 is directly connected, Ethernet0/1
 L        10.44.44.2/32 is directly connected, Ethernet0/1
-i L1     10.44.44.4/30 [115/20] via 10.44.44.1, 09:18:05, Ethernet0/1
-i L2     10.44.44.8/30 [115/20] via 10.44.44.14, 09:18:05, Ethernet0/2
+i L1     10.44.44.4/30 [115/20] via 10.44.44.1, 00:53:01, Ethernet0/1
+i L2     10.44.44.8/30 [115/20] via 10.44.44.14, 00:53:01, Ethernet0/2
 C        10.44.44.12/30 is directly connected, Ethernet0/2
 L        10.44.44.13/32 is directly connected, Ethernet0/2
-i L1     10.44.44.23/32 [115/20] via 10.44.44.1, 09:18:05, Ethernet0/1
-i L2     10.44.44.24/32 [115/30] via 10.44.44.14, 09:17:53, Ethernet0/2
-                        [115/30] via 10.44.44.1, 09:17:53, Ethernet0/1
+i L1     10.44.44.23/32 [115/20] via 10.44.44.1, 00:53:01, Ethernet0/1
+i L2     10.44.44.24/32 [115/30] via 10.44.44.14, 00:53:01, Ethernet0/2
+                        [115/30] via 10.44.44.1, 00:53:01, Ethernet0/1
 C        10.44.44.25/32 is directly connected, Loopback0
-i L2     10.44.44.26/32 [115/20] via 10.44.44.14, 09:18:05, Ethernet0/2
+i L2     10.44.44.26/32 [115/20] via 10.44.44.14, 00:53:01, Ethernet0/2
+B        10.111.3.14/32 [200/0] via 10.44.44.24, 00:18:23
+B        10.111.3.15/32 [200/0] via 10.44.44.24, 00:18:23
 S        10.111.4.64/26 [1/0] via 44.114.25.28
 S        10.111.4.128/26 [1/0] via 44.114.25.28
+B        10.112.3.18/32 [200/0] via 10.44.44.26, 00:18:22
       44.0.0.0/8 is variably subnetted, 5 subnets, 2 masks
 C        44.114.25.0/24 is directly connected, Ethernet1/1
 L        44.114.25.25/32 is directly connected, Ethernet1/1
-B        44.114.26.0/24 [200/0] via 10.44.44.26, 09:17:01
+B        44.114.26.0/24 [200/0] via 10.44.44.26, 00:51:55
 C        44.115.25.0/24 is directly connected, Ethernet1/0
 L        44.115.25.25/32 is directly connected, Ethernet1/0
 ```
@@ -1089,6 +1104,7 @@ router bgp 520
  network 10.44.44.26 mask 255.255.255.255
  network 44.114.26.0 mask 255.255.255.0
  neighbor 10.44.44.25 remote-as 520
+ neighbor 10.44.44.25 next-hop-self
  neighbor 44.112.26.18 remote-as 2042
 !
 ```
@@ -1096,23 +1112,23 @@ router bgp 520
 ```
 R26#show ip bgp summary
 BGP router identifier 10.44.44.26, local AS number 520
-BGP table version is 35, main routing table version 35
-8 network entries using 1120 bytes of memory
-8 path entries using 640 bytes of memory
-3/3 BGP path/bestpath attribute entries using 432 bytes of memory
+BGP table version is 14, main routing table version 14
+12 network entries using 1680 bytes of memory
+12 path entries using 960 bytes of memory
+6/6 BGP path/bestpath attribute entries using 864 bytes of memory
 2 BGP rrinfo entries using 48 bytes of memory
-1 BGP AS-PATH entries using 24 bytes of memory
+4 BGP AS-PATH entries using 96 bytes of memory
 0 BGP route-map cache entries using 0 bytes of memory
 0 BGP filter-list cache entries using 0 bytes of memory
-BGP using 2264 total bytes of memory
-BGP activity 21/13 prefixes, 21/13 paths, scan interval 60 secs
+BGP using 3648 total bytes of memory
+BGP activity 12/0 prefixes, 13/1 paths, scan interval 60 secs
 
 Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
-10.44.44.25     4          520     628     629       35    0    0 09:14:01        5
-44.112.26.18    4         2042     665     631       35    0    0 09:14:01        1
-R26#
-R26#show ip bgp
-BGP table version is 35, local router ID is 10.44.44.26
+10.44.44.25     4          520      67      64       14    0    0 00:49:02        9
+44.112.26.18    4         2042      62      62       14    0    0 00:49:00        1
+R26#                   
+R26#show ip bgp        
+BGP table version is 14, local router ID is 10.44.44.26
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
               r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
               x best-external, a additional-path, c RIB-compressed, 
@@ -1120,10 +1136,14 @@ Origin codes: i - IGP, e - EGP, ? - incomplete
 RPKI validation codes: V valid, I invalid, N Not found
 
      Network          Next Hop            Metric LocPrf Weight Path
+ *>i 10.22.22.22/32   10.44.44.23              0    100      0 101 i
+ *>i 10.33.33.21/32   10.44.44.24              0    100      0 301 i
  r>i 10.44.44.23/32   10.44.44.23              0    100      0 i
  r>i 10.44.44.24/32   10.44.44.24              0    100      0 i
  r>i 10.44.44.25/32   10.44.44.25              0    100      0 i
  *>  10.44.44.26/32   0.0.0.0                  0         32768 i
+ *>i 10.111.3.14/32   10.44.44.24              0    100      0 301 1001 i
+ *>i 10.111.3.15/32   10.44.44.24              0    100      0 301 1001 i
  *>  10.112.3.18/32   44.112.26.18             0             0 2042 i
  *>i 44.114.25.0/24   10.44.44.25              0    100      0 i
  *>  44.114.26.0/24   0.0.0.0                  0         32768 i
@@ -1142,27 +1162,31 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 Gateway of last resort is not set
 
-      10.0.0.0/8 is variably subnetted, 13 subnets, 3 masks
-i L2     10.44.44.0/30 [115/20] via 10.44.44.13, 09:14:29, Ethernet0/2
-i L2     10.44.44.4/30 [115/20] via 10.44.44.9, 09:14:29, Ethernet0/1
+      10.0.0.0/8 is variably subnetted, 17 subnets, 3 masks
+B        10.22.22.22/32 [200/0] via 10.44.44.23, 00:16:50
+B        10.33.33.21/32 [200/0] via 10.44.44.24, 00:16:52
+i L2     10.44.44.0/30 [115/20] via 10.44.44.13, 00:51:30, Ethernet0/2
+i L2     10.44.44.4/30 [115/20] via 10.44.44.9, 00:51:30, Ethernet0/1
 C        10.44.44.8/30 is directly connected, Ethernet0/1
 L        10.44.44.10/32 is directly connected, Ethernet0/1
 C        10.44.44.12/30 is directly connected, Ethernet0/2
 L        10.44.44.14/32 is directly connected, Ethernet0/2
-i L2     10.44.44.23/32 [115/30] via 10.44.44.13, 09:14:17, Ethernet0/2
-                        [115/30] via 10.44.44.9, 09:14:17, Ethernet0/1
-i L2     10.44.44.24/32 [115/20] via 10.44.44.9, 09:14:29, Ethernet0/1
-i L2     10.44.44.25/32 [115/20] via 10.44.44.13, 09:14:29, Ethernet0/2
+i L2     10.44.44.23/32 [115/30] via 10.44.44.13, 00:51:20, Ethernet0/2
+                        [115/30] via 10.44.44.9, 00:51:20, Ethernet0/1
+i L2     10.44.44.24/32 [115/20] via 10.44.44.9, 00:51:30, Ethernet0/1
+i L2     10.44.44.25/32 [115/20] via 10.44.44.13, 00:51:30, Ethernet0/2
 C        10.44.44.26/32 is directly connected, Loopback0
+B        10.111.3.14/32 [200/0] via 10.44.44.24, 00:16:52
+B        10.111.3.15/32 [200/0] via 10.44.44.24, 00:16:52
 S        10.111.4.64/26 [1/0] via 44.114.26.28
 S        10.111.4.128/26 [1/0] via 44.114.26.28
-B        10.112.3.18/32 [20/0] via 44.112.26.18, 00:32:03
+B        10.112.3.18/32 [20/0] via 44.112.26.18, 00:50:24
       44.0.0.0/8 is variably subnetted, 6 subnets, 2 masks
 C        44.112.26.0/24 is directly connected, Ethernet1/1
 L        44.112.26.26/32 is directly connected, Ethernet1/1
-B        44.114.25.0/24 [200/0] via 10.44.44.25, 09:13:25
+B        44.114.25.0/24 [200/0] via 10.44.44.25, 00:50:24
 C        44.114.26.0/24 is directly connected, Ethernet1/0
 L        44.114.26.26/32 is directly connected, Ethernet1/0
-B        44.115.25.0/24 [200/0] via 10.44.44.25, 09:13:25
+B        44.115.25.0/24 [200/0] via 10.44.44.25, 00:50:24
 ```
 
