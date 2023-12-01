@@ -99,7 +99,35 @@ RPKI validation codes: V valid, I invalid, N Not found
  *>  10.111.3.14/32   0.0.0.0                  0         32768 i
  r>i 10.111.3.15/32   10.111.3.15              0    100      0 i
 
-Total number of prefixes 2 
+Total number of prefixes 2
+```
+
+##### После включения default route и применения фильтрации исходящих маршрутов на R22:
+
+```       
+R14#
+R14#show ip bgp
+BGP table version is 22, local router ID is 10.111.3.14
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+ *>  0.0.0.0          22.111.22.22                           0 101 i         (!!!)
+ *>i 10.22.22.22/32   10.111.3.15              0   1000      0 301 101 i
+ *>i 10.33.33.21/32   10.111.3.15              0   1000      0 301 i
+ *>i 10.44.44.23/32   10.111.3.15              0   1000      0 301 520 i
+ *>i 10.44.44.24/32   10.111.3.15              0   1000      0 301 520 i
+ *>i 10.44.44.25/32   10.111.3.15              0   1000      0 301 520 i
+ *>i 10.44.44.26/32   10.111.3.15              0   1000      0 301 520 i
+ *>  10.111.3.14/32   0.0.0.0                  0         32768 i
+ r>i 10.111.3.15/32   10.111.3.15              0    100      0 i
+ *>i 10.112.3.18/32   10.111.3.15              0   1000      0 301 520 2042 i
+ *>i 44.114.25.0/24   10.111.3.15              0   1000      0 301 520 i
+ *>i 44.114.26.0/24   10.111.3.15              0   1000      0 301 520 i
+ *>i 44.115.25.0/24   10.111.3.15              0   1000      0 301 520 i
 ```
 
 #### R15:
@@ -434,8 +462,12 @@ router bgp 101
  bgp log-neighbor-changes
  network 10.22.22.22 mask 255.255.255.255
  neighbor 22.111.22.14 remote-as 1001
+ neighbor 22.111.22.14 default-originate
+ neighbor 22.111.22.14 prefix-list Nothing-OUT out
  neighbor 33.22.21.21 remote-as 301
  neighbor 44.22.23.23 remote-as 520
+!
+ip prefix-list Nothing-OUT seq 5 deny 0.0.0.0/0 le 32
 !
 ```
 
@@ -517,6 +549,7 @@ B        44.114.25.0/24 [20/0] via 44.22.23.23, 04:24:46
 B        44.114.26.0/24 [20/0] via 44.22.23.23, 04:24:46
 B        44.115.25.0/24 [20/0] via 44.22.23.23, 04:24:46
 ```
+
 ##### После применения фильтрации транзитного трафика на R14:
 
 ```
@@ -588,6 +621,61 @@ B        44.114.25.0/24 [20/0] via 44.22.23.23, 04:27:38
 B        44.114.26.0/24 [20/0] via 44.22.23.23, 04:27:38
 B        44.115.25.0/24 [20/0] via 44.22.23.23, 04:27:38
 ```
+
+##### После включения default route и применения фильтрации исходящих маршрутов на R22:
+
+```
+R22#show ip bgp neighbors 22.111.22.14 advertised-routes
+BGP table version is 16, local router ID is 10.22.22.22
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+Originating default network 0.0.0.0                                         (!!!)
+
+     Network          Next Hop            Metric LocPrf Weight Path
+
+Total number of prefixes 0 
+R22#
+R22#show ip bgp                                         
+BGP table version is 16, local router ID is 10.22.22.22
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
+              r RIB-failure, S Stale, m multipath, b backup-path, f RT-Filter, 
+              x best-external, a additional-path, c RIB-compressed, 
+Origin codes: i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+     Network          Next Hop            Metric LocPrf Weight Path
+     0.0.0.0          0.0.0.0                                0 i            (!!!)
+ *>  10.22.22.22/32   0.0.0.0                  0         32768 i
+ *   10.33.33.21/32   44.22.23.23                            0 520 301 i
+ *>                   33.22.21.21              0             0 301 i
+ *   10.44.44.23/32   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23              0             0 520 i
+ *   10.44.44.24/32   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   10.44.44.25/32   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   10.44.44.26/32   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   10.111.3.14/32   44.22.23.23                            0 520 301 1001 i
+ *>                   33.22.21.21                            0 301 1001 i
+ *                    22.111.22.14             0             0 1001 1001 1001 i
+ *   10.111.3.15/32   44.22.23.23                            0 520 301 1001 i
+ *                    22.111.22.14                           0 1001 1001 1001 i
+ *>                   33.22.21.21                            0 301 1001 i
+ *>  10.112.3.18/32   44.22.23.23                            0 520 2042 i
+ *                    33.22.21.21                            0 301 520 2042 i
+ *   44.114.25.0/24   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   44.114.26.0/24   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+ *   44.115.25.0/24   33.22.21.21                            0 301 520 i
+ *>                   44.22.23.23                            0 520 i
+```
+
 
 #### R23:
 
