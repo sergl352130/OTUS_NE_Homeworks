@@ -105,7 +105,6 @@ Total number of prefixes 2
 ##### После включения default route и применения фильтрации исходящих маршрутов на R22:
 
 ```       
-R14#
 R14#show ip bgp
 BGP table version is 22, local router ID is 10.111.3.14
 Status codes: s suppressed, d damped, h history, * valid, > best, i - internal, 
@@ -128,6 +127,53 @@ RPKI validation codes: V valid, I invalid, N Not found
  *>i 44.114.25.0/24   10.111.3.15              0   1000      0 301 520 i
  *>i 44.114.26.0/24   10.111.3.15              0   1000      0 301 520 i
  *>i 44.115.25.0/24   10.111.3.15              0   1000      0 301 520 i
+```
+
+##### После применения всех правил фильтрации у провайдеров Киторн и Ламас:
+
+```       
+R14#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 10.111.3.15 to network 0.0.0.0
+
+B*    0.0.0.0/0 [200/0] via 10.111.3.15, 05:12:16
+      10.0.0.0/8 is variably subnetted, 22 subnets, 2 masks
+O IA     10.111.2.0/30 [110/20] via 10.111.2.9, 05:13:18, Ethernet0/0
+O IA     10.111.2.4/30 [110/20] via 10.111.2.21, 05:13:18, Ethernet0/1
+C        10.111.2.8/30 is directly connected, Ethernet0/0
+L        10.111.2.10/32 is directly connected, Ethernet0/0
+O        10.111.2.12/30 [110/20] via 10.111.2.26, 05:13:18, Ethernet0/2
+                        [110/20] via 10.111.2.9, 05:13:18, Ethernet0/0
+O        10.111.2.16/30 [110/20] via 10.111.2.26, 05:13:18, Ethernet0/2
+                        [110/20] via 10.111.2.21, 05:13:18, Ethernet0/1
+C        10.111.2.20/30 is directly connected, Ethernet0/1
+L        10.111.2.22/32 is directly connected, Ethernet0/1
+C        10.111.2.24/30 is directly connected, Ethernet0/2
+L        10.111.2.25/32 is directly connected, Ethernet0/2
+C        10.111.2.28/30 is directly connected, Ethernet0/3
+L        10.111.2.29/32 is directly connected, Ethernet0/3
+O IA     10.111.2.32/30 [110/20] via 10.111.2.26, 05:13:18, Ethernet0/2
+O IA     10.111.3.4/32 [110/21] via 10.111.2.9, 05:13:17, Ethernet0/0
+O IA     10.111.3.5/32 [110/21] via 10.111.2.21, 05:13:18, Ethernet0/1
+O        10.111.3.12/32 [110/11] via 10.111.2.9, 05:13:18, Ethernet0/0
+O        10.111.3.13/32 [110/11] via 10.111.2.21, 05:13:18, Ethernet0/1
+C        10.111.3.14/32 is directly connected, Loopback0
+O        10.111.3.15/32 [110/11] via 10.111.2.26, 05:13:18, Ethernet0/2
+O        10.111.3.19/32 [110/11] via 10.111.2.30, 05:13:18, Ethernet0/3
+O IA     10.111.3.20/32 [110/21] via 10.111.2.26, 05:13:17, Ethernet0/2
+B        10.112.3.18/32 [200/0] via 10.111.3.15, 05:12:03
+      22.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        22.111.22.0/24 is directly connected, Ethernet1/0
+L        22.111.22.14/32 is directly connected, Ethernet1/0
 ```
 
 #### R15:
@@ -288,6 +334,53 @@ RPKI validation codes: V valid, I invalid, N Not found
  *>  10.112.3.18/32   33.111.21.21                 1000      0 301 520 2042 i
 ```
 
+##### После применения всех правил фильтрации у провайдеров Киторн и Ламас:
+
+```       
+R15#show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP
+       a - application route
+       + - replicated route, % - next hop override
+
+Gateway of last resort is 33.111.21.21 to network 0.0.0.0
+
+B*    0.0.0.0/0 [20/0] via 33.111.21.21, 05:10:37
+      10.0.0.0/8 is variably subnetted, 22 subnets, 2 masks
+O IA     10.111.2.0/30 [110/20] via 10.111.2.13, 05:11:38, Ethernet0/1
+O IA     10.111.2.4/30 [110/20] via 10.111.2.17, 05:11:38, Ethernet0/0
+O        10.111.2.8/30 [110/20] via 10.111.2.25, 05:11:38, Ethernet0/2
+                       [110/20] via 10.111.2.13, 05:11:38, Ethernet0/1
+C        10.111.2.12/30 is directly connected, Ethernet0/1
+L        10.111.2.14/32 is directly connected, Ethernet0/1
+C        10.111.2.16/30 is directly connected, Ethernet0/0
+L        10.111.2.18/32 is directly connected, Ethernet0/0
+O        10.111.2.20/30 [110/20] via 10.111.2.25, 05:11:38, Ethernet0/2
+                        [110/20] via 10.111.2.17, 05:11:38, Ethernet0/0
+C        10.111.2.24/30 is directly connected, Ethernet0/2
+L        10.111.2.26/32 is directly connected, Ethernet0/2
+O IA     10.111.2.28/30 [110/20] via 10.111.2.25, 05:11:38, Ethernet0/2
+C        10.111.2.32/30 is directly connected, Ethernet0/3
+L        10.111.2.33/32 is directly connected, Ethernet0/3
+O IA     10.111.3.4/32 [110/21] via 10.111.2.13, 05:11:38, Ethernet0/1
+O IA     10.111.3.5/32 [110/21] via 10.111.2.17, 05:11:38, Ethernet0/0
+O        10.111.3.12/32 [110/11] via 10.111.2.13, 05:11:38, Ethernet0/1
+O        10.111.3.13/32 [110/11] via 10.111.2.17, 05:11:38, Ethernet0/0
+O        10.111.3.14/32 [110/11] via 10.111.2.25, 05:11:38, Ethernet0/2
+C        10.111.3.15/32 is directly connected, Loopback0
+O IA     10.111.3.19/32 [110/21] via 10.111.2.25, 05:11:38, Ethernet0/2
+O        10.111.3.20/32 [110/11] via 10.111.2.34, 05:11:38, Ethernet0/3
+B        10.112.3.18/32 [20/0] via 33.111.21.21, 05:10:23
+      33.0.0.0/8 is variably subnetted, 2 subnets, 2 masks
+C        33.111.21.0/24 is directly connected, Ethernet1/0
+L        33.111.21.15/32 is directly connected, Ethernet1/0
+```
+
 #### R18:
 
 ```
@@ -445,11 +538,11 @@ router bgp 301
  neighbor 33.111.21.15 route-map Lamas-OUT out
  neighbor 44.33.24.24 remote-as 520
 !
-ip prefix-list Lamas-OUT seq 5 permit 10.112.0.0/16 le 32
-ip prefix-list Lamas-OUT seq 10 deny 0.0.0.0/0 le 32
+ip as-path access-list 1 permit .*_2042$
+ip as-path access-list 1 deny .*
 !
 route-map Lamas-OUT permit 10
- match ip address prefix-list Lamas-OUT
+ match as-path 1
 !
 ```
 
