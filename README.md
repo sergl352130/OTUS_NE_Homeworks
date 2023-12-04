@@ -43,3 +43,7 @@
 ## Лабораторная работа 11
 + ### BGP. Фильтрация
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw11/README.md)
+
+## Лабораторная работа 12
++ ### BGP. Фильтрация
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw12/README.md)

@@ -1,5 +1,5 @@
-# Лабораторная работа 11
-+ ## BGP. Фильтрация
+# Лабораторная работа 12
++ ## Основные протоколы сети Интернет
 ## Топология
 ![](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw12/Network_topology.png?raw=true)
 
