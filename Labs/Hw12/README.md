@@ -357,7 +357,9 @@ icmp 44.114.25.28:4962 10.111.4.131:4962  44.114.26.26:4962  44.114.26.26:4962
 icmp 44.114.25.28:5218 10.111.4.131:5218  44.114.26.26:5218  44.114.26.26:5218
 ```
 
-#### R22:
+### DHCP, NTP:
+
+#### R12:
 
 ```
 version 15.4
@@ -365,41 +367,162 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname R22
+hostname R12
+!
+clock timezone MSK 0 0
+clock calendar-valid
+!
+ip dhcp excluded-address 10.111.0.1 10.111.0.5
+!
+ip dhcp pool VPC1
+ network 10.111.0.0 255.255.255.0
+ domain-name VPC1
+ default-router 10.111.0.1 
+ lease infinite
 !
 interface Loopback0
- description R22 Mgmt
- ip address 10.22.22.22 255.255.255.255
-!         
+ description R12 Mgmt
+ ip address 10.111.3.12 255.255.255.255
+ ip ospf 111 area 0
+!
 interface Ethernet0/0
- description to R23 Triada
- ip address 44.22.23.22 255.255.255.0
+ description p2p to R14
+ ip address 10.111.2.9 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 0
 !
 interface Ethernet0/1
- description to R21 Lamas
- ip address 33.22.21.22 255.255.255.0
+ description p2p to R15
+ ip address 10.111.2.13 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 0
 !
 interface Ethernet1/0
- description to R14 Moscow
- ip address 22.111.22.22 255.255.255.0
+ description p2p to SW4
+ ip address 10.111.2.2 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 10
 !
-router bgp 101
- bgp router-id 10.22.22.22
- bgp log-neighbor-changes
- network 10.22.22.22 mask 255.255.255.255
- neighbor 22.111.22.14 remote-as 1001
- neighbor 22.111.22.14 default-originate
- neighbor 22.111.22.14 route-map Nothing-OUT out
- neighbor 33.22.21.21 remote-as 301
- neighbor 44.22.23.23 remote-as 520
-!
-ip prefix-list Nothing-OUT seq 5 deny 0.0.0.0/0 le 32
-!
-route-map Nothing-OUT permit 10
- match ip address prefix-list Nothing-OUT
+ntp master 4
+ntp update-calendar
 !
 ```
 
-```
+#### R13:
 
 ```
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R13
+!
+clock timezone MSK 0 0
+clock calendar-valid
+!
+ip dhcp excluded-address 10.111.1.1 10.111.1.5
+!
+ip dhcp pool VPC7
+ network 10.111.1.0 255.255.255.0
+ domain-name VPC7
+ default-router 10.111.1.1 
+ lease infinite
+!
+interface Loopback0
+ description R13 Mgmt
+ ip address 10.111.3.13 255.255.255.255
+ ip ospf 111 area 0
+!
+interface Ethernet0/0
+ description p2p to R15
+ ip address 10.111.2.17 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 0
+!
+interface Ethernet0/1
+ description p2p to R14
+ ip address 10.111.2.21 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 0
+!
+interface Ethernet1/0
+ description p2p to SW5
+ ip address 10.111.2.6 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 10
+!
+ntp master 5
+ntp update-calendar
+!
+```
+
+### DHCP
+
+```
+R12#show ip dhcp binding 
+Bindings from all pools not associated with VRF:
+IP address          Client-ID/              Lease expiration        Type
+                    Hardware address/
+                    User name
+10.111.0.6          0100.5079.6668.01       Infinite                Automatic
+
+R13#show ip dhcp binding
+Bindings from all pools not associated with VRF:
+IP address          Client-ID/              Lease expiration        Type
+                    Hardware address/
+                    User name
+10.111.1.6          0100.5079.6668.07       Infinite                Automatic
+
+VPC1> dhcp
+DDORA IP 10.111.0.6/24 GW 10.111.0.1
+
+VPC7> dhcp
+DDORA IP 10.111.1.6/24 GW 10.111.1.1
+```
+
+### NTP
+
+```
+R12#show clock detail 
+19:48:33.852 MSK Mon Dec 11 2023
+Time source is NTP
+R12#
+R12#show ntp associations 
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~127.127.1.1     .LOCL.           3      1     16   377  0.000   0.000  1.204
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+
+ R13#show clock detail
+19:50:20.146 MSK Mon Dec 11 2023
+Time source is NTP
+R13#
+R13#show ntp associations
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~127.127.1.1     .LOCL.           4      7     16   377  0.000   0.000  1.204
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+
+ SW4#show clock detail
+19:51:39.013 MSK Mon Dec 11 2023
+Time source is NTP
+SW4#
+SW4#show ntp associations
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
++~10.111.3.12     127.127.1.1      4    400   1024   377  0.000  -1.000  2.007
+*~10.111.3.13     127.127.1.1      5    370   1024   377  1.000   0.500  1.987
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+
+ SW5#show clock detail
+19:53:07.483 MSK Mon Dec 11 2023
+Time source is NTP
+SW5#
+SW5#show ntp associations
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
++~10.111.3.12     127.127.1.1      4    758   1024   377  0.000  -1.000  1.975
+*~10.111.3.13     127.127.1.1      5    491   1024   377  0.000   0.000  1.989
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+ ```
