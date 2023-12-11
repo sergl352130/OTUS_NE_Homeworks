@@ -181,6 +181,40 @@ route-map RM-R18-R26-PAT permit 10
 ```
 
 ```
+VPC8> ping 44.112.24.24
+
+84 bytes from 44.112.24.24 icmp_seq=1 ttl=252 time=1.305 ms
+84 bytes from 44.112.24.24 icmp_seq=2 ttl=252 time=1.241 ms
+84 bytes from 44.112.24.24 icmp_seq=3 ttl=252 time=2.089 ms
+84 bytes from 44.112.24.24 icmp_seq=4 ttl=252 time=0.995 ms
+84 bytes from 44.112.24.24 icmp_seq=5 ttl=252 time=1.680 ms
+
+VPC8> ping 44.112.26.26
+
+84 bytes from 44.112.26.26 icmp_seq=1 ttl=252 time=1.209 ms
+84 bytes from 44.112.26.26 icmp_seq=2 ttl=252 time=1.138 ms
+84 bytes from 44.112.26.26 icmp_seq=3 ttl=252 time=1.367 ms
+84 bytes from 44.112.26.26 icmp_seq=4 ttl=252 time=1.140 ms
+84 bytes from 44.112.26.26 icmp_seq=5 ttl=252 time=1.337 ms
+
+
+VPC> ping 44.112.24.24
+
+84 bytes from 44.112.24.24 icmp_seq=1 ttl=252 time=1.352 ms
+84 bytes from 44.112.24.24 icmp_seq=2 ttl=252 time=1.830 ms
+84 bytes from 44.112.24.24 icmp_seq=3 ttl=252 time=1.538 ms
+84 bytes from 44.112.24.24 icmp_seq=4 ttl=252 time=1.197 ms
+84 bytes from 44.112.24.24 icmp_seq=5 ttl=252 time=1.686 ms
+
+VPC> ping 44.112.26.26
+
+84 bytes from 44.112.26.26 icmp_seq=1 ttl=252 time=1.150 ms
+84 bytes from 44.112.26.26 icmp_seq=2 ttl=252 time=0.897 ms
+84 bytes from 44.112.26.26 icmp_seq=3 ttl=252 time=0.915 ms
+84 bytes from 44.112.26.26 icmp_seq=4 ttl=252 time=1.245 ms
+84 bytes from 44.112.26.26 icmp_seq=5 ttl=252 time=1.292 ms
+
+
 R18#show ip nat translations 
 Pro Inside global      Inside local       Outside local      Outside global
 icmp 44.112.24.250:39766 10.112.0.2:39766 44.112.24.24:39766 44.112.24.24:39766
@@ -266,7 +300,40 @@ route-map RM-R28-R25-STNAT permit 10
 ```
 
 ```
-R28#sh ip nat translations 
+VPC30> ping 44.114.25.25
+
+84 bytes from 44.114.25.25 icmp_seq=1 ttl=253 time=0.981 ms
+84 bytes from 44.114.25.25 icmp_seq=2 ttl=253 time=1.566 ms
+84 bytes from 44.114.25.25 icmp_seq=3 ttl=253 time=1.190 ms
+84 bytes from 44.114.25.25 icmp_seq=4 ttl=253 time=1.457 ms
+84 bytes from 44.114.25.25 icmp_seq=5 ttl=253 time=1.358 ms
+
+VPC30> ping 44.114.26.26
+
+84 bytes from 44.114.26.26 icmp_seq=1 ttl=254 time=1.335 ms
+84 bytes from 44.114.26.26 icmp_seq=2 ttl=254 time=1.273 ms
+84 bytes from 44.114.26.26 icmp_seq=3 ttl=254 time=1.072 ms
+84 bytes from 44.114.26.26 icmp_seq=4 ttl=254 time=1.225 ms
+84 bytes from 44.114.26.26 icmp_seq=5 ttl=254 time=1.732 ms
+
+VPC31> ping 44.114.25.25
+
+84 bytes from 44.114.25.25 icmp_seq=1 ttl=254 time=0.681 ms
+84 bytes from 44.114.25.25 icmp_seq=2 ttl=254 time=0.829 ms
+84 bytes from 44.114.25.25 icmp_seq=3 ttl=254 time=1.011 ms
+84 bytes from 44.114.25.25 icmp_seq=4 ttl=254 time=1.189 ms
+84 bytes from 44.114.25.25 icmp_seq=5 ttl=254 time=0.981 ms
+
+VPC31> ping 44.114.26.26
+
+84 bytes from 44.114.26.26 icmp_seq=1 ttl=253 time=1.431 ms
+84 bytes from 44.114.26.26 icmp_seq=2 ttl=253 time=1.226 ms
+84 bytes from 44.114.26.26 icmp_seq=3 ttl=253 time=1.311 ms
+84 bytes from 44.114.26.26 icmp_seq=4 ttl=253 time=2.030 ms
+84 bytes from 44.114.26.26 icmp_seq=5 ttl=253 time=1.086 ms
+
+
+R28#show ip nat translations 
 Pro Inside global      Inside local       Outside local      Outside global
 icmp 44.114.26.28:98   10.111.4.66:98     44.114.26.26:98    44.114.26.26:98
 icmp 44.114.26.28:354  10.111.4.66:354    44.114.26.26:354   44.114.26.26:354
