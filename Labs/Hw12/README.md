@@ -213,44 +213,81 @@ service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname R21
+hostname R28
 !
 interface Loopback0
- description R21 Mgmt
- ip address 10.33.33.21 255.255.255.255
+ ip address 10.111.4.28 255.255.255.255
 !
 interface Ethernet0/0
- description to R24 Triada
- ip address 44.33.24.21 255.255.255.0
+ no ip address
 !
-interface Ethernet0/1
- description to R22 Kitorn
- ip address 33.22.21.21 255.255.255.0
+interface Ethernet0/0.30
+ description LAN VPC30
+ encapsulation dot1Q 30
+ ip address 10.111.4.65 255.255.255.192
+ ip nat inside
+ ip virtual-reassembly in
+ ip policy route-map VLAN30
+!
+interface Ethernet0/0.31
+ description LAN VPC31
+ encapsulation dot1Q 31
+ ip address 10.111.4.129 255.255.255.192
+ ip nat inside
+ ip virtual-reassembly in
+ ip policy route-map VLAN31
 !
 interface Ethernet1/0
- description to R15 Moscow
- ip address 33.111.21.21 255.255.255.0
+ description to R26 Triada
+ ip address 44.114.26.28 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
+!         
+interface Ethernet1/1
+ description to R25 Triada
+ ip address 44.114.25.28 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
 !
-router bgp 301
- bgp router-id 10.33.33.21
- bgp log-neighbor-changes
- network 10.33.33.21 mask 255.255.255.255
- neighbor 33.22.21.22 remote-as 101
- neighbor 33.111.21.15 remote-as 1001
- neighbor 33.111.21.15 default-originate
- neighbor 33.111.21.15 route-map Lamas-OUT out
- neighbor 44.33.24.24 remote-as 520
+ip nat inside source route-map RM-R28-R25-STNAT interface Ethernet1/1 overload
+ip nat inside source route-map RM-R28-R26-STNAT interface Ethernet1/0 overload
 !
-ip as-path access-list 1 permit .*_2042$
-ip as-path access-list 1 deny .*
+ip access-list standard R28-STNAT-IN
+ permit 10.111.4.0 0.0.0.255
 !
-route-map Lamas-OUT permit 10
- match as-path 1
+route-map RM-R28-R26-STNAT permit 10
+ match ip address R28-STNAT-IN
+ match interface Ethernet1/0
+!
+route-map RM-R28-R25-STNAT permit 10
+ match ip address R28-STNAT-IN
+ match interface Ethernet1/1
 !
 ```
 
 ```
-
+R28#sh ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 44.114.26.28:98   10.111.4.66:98     44.114.26.26:98    44.114.26.26:98
+icmp 44.114.26.28:354  10.111.4.66:354    44.114.26.26:354   44.114.26.26:354
+icmp 44.114.26.28:61537 10.111.4.66:61537 44.114.25.25:61537 44.114.25.25:61537
+icmp 44.114.26.28:61793 10.111.4.66:61793 44.114.25.25:61793 44.114.25.25:61793
+icmp 44.114.26.28:62049 10.111.4.66:62049 44.114.25.25:62049 44.114.25.25:62049
+icmp 44.114.26.28:62305 10.111.4.66:62305 44.114.25.25:62305 44.114.25.25:62305
+icmp 44.114.26.28:62561 10.111.4.66:62561 44.114.25.25:62561 44.114.25.25:62561
+icmp 44.114.26.28:64865 10.111.4.66:64865 44.114.26.26:64865 44.114.26.26:64865
+icmp 44.114.26.28:65121 10.111.4.66:65121 44.114.26.26:65121 44.114.26.26:65121
+icmp 44.114.26.28:65377 10.111.4.66:65377 44.114.26.26:65377 44.114.26.26:65377
+icmp 44.114.25.28:1634 10.111.4.131:1634  44.114.25.25:1634  44.114.25.25:1634
+icmp 44.114.25.28:1890 10.111.4.131:1890  44.114.25.25:1890  44.114.25.25:1890
+icmp 44.114.25.28:2146 10.111.4.131:2146  44.114.25.25:2146  44.114.25.25:2146
+icmp 44.114.25.28:2402 10.111.4.131:2402  44.114.25.25:2402  44.114.25.25:2402
+icmp 44.114.25.28:2658 10.111.4.131:2658  44.114.25.25:2658  44.114.25.25:2658
+icmp 44.114.25.28:4194 10.111.4.131:4194  44.114.26.26:4194  44.114.26.26:4194
+icmp 44.114.25.28:4450 10.111.4.131:4450  44.114.26.26:4450  44.114.26.26:4450
+icmp 44.114.25.28:4706 10.111.4.131:4706  44.114.26.26:4706  44.114.26.26:4706
+icmp 44.114.25.28:4962 10.111.4.131:4962  44.114.26.26:4962  44.114.26.26:4962
+icmp 44.114.25.28:5218 10.111.4.131:5218  44.114.26.26:5218  44.114.26.26:5218
 ```
 
 #### R22:
