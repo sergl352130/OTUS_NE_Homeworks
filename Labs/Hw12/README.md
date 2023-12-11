@@ -136,38 +136,76 @@ interface Loopback0
  description R18 Mgmt
  ip address 10.112.3.18 255.255.255.255
 !
+interface Ethernet0/0
+ description p2p to R17
+ ip address 10.112.2.18 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface Ethernet0/1
+ description p2p to R16
+ ip address 10.112.2.22 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
 interface Ethernet1/0
  description to R24 Triada
  ip address 44.112.24.18 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
 !
 interface Ethernet1/1
  description to R26 Triada
  ip address 44.112.26.18 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
 !
-router bgp 2042
- bgp router-id 10.112.3.18
- bgp log-neighbor-changes
- bgp bestpath as-path multipath-relax
- network 10.112.3.18 mask 255.255.255.255
- neighbor 44.112.24.24 remote-as 520
- neighbor 44.112.24.24 route-map Triada-OUT out
- neighbor 44.112.26.26 remote-as 520
- neighbor 44.112.26.26 route-map Triada-OUT out
- maximum-paths 2
+ip nat pool R18-R24-PAT-OUT 44.112.24.250 44.112.24.254 netmask 255.255.255.0
+ip nat pool R18-R26-PAT-OUT 44.112.26.250 44.112.26.254 netmask 255.255.255.0
+ip nat inside source route-map RM-R18-R24-PAT pool R18-R24-PAT-OUT overload
+ip nat inside source route-map RM-R18-R26-PAT pool R18-R26-PAT-OUT overload
+ip route 0.0.0.0 0.0.0.0 44.112.24.24
+ip route 0.0.0.0 0.0.0.0 44.112.26.26
 !
-ip prefix-list Triada-OUT seq 5 permit 10.112.0.0/16 le 32
-ip prefix-list Triada-OUT seq 10 deny 0.0.0.0/0 le 32
+ip access-list standard R18-PAT-IN
+ permit 10.112.0.0 0.0.3.255
 !
-route-map Triada-OUT permit 10
- match ip address prefix-list Triada-OUT
+route-map RM-R18-R24-PAT permit 10
+ match ip address R18-PAT-IN
+ match interface Ethernet1/0
+!         
+route-map RM-R18-R26-PAT permit 10
+ match ip address R18-PAT-IN
+ match interface Ethernet1/1
 !
 ```
 
 ```
-
+R18#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 44.112.24.250:39766 10.112.0.2:39766 44.112.24.24:39766 44.112.24.24:39766
+icmp 44.112.24.250:40022 10.112.0.2:40022 44.112.24.24:40022 44.112.24.24:40022
+icmp 44.112.24.250:40278 10.112.0.2:40278 44.112.24.24:40278 44.112.24.24:40278
+icmp 44.112.24.250:40534 10.112.0.2:40534 44.112.24.24:40534 44.112.24.24:40534
+icmp 44.112.24.250:40790 10.112.0.2:40790 44.112.24.24:40790 44.112.24.24:40790
+icmp 44.112.26.250:42070 10.112.0.2:42070 44.112.26.26:42070 44.112.26.26:42070
+icmp 44.112.26.250:42326 10.112.0.2:42326 44.112.26.26:42326 44.112.26.26:42326
+icmp 44.112.26.250:42582 10.112.0.2:42582 44.112.26.26:42582 44.112.26.26:42582
+icmp 44.112.26.250:42838 10.112.0.2:42838 44.112.26.26:42838 44.112.26.26:42838
+icmp 44.112.26.250:43094 10.112.0.2:43094 44.112.26.26:43094 44.112.26.26:43094
+icmp 44.112.24.250:44374 10.112.1.2:44374 44.112.24.24:44374 44.112.24.24:44374
+icmp 44.112.24.250:44630 10.112.1.2:44630 44.112.24.24:44630 44.112.24.24:44630
+icmp 44.112.24.250:44886 10.112.1.2:44886 44.112.24.24:44886 44.112.24.24:44886
+icmp 44.112.24.250:45142 10.112.1.2:45142 44.112.24.24:45142 44.112.24.24:45142
+icmp 44.112.24.250:45398 10.112.1.2:45398 44.112.24.24:45398 44.112.24.24:45398
+icmp 44.112.26.250:46166 10.112.1.2:46166 44.112.26.26:46166 44.112.26.26:46166
+icmp 44.112.26.250:46422 10.112.1.2:46422 44.112.26.26:46422 44.112.26.26:46422
+icmp 44.112.26.250:46678 10.112.1.2:46678 44.112.26.26:46678 44.112.26.26:46678
+icmp 44.112.26.250:46934 10.112.1.2:46934 44.112.26.26:46934 44.112.26.26:46934
+icmp 44.112.26.250:47190 10.112.1.2:47190 44.112.26.26:47190 44.112.26.26:47190
 ```
 
-#### R21:
+#### R28:
 
 ```
 version 15.4
