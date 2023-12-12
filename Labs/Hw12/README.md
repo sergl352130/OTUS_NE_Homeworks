@@ -525,4 +525,48 @@ SW5#show ntp associations
 +~10.111.3.12     127.127.1.1      4    758   1024   377  0.000  -1.000  1.975
 *~10.111.3.13     127.127.1.1      5    491   1024   377  0.000   0.000  1.989
  * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+
+ SW2#show clock detail
+*11:30:30.055 MSK Tue Dec 12 2023
+Time source is NTP
+SW2#
+SW2#sho ntp associations
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~10.111.3.12     127.127.1.1      4     37     64     1  2.000  -1.000 189.44
++~10.111.3.13     127.127.1.1      5     35     64     1  1.000  -0.500 189.44
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+
+ SW2#show clock detail
+*11:30:30.055 MSK Tue Dec 12 2023
+Time source is NTP
+SW2#
+SW2#sho ntp associations
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~10.111.3.12     127.127.1.1      4     37     64     1  2.000  -1.000 189.44
++~10.111.3.13     127.127.1.1      5     35     64     1  1.000  -0.500 189.44
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+
+ R19#show clock detail
+11:33:29.954 MSK Tue Dec 12 2023
+Time source is NTP
+R19#
+R19#show ntp associations
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
++~10.111.3.12     127.127.1.1      4    208    512   377  0.000  -1.000  2.047
+*~10.111.3.13     127.127.1.1      5      1    512   377  0.000   0.000  2.183
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+
+ R20#show clock detail
+11:33:29.954 MSK Tue Dec 12 2023
+Time source is NTP
+R20#
+R20#show ntp associations
+
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~10.111.3.12     127.127.1.1      4    400   1024   377  0.000  -1.000  2.076
++~10.111.3.13     127.127.1.1      5    482    512   377  1.000  -0.500  1.974
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
  ```
