@@ -224,11 +224,10 @@ interface Ethernet1/0
  duplex auto
 !
 interface Ethernet1/1
- description p2p to SW3
+ no shutdown
+ description L3 p2p to SW3
  no switchport
  ip address 10.111.2.114 255.255.255.252
- ip ospf network point-to-point
- ip ospf 111 area 10
  duplex auto
 !
 interface Ethernet1/2
