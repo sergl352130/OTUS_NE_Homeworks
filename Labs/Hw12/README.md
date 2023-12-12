@@ -457,6 +457,54 @@ ntp update-calendar
 !
 ```
 
+#### SW4:
+
+```
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname SW4
+!
+clock timezone MSK 0 0
+!
+interface Vlan11
+ description Default gateway VLAN11
+ ip address 10.111.0.1 255.255.255.0
+ ip helper-address 10.111.2.2
+ ip ospf 111 area 10
+!
+ntp server 10.111.3.12
+ntp server 10.111.3.13
+!
+```
+
+#### SW5:
+
+```
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname SW5
+!
+clock timezone MSK 0 0
+!
+interface Vlan17
+ description Default gateway VLAN17
+ ip address 10.111.1.1 255.255.255.0
+ ip helper-address 10.111.2.6
+ ip ospf 111 area 10
+!
+ntp server 10.111.3.12
+ntp server 10.111.3.13
+!
+```
+
 ### DHCP
 
 ```
