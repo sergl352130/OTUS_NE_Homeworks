@@ -57,16 +57,18 @@
 |Москва|
 |VPC1  |eth0     |DHCP	       |DHCP	         |DHCP          |
 |VPC7  |eth0     |DHCP	       |DHCP	         |DHCP          |
-|SW2   |VLAN111  |10.111.3.102 |255.255.255.240|VLAN111 Mgmt  |
-|SW3   |VLAN111  |10.111.3.103 |255.255.255.240|VLAN111 Mgmt  |
+|SW2   |Loopback0|10.111.3.2   |255.255.255.255|SW2 Mgmt      |
+|SW2   |E1/1	   |10.111.2.102 |255.255.255.252|p2p to SW5    |
+|SW3   |Loopback0|10.111.3.3   |255.255.255.255|SW3 Mgmt      |
+|SW3   |E1/1	   |10.111.2.113 |255.255.255.252|p2p to SW4    |
 |SW4   |Loopback0|10.111.3.4   |255.255.255.255|SW4 Mgmt      |
-|SW4   |VLAN111  |10.111.3.104 |255.255.255.240|VLAN111 Mgmt  |
 |SW4   |E1/0	   |10.111.2.1   |255.255.255.252|p2p to R12    |
+|SW4   |E1/1	   |10.111.2.114 |255.255.255.252|p2p to SW3    |
 |SW4   |VLAN11	 |10.111.0.1   |255.255.255.0  |DefGW VLAN11  |
 |SW5   |Loopback0|10.111.3.5   |255.255.255.255|SW5 Mgmt      |
-|SW5   |VLAN111  |10.111.3.105 |255.255.255.240|VLAN111 Mgmt  |
 |SW5   |E1/0	   |10.111.2.5   |255.255.255.252|p2p to R13    |
-|SW5   |VLAN17	 |10.111.1.1   |255.255.255.0  |DefGWy VLAN17 |
+|SW5   |E1/1	   |10.111.2.101 |255.255.255.252|p2p to SW2    |
+|SW5   |VLAN17	 |10.111.1.1   |255.255.255.0  |DefGW VLAN17  |
 |R12   |Loopback0|10.111.3.12  |255.255.255.255|R12 Mgmt      |
 |R12   |E1/0     |10.111.2.2   |255.255.255.252|p2p to SW4    |
 |R12   |E0/0     |10.111.2.9   |255.255.255.252|p2p to R14    |
@@ -222,10 +224,12 @@ interface Ethernet1/0
  duplex auto
 !
 interface Ethernet1/1
- no shutdown
- switchport access vlan 99
- switchport mode access
- shutdown
+ description p2p to SW3
+ no switchport
+ ip address 10.111.2.114 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 111 area 10
+ duplex auto
 !
 interface Ethernet1/2
  no shutdown
@@ -244,11 +248,6 @@ interface Vlan11
  description Default gateway VLAN11
  ip address 10.111.0.1 255.255.255.0
  ip helper-address 10.111.2.2 
-!
-interface Vlan111
- no shutdown
- description VLAN111 Mgmt
- ip address 10.111.3.104 255.255.255.240
 !
 ```
 
@@ -288,7 +287,9 @@ interface Ethernet1/0
 ```
 
 + #### Шаг 3: Настройка отдельного VLAN для каждого VPC в каждом офисе
-  
+
+**!!! Внимание - на всех свитчах необходимо вводить команду *#vtp mode off*, в противном случае при перезагрузке настройки VLAN database могут не сохраниться !!!**
+
 #### SW3:
 
 ```
