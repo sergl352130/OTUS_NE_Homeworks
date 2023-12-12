@@ -30,41 +30,60 @@ no service password-encryption
 !
 hostname R14
 !
-interface Loopback0
- description R14 Mgmt
- ip address 10.111.3.14 255.255.255.255
+clock timezone MSK 0 0
+!
+interface Ethernet0/0
+ description p2p to R12
+ ip address 10.111.2.10 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf network point-to-point
+ ip ospf 111 area 0
+!
+interface Ethernet0/1
+ description p2p to R13
+ ip address 10.111.2.22 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf network point-to-point
  ip ospf 111 area 0
 !
 interface Ethernet0/2
  description p2p to R15
  ip address 10.111.2.25 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
  ip ospf network point-to-point
  ip ospf 111 area 0
+!
+interface Ethernet0/3
+ description p2p to R19
+ ip address 10.111.2.29 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf network point-to-point
+ ip ospf 111 area 101
 !
 interface Ethernet1/0
  description to R22 Kitorn
  ip address 22.111.22.14 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
 !
-router bgp 1001
- bgp router-id 10.111.3.14
- bgp log-neighbor-changes
- network 10.111.3.14 mask 255.255.255.255
- neighbor 10.111.3.15 remote-as 1001
- neighbor 10.111.3.15 update-source Loopback0
- neighbor 10.111.3.15 next-hop-self
- neighbor 22.111.22.22 remote-as 101
+router ospf 111
+ router-id 10.111.3.14
+ area 101 stub no-summary
+ default-information originate always
 !
-ip as-path access-list 1 permit ^$
-ip as-path access-list 1 deny .*
+ip nat inside source list R14-PAT-IN interface Ethernet1/0 overload
+ip nat inside source static 10.111.2.30 22.111.22.19
 !
-route-map R22-Kitorn-OUT permit 10
- match as-path 1
- set as-path prepend 1001 1001
+ip access-list standard R14-PAT-IN
+ permit 10.111.0.0 0.0.3.255
 !
-```
-
-```       
-
+ntp server 10.111.3.12
+ntp server 10.111.3.13
+!
 ```
 
 #### R15:
@@ -77,49 +96,151 @@ no service password-encryption
 !
 hostname R15
 !
-interface Loopback0
- description R15 Mgmt
- ip address 10.111.3.15 255.255.255.255
+clock timezone MSK 0 0
+!
+interface Ethernet0/0
+ description p2p to R13
+ ip address 10.111.2.18 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf network point-to-point
+ ip ospf 111 area 0
+!
+interface Ethernet0/1
+ description p2p to R12
+ ip address 10.111.2.14 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf network point-to-point
  ip ospf 111 area 0
 !
 interface Ethernet0/2
  description p2p to R14
  ip address 10.111.2.26 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
  ip ospf network point-to-point
  ip ospf 111 area 0
+!
+interface Ethernet0/3
+ description p2p to R20
+ ip address 10.111.2.33 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf network point-to-point
+ ip ospf 111 area 102
 !
 interface Ethernet1/0
  description to R21 Lamas
  ip address 33.111.21.15 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
 !
-router bgp 1001
- bgp router-id 10.111.3.15
- bgp log-neighbor-changes
- network 10.111.3.15 mask 255.255.255.255
- neighbor 10.111.3.14 remote-as 1001
- neighbor 10.111.3.14 update-source Loopback0
- neighbor 10.111.3.14 next-hop-self
- neighbor 33.111.21.21 remote-as 301
- neighbor 33.111.21.21 route-map R21-Lamas-IN in
- neighbor 33.111.21.21 route-map R21-Lamas-OUT out
+router ospf 111
+ router-id 10.111.3.15
+ area 102 filter-list prefix NOarea101 in
+ default-information originate always
 !
-ip as-path access-list 1 permit ^$
-ip as-path access-list 1 deny .*
+ip nat inside source list R15-PAT-IN interface Ethernet1/0 overload
+ip nat inside source static 10.111.2.34 33.111.21.20
 !
-ip prefix-list NOarea101 seq 5 deny 10.111.2.28/30
-ip prefix-list NOarea101 seq 10 deny 10.111.3.19/32
-ip prefix-list NOarea101 seq 15 permit 0.0.0.0/0 le 32
+ip access-list standard R15-PAT-IN
+ permit 10.111.0.0 0.0.3.255
 !
-route-map R21-Lamas-IN permit 10
- set local-preference 1000
-!
-route-map R21-Lamas-OUT permit 10
- match as-path 1
+ntp server 10.111.3.12
+ntp server 10.111.3.13
 !
 ```
 
-```       
+### NAT
 
+```       
+VPC1> ping 22.111.22.22 
+
+*33.111.21.21 icmp_seq=1 ttl=252 time=1.345 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=2 ttl=252 time=1.990 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=3 ttl=252 time=1.731 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=4 ttl=252 time=1.531 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=5 ttl=252 time=1.271 ms (ICMP type:3, code:1, Destination host unreachable)
+
+VPC1> ping 33.111.21.21 
+
+84 bytes from 33.111.21.21 icmp_seq=1 ttl=252 time=1.505 ms
+84 bytes from 33.111.21.21 icmp_seq=2 ttl=252 time=1.639 ms
+84 bytes from 33.111.21.21 icmp_seq=3 ttl=252 time=2.093 ms
+84 bytes from 33.111.21.21 icmp_seq=4 ttl=252 time=1.414 ms
+84 bytes from 33.111.21.21 icmp_seq=5 ttl=252 time=1.255 ms
+
+VPC7> ping 22.111.22.22 
+
+84 bytes from 22.111.22.22 icmp_seq=1 ttl=252 time=1.747 ms
+84 bytes from 22.111.22.22 icmp_seq=2 ttl=252 time=1.557 ms
+84 bytes from 22.111.22.22 icmp_seq=3 ttl=252 time=1.570 ms
+84 bytes from 22.111.22.22 icmp_seq=4 ttl=252 time=2.053 ms
+84 bytes from 22.111.22.22 icmp_seq=5 ttl=252 time=1.810 ms
+
+VPC7> ping 33.111.21.21 
+
+84 bytes from 33.111.21.21 icmp_seq=1 ttl=252 time=2.564 ms
+84 bytes from 33.111.21.21 icmp_seq=2 ttl=252 time=1.667 ms
+84 bytes from 33.111.21.21 icmp_seq=3 ttl=252 time=1.528 ms
+84 bytes from 33.111.21.21 icmp_seq=4 ttl=252 time=1.152 ms
+84 bytes from 33.111.21.21 icmp_seq=5 ttl=252 time=1.232 ms
+
+R19#ping 22.111.22.22
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 22.111.22.22, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+R19#ping 33.111.21.21
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 33.111.21.21, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+
+R20#ping 22.111.22.22
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 22.111.22.22, timeout is 2 seconds:
+U.U.U
+Success rate is 0 percent (0/5)
+R20#ping 33.111.21.21
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 33.111.21.21, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/1 ms
+
+
+R14#show ip nat translations 
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 22.111.22.14:51113 10.111.1.6:51113  22.111.22.22:51113 22.111.22.22:51113
+icmp 22.111.22.14:51369 10.111.1.6:51369  22.111.22.22:51369 22.111.22.22:51369
+icmp 22.111.22.14:51625 10.111.1.6:51625  22.111.22.22:51625 22.111.22.22:51625
+icmp 22.111.22.14:51881 10.111.1.6:51881  22.111.22.22:51881 22.111.22.22:51881
+icmp 22.111.22.14:52137 10.111.1.6:52137  22.111.22.22:52137 22.111.22.22:52137
+icmp 22.111.22.19:3    10.111.2.30:3      22.111.22.22:3     22.111.22.22:3
+--- 22.111.22.19       10.111.2.30        ---                ---
+
+R15#show ip nat translations
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 33.111.21.15:36779 10.111.0.6:36779  22.111.22.22:36779 22.111.22.22:36779
+icmp 33.111.21.15:37035 10.111.0.6:37035  22.111.22.22:37035 22.111.22.22:37035
+icmp 33.111.21.15:37291 10.111.0.6:37291  22.111.22.22:37291 22.111.22.22:37291
+icmp 33.111.21.15:37547 10.111.0.6:37547  22.111.22.22:37547 22.111.22.22:37547
+icmp 33.111.21.15:37803 10.111.0.6:37803  22.111.22.22:37803 22.111.22.22:37803
+icmp 33.111.21.15:41899 10.111.0.6:41899  33.111.21.21:41899 33.111.21.21:41899
+icmp 33.111.21.15:42155 10.111.0.6:42155  33.111.21.21:42155 33.111.21.21:42155
+icmp 33.111.21.15:42411 10.111.0.6:42411  33.111.21.21:42411 33.111.21.21:42411
+icmp 33.111.21.15:42667 10.111.0.6:42667  33.111.21.21:42667 33.111.21.21:42667
+icmp 33.111.21.15:42923 10.111.0.6:42923  33.111.21.21:42923 33.111.21.21:42923
+icmp 33.111.21.15:43179 10.111.1.6:43179  33.111.21.21:43179 33.111.21.21:43179
+icmp 33.111.21.15:43435 10.111.1.6:43435  33.111.21.21:43435 33.111.21.21:43435
+icmp 33.111.21.15:43691 10.111.1.6:43691  33.111.21.21:43691 33.111.21.21:43691
+icmp 33.111.21.15:43947 10.111.1.6:43947  33.111.21.21:43947 33.111.21.21:43947
+icmp 33.111.21.15:44203 10.111.1.6:44203  33.111.21.21:44203 33.111.21.21:44203
+icmp 33.111.21.15:7    10.111.2.30:7      33.111.21.21:7     33.111.21.21:7
+icmp 33.111.21.20:4    10.111.2.34:4      22.111.22.22:4     22.111.22.22:4
+icmp 33.111.21.20:5    10.111.2.34:5      33.111.21.21:5     33.111.21.21:5
+--- 33.111.21.20       10.111.2.34        ---                ---
 ```
 
 #### R18:
@@ -179,6 +300,8 @@ route-map RM-R18-R26-PAT permit 10
  match interface Ethernet1/1
 !
 ```
+
+### NAT
 
 ```
 VPC8> ping 44.112.24.24
@@ -298,6 +421,8 @@ route-map RM-R28-R25-STNAT permit 10
  match interface Ethernet1/1
 !
 ```
+
+### NAT
 
 ```
 VPC30> ping 44.114.25.25
