@@ -47,3 +47,7 @@
 ## Лабораторная работа 12
 + ### Основные протоколы сети Интернет
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw12/README.md)
+
+## Лабораторная работа 13
++ ### VPN. GRE. DMVPN
+[Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw13/README.md)
