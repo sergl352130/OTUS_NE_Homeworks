@@ -502,8 +502,8 @@ hostname R12
 clock timezone MSK 0 0
 clock calendar-valid
 !
-ip dhcp excluded-address 10.111.0.201 10.111.0.254
-ip dhcp excluded-address 10.111.1.201 10.111.1.254
+ip dhcp excluded-address 10.111.0.129 10.111.0.254
+ip dhcp excluded-address 10.111.1.1 10.111.1.128
 !
 ip dhcp pool VPC1
  network 10.111.0.0 255.255.255.0
@@ -558,8 +558,8 @@ hostname R13
 clock timezone MSK 0 0
 clock calendar-valid
 !
-ip dhcp excluded-address 10.111.0.201 10.111.0.254
-ip dhcp excluded-address 10.111.1.201 10.111.1.254
+ip dhcp excluded-address 10.111.1.129 10.111.1.254
+ip dhcp excluded-address 10.111.0.1 10.111.0.128
 !
 ip dhcp pool VPC7
  network 10.111.1.0 255.255.255.0
