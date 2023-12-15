@@ -450,7 +450,7 @@ ip nat inside source route-map RM-R28-R26-NAT interface Ethernet1/0 overload
 ip route 0.0.0.0 0.0.0.0 44.114.25.25
 ip route 0.0.0.0 0.0.0.0 44.114.26.26
 !
-ip access-list standard R28-STNAT-IN
+ip access-list standard R28-NAT-IN
  permit 10.111.4.0 0.0.0.255
 !
 route-map RM-R28-R25-NAT permit 10
