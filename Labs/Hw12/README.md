@@ -97,11 +97,12 @@ router bgp 1001
  neighbor 22.111.22.22 remote-as 101
  neighbor 22.111.22.22 route-map R22-Kitorn-OUT out
 !
-ip nat inside source list R14-PAT-IN interface Loopback1 overload
-ip nat inside source static 10.111.2.30 14.14.14.14
+ip nat pool R15-PAT-OUT 14.14.14.14 14.14.14.14 netmask 255.255.255.0
+ip nat inside source list R14-PAT-IN pool R14-PAT-OUT overload
+ip route 14.14.14.14 255.255.255.255 Null0
 !
 ip access-list standard R14-PAT-IN
- permit 10.111.0.0 0.0.3.255
+ permit 10.111.0.0 0.0.1.255
 !
 ntp server 10.111.3.12
 ntp server 10.111.3.13
