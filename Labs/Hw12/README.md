@@ -32,16 +32,6 @@ hostname R14
 !
 clock timezone MSK 0 0
 !
-interface Loopback0
- description R14 Mgmt
- ip address 10.111.3.14 255.255.255.255
- ip ospf 111 area 0
-!
-interface Loopback1
- description R14 NAT
- ip address 14.14.14.14 255.255.255.255
- ip ospf 111 area 0
-!
 interface Ethernet0/0
  description p2p to R12
  ip address 10.111.2.10 255.255.255.252
