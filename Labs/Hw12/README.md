@@ -512,12 +512,19 @@ hostname R12
 clock timezone MSK 0 0
 clock calendar-valid
 !
-ip dhcp excluded-address 10.111.0.1 10.111.0.5
+ip dhcp excluded-address 10.111.0.201 10.111.0.254
+ip dhcp excluded-address 10.111.1.201 10.111.1.254
 !
 ip dhcp pool VPC1
  network 10.111.0.0 255.255.255.0
  domain-name VPC1
  default-router 10.111.0.1 
+ lease infinite
+!
+ip dhcp pool VPC7
+ network 10.111.1.0 255.255.255.0
+ domain-name VPC7
+ default-router 10.111.1.1 
  lease infinite
 !
 interface Loopback0
@@ -561,12 +568,19 @@ hostname R13
 clock timezone MSK 0 0
 clock calendar-valid
 !
-ip dhcp excluded-address 10.111.1.1 10.111.1.5
+ip dhcp excluded-address 10.111.0.201 10.111.0.254
+ip dhcp excluded-address 10.111.1.201 10.111.1.254
 !
 ip dhcp pool VPC7
  network 10.111.1.0 255.255.255.0
  domain-name VPC7
  default-router 10.111.1.1 
+ lease infinite
+!
+ip dhcp pool VPC1
+ network 10.111.0.0 255.255.255.0
+ domain-name VPC1
+ default-router 10.111.0.1 
  lease infinite
 !
 interface Loopback0
@@ -614,6 +628,7 @@ interface Vlan11
  description Default gateway VLAN11
  ip address 10.111.0.1 255.255.255.0
  ip helper-address 10.111.2.2
+ ip helper-address 10.111.2.6
  ip ospf 111 area 10
 !
 ntp server 10.111.3.12
@@ -638,6 +653,7 @@ interface Vlan17
  description Default gateway VLAN17
  ip address 10.111.1.1 255.255.255.0
  ip helper-address 10.111.2.6
+ ip helper-address 10.111.2.2
  ip ospf 111 area 10
 !
 ntp server 10.111.3.12
