@@ -370,3 +370,249 @@ VPC7> ping 10.112.1.2
 84 bytes from 10.112.1.2 icmp_seq=5 ttl=58 time=2.551 ms
 
 ```
+
+### Проверка DMVPN
+
+```
+R14#show interfaces tunnel 114
+Tunnel114 is up, line protocol is up 
+  Hardware is Tunnel
+  Description: DMVPN to R27-R28
+  Internet address is 10.111.2.194/27
+  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation TUNNEL, loopback not set
+  Keepalive not set
+  Tunnel linestate evaluation up
+  Tunnel source 40.40.40.40
+  Tunnel protocol/transport multi-GRE/IP
+
+R14#
+R14#show dmvpn
+Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
+        N - NATed, L - Local, X - No Socket
+        # Ent --> Number of NHRP entries with same NBMA peer
+        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
+        UpDn Time --> Up or Down Time for a Tunnel
+==========================================================================
+
+Interface: Tunnel114, IPv4 NHRP Details 
+Type:Hub, NHRP Peers:2, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     1 27.27.27.27        10.111.2.207    UP 00:54:58     D
+     1 28.28.28.28        10.111.2.208    UP 00:54:27     D
+
+R14#
+R14#sh ip nhrp
+10.111.2.207/32 via 10.111.2.207
+   Tunnel114 created 00:55:09, expire 00:02:24
+   Type: dynamic, Flags: unique registered used nhop 
+   NBMA address: 27.27.27.27 
+10.111.2.208/32 via 10.111.2.208
+   Tunnel114 created 00:54:37, expire 00:02:30
+   Type: dynamic, Flags: unique registered used nhop 
+   NBMA address: 28.28.28.28 
+
+
+R15#show interfaces tunnel 115
+Tunnel115 is up, line protocol is up 
+  Hardware is Tunnel
+  Description: DMVPN to R27-R28
+  Internet address is 10.111.2.225/27
+  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation TUNNEL, loopback not set
+  Keepalive not set
+  Tunnel linestate evaluation up
+  Tunnel source 50.50.50.50
+  Tunnel protocol/transport multi-GRE/IP
+
+R15#
+R15#show dmvpn
+Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
+        N - NATed, L - Local, X - No Socket
+        # Ent --> Number of NHRP entries with same NBMA peer
+        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
+        UpDn Time --> Up or Down Time for a Tunnel
+==========================================================================
+
+Interface: Tunnel115, IPv4 NHRP Details 
+Type:Hub, NHRP Peers:2, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     1 27.27.27.27        10.111.2.227    UP 00:55:27     D
+     1 28.28.28.28        10.111.2.228    UP 00:55:48     D
+
+R15#
+R15#sh ip nhrp
+10.111.2.227/32 via 10.111.2.227
+   Tunnel115 created 00:55:35, expire 00:02:49
+   Type: dynamic, Flags: unique registered used nhop 
+   NBMA address: 27.27.27.27 
+10.111.2.228/32 via 10.111.2.228
+   Tunnel115 created 00:55:56, expire 00:02:15
+   Type: dynamic, Flags: unique registered used nhop 
+   NBMA address: 28.28.28.28
+
+
+R27#show interfaces tunnel 114
+Tunnel114 is up, line protocol is up 
+  Hardware is Tunnel
+  Description: DMVPN to R14
+  Internet address is 10.111.2.207/27
+  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation TUNNEL, loopback not set
+  Keepalive not set
+  Tunnel linestate evaluation up
+  Tunnel source 27.27.27.27, destination 40.40.40.40
+  Tunnel protocol/transport GRE/IP
+
+R27#
+R27#show interfaces tunnel 115
+Tunnel115 is up, line protocol is up 
+  Hardware is Tunnel
+  Description: DMVPN to R15
+  Internet address is 10.111.2.227/27
+  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation TUNNEL, loopback not set
+  Keepalive not set
+  Tunnel linestate evaluation up
+  Tunnel source 27.27.27.27, destination 50.50.50.50
+  Tunnel protocol/transport GRE/IP
+
+R27#
+R27#show dmvpn
+Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
+        N - NATed, L - Local, X - No Socket
+        # Ent --> Number of NHRP entries with same NBMA peer
+        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
+        UpDn Time --> Up or Down Time for a Tunnel
+==========================================================================
+
+Interface: Tunnel114, IPv4 NHRP Details 
+Type:Spoke, NHRP Peers:1, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     1 40.40.40.40        10.111.2.194    UP 00:58:54     S
+
+Interface: Tunnel115, IPv4 NHRP Details 
+Type:Spoke, NHRP Peers:1, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     1 50.50.50.50        10.111.2.225    UP 00:57:50     S
+
+R27#
+R27#show ip nhrp
+10.111.2.194/32 via 10.111.2.194
+   Tunnel114 created 02:16:44, never expire 
+   Type: static, Flags: 
+   NBMA address: 40.40.40.40 
+10.111.2.225/32 via 10.111.2.225
+   Tunnel115 created 02:11:49, never expire 
+   Type: static, Flags: 
+   NBMA address: 50.50.50.50
+
+
+R28#show interfaces tunnel 114
+Tunnel114 is up, line protocol is up 
+  Hardware is Tunnel
+  Description: DMVPN to R14
+  Internet address is 10.111.2.208/27
+  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation TUNNEL, loopback not set
+  Keepalive not set
+  Tunnel linestate evaluation up
+  Tunnel source 28.28.28.28, destination 40.40.40.40
+  Tunnel protocol/transport GRE/IP
+
+R28#
+R28#show interfaces tunnel 115
+Tunnel115 is up, line protocol is up 
+  Hardware is Tunnel
+  Description: DMVPN to R15
+  Internet address is 10.111.2.228/27
+  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation TUNNEL, loopback not set
+  Keepalive not set
+  Tunnel linestate evaluation up
+  Tunnel source 28.28.28.28, destination 50.50.50.50
+  Tunnel protocol/transport GRE/IP
+
+R28#
+R28#show dmvpn
+Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
+        N - NATed, L - Local, X - No Socket
+        # Ent --> Number of NHRP entries with same NBMA peer
+        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
+        UpDn Time --> Up or Down Time for a Tunnel
+==========================================================================
+
+Interface: Tunnel114, IPv4 NHRP Details 
+Type:Spoke, NHRP Peers:1, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     1 40.40.40.40        10.111.2.194    UP 01:01:20     S
+
+Interface: Tunnel115, IPv4 NHRP Details 
+Type:Spoke, NHRP Peers:1, 
+
+ # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
+ ----- --------------- --------------- ----- -------- -----
+     1 50.50.50.50        10.111.2.225    UP 01:01:08     S
+
+R28#
+R28#show ip nhrp
+10.111.2.194/32 via 10.111.2.194
+   Tunnel114 created 02:10:44, never expire 
+   Type: static, Flags: 
+   NBMA address: 40.40.40.40 
+10.111.2.225/32 via 10.111.2.225
+   Tunnel115 created 02:09:18, never expire 
+   Type: static, Flags: 
+   NBMA address: 50.50.50.50
+
+   
+
+VPC1> ping 10.112.0.2
+
+84 bytes from 10.112.0.2 icmp_seq=1 ttl=58 time=2.767 ms
+84 bytes from 10.112.0.2 icmp_seq=2 ttl=58 time=2.749 ms
+84 bytes from 10.112.0.2 icmp_seq=3 ttl=58 time=2.575 ms
+84 bytes from 10.112.0.2 icmp_seq=4 ttl=58 time=2.920 ms
+84 bytes from 10.112.0.2 icmp_seq=5 ttl=58 time=2.930 ms
+
+VPC1> ping 10.112.1.2
+
+84 bytes from 10.112.1.2 icmp_seq=1 ttl=58 time=2.561 ms
+84 bytes from 10.112.1.2 icmp_seq=2 ttl=58 time=2.829 ms
+84 bytes from 10.112.1.2 icmp_seq=3 ttl=58 time=2.302 ms
+84 bytes from 10.112.1.2 icmp_seq=4 ttl=58 time=4.464 ms
+84 bytes from 10.112.1.2 icmp_seq=5 ttl=58 time=2.231 ms
+
+VPC7> ping 10.112.0.2
+
+84 bytes from 10.112.0.2 icmp_seq=1 ttl=58 time=4.005 ms
+84 bytes from 10.112.0.2 icmp_seq=2 ttl=58 time=2.347 ms
+84 bytes from 10.112.0.2 icmp_seq=3 ttl=58 time=3.562 ms
+84 bytes from 10.112.0.2 icmp_seq=4 ttl=58 time=2.715 ms
+84 bytes from 10.112.0.2 icmp_seq=5 ttl=58 time=2.582 ms
+
+VPC7> ping 10.112.1.2
+
+84 bytes from 10.112.1.2 icmp_seq=1 ttl=58 time=4.192 ms
+84 bytes from 10.112.1.2 icmp_seq=2 ttl=58 time=3.015 ms
+84 bytes from 10.112.1.2 icmp_seq=3 ttl=58 time=2.758 ms
+84 bytes from 10.112.1.2 icmp_seq=4 ttl=58 time=2.994 ms
+84 bytes from 10.112.1.2 icmp_seq=5 ttl=58 time=2.551 ms
+
+```
