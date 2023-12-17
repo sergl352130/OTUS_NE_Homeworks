@@ -581,38 +581,45 @@ R28#show ip nhrp
    Type: static, Flags: 
    NBMA address: 50.50.50.50
 
-   
 
-VPC1> ping 10.112.0.2
+R15#ping 28.28.28.28 source 50.50.50.50
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 28.28.28.28, timeout is 2 seconds:
+Packet sent with a source address of 50.50.50.50 
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+R15#ping 28.28.28.28 source 10.111.3.15
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 28.28.28.28, timeout is 2 seconds:
+Packet sent with a source address of 10.111.3.15 
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+R15#ping 10.111.4.28 source 10.111.3.15
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.111.4.28, timeout is 2 seconds:
+Packet sent with a source address of 10.111.3.15 
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
 
-84 bytes from 10.112.0.2 icmp_seq=1 ttl=58 time=2.767 ms
-84 bytes from 10.112.0.2 icmp_seq=2 ttl=58 time=2.749 ms
-84 bytes from 10.112.0.2 icmp_seq=3 ttl=58 time=2.575 ms
-84 bytes from 10.112.0.2 icmp_seq=4 ttl=58 time=2.920 ms
-84 bytes from 10.112.0.2 icmp_seq=5 ttl=58 time=2.930 ms
-
-VPC1> ping 10.112.1.2
-
-84 bytes from 10.112.1.2 icmp_seq=1 ttl=58 time=2.561 ms
-84 bytes from 10.112.1.2 icmp_seq=2 ttl=58 time=2.829 ms
-84 bytes from 10.112.1.2 icmp_seq=3 ttl=58 time=2.302 ms
-84 bytes from 10.112.1.2 icmp_seq=4 ttl=58 time=4.464 ms
-84 bytes from 10.112.1.2 icmp_seq=5 ttl=58 time=2.231 ms
-
-VPC7> ping 10.112.0.2
-
-84 bytes from 10.112.0.2 icmp_seq=1 ttl=58 time=4.005 ms
-84 bytes from 10.112.0.2 icmp_seq=2 ttl=58 time=2.347 ms
-84 bytes from 10.112.0.2 icmp_seq=3 ttl=58 time=3.562 ms
-84 bytes from 10.112.0.2 icmp_seq=4 ttl=58 time=2.715 ms
-84 bytes from 10.112.0.2 icmp_seq=5 ttl=58 time=2.582 ms
-
-VPC7> ping 10.112.1.2
-
-84 bytes from 10.112.1.2 icmp_seq=1 ttl=58 time=4.192 ms
-84 bytes from 10.112.1.2 icmp_seq=2 ttl=58 time=3.015 ms
-84 bytes from 10.112.1.2 icmp_seq=3 ttl=58 time=2.758 ms
-84 bytes from 10.112.1.2 icmp_seq=4 ttl=58 time=2.994 ms
-84 bytes from 10.112.1.2 icmp_seq=5 ttl=58 time=2.551 ms
+R28#ping 10.111.2.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.111.2.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 2/2/3 ms
+R28#ping 10.111.3.5
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.111.3.5, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+R28#ping 10.111.3.19
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.111.3.19, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+R28#ping 10.111.3.14
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.111.3.14, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
 
 ```
