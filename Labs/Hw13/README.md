@@ -582,44 +582,53 @@ R28#show ip nhrp
    NBMA address: 50.50.50.50
 
 
-R15#ping 28.28.28.28 source 50.50.50.50
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 28.28.28.28, timeout is 2 seconds:
-Packet sent with a source address of 50.50.50.50 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
-R15#ping 28.28.28.28 source 10.111.3.15
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 28.28.28.28, timeout is 2 seconds:
-Packet sent with a source address of 10.111.3.15 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
-R15#ping 10.111.4.28 source 10.111.3.15
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.4.28, timeout is 2 seconds:
-Packet sent with a source address of 10.111.3.15 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+VPC1> ping 10.111.4.65 
 
-R28#ping 10.111.2.1
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.2.1, timeout is 2 seconds:
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 2/2/3 ms
-R28#ping 10.111.3.5
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.3.5, timeout is 2 seconds:
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
-R28#ping 10.111.3.19
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.3.19, timeout is 2 seconds:
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
-R28#ping 10.111.3.14
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.3.14, timeout is 2 seconds:
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+84 bytes from 10.111.4.65 icmp_seq=1 ttl=252 time=2.452 ms
+84 bytes from 10.111.4.65 icmp_seq=2 ttl=252 time=2.263 ms
+84 bytes from 10.111.4.65 icmp_seq=3 ttl=252 time=2.658 ms
+84 bytes from 10.111.4.65 icmp_seq=4 ttl=252 time=2.251 ms
+84 bytes from 10.111.4.65 icmp_seq=5 ttl=252 time=1.989 ms
+
+VPC1> ping 10.111.4.129
+
+84 bytes from 10.111.4.129 icmp_seq=1 ttl=252 time=2.574 ms
+84 bytes from 10.111.4.129 icmp_seq=2 ttl=252 time=2.709 ms
+84 bytes from 10.111.4.129 icmp_seq=3 ttl=252 time=2.896 ms
+84 bytes from 10.111.4.129 icmp_seq=4 ttl=252 time=2.622 ms
+84 bytes from 10.111.4.129 icmp_seq=5 ttl=252 time=2.671 ms
+
+VPC1> ping 10.111.5.129
+
+84 bytes from 10.111.5.129 icmp_seq=1 ttl=252 time=3.186 ms
+84 bytes from 10.111.5.129 icmp_seq=2 ttl=252 time=3.304 ms
+84 bytes from 10.111.5.129 icmp_seq=3 ttl=252 time=2.546 ms
+84 bytes from 10.111.5.129 icmp_seq=4 ttl=252 time=2.521 ms
+84 bytes from 10.111.5.129 icmp_seq=5 ttl=252 time=8.531 ms
+
+
+VPC7> ping 10.111.4.65
+
+84 bytes from 10.111.4.65 icmp_seq=1 ttl=252 time=2.718 ms
+84 bytes from 10.111.4.65 icmp_seq=2 ttl=252 time=2.804 ms
+84 bytes from 10.111.4.65 icmp_seq=3 ttl=252 time=2.426 ms
+84 bytes from 10.111.4.65 icmp_seq=4 ttl=252 time=2.278 ms
+84 bytes from 10.111.4.65 icmp_seq=5 ttl=252 time=2.668 ms
+
+VPC7> ping 10.111.4.129
+
+84 bytes from 10.111.4.129 icmp_seq=1 ttl=252 time=1.996 ms
+84 bytes from 10.111.4.129 icmp_seq=2 ttl=252 time=2.292 ms
+84 bytes from 10.111.4.129 icmp_seq=3 ttl=252 time=2.090 ms
+84 bytes from 10.111.4.129 icmp_seq=4 ttl=252 time=3.190 ms
+84 bytes from 10.111.4.129 icmp_seq=5 ttl=252 time=3.112 ms
+
+VPC7> ping 10.111.5.129
+
+84 bytes from 10.111.5.129 icmp_seq=1 ttl=252 time=2.980 ms
+84 bytes from 10.111.5.129 icmp_seq=2 ttl=252 time=2.995 ms
+84 bytes from 10.111.5.129 icmp_seq=3 ttl=252 time=3.127 ms
+84 bytes from 10.111.5.129 icmp_seq=4 ttl=252 time=2.405 ms
+84 bytes from 10.111.5.129 icmp_seq=5 ttl=252 time=2.908 ms
 
 ```
