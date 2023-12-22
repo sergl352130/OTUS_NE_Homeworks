@@ -46,6 +46,7 @@ interface Tunnel114
  ip nhrp network-id 114
  ip nhrp holdtime 180
  ip nhrp registration timeout 60
+ ip nhrp redirect
  ip tcp adjust-mss 1360
  tunnel source 40.40.40.40
  tunnel mode gre multipoint
@@ -53,7 +54,6 @@ interface Tunnel114
 router bgp 1001
  bgp router-id 10.111.3.14
  bgp log-neighbor-changes
- network 10.111.3.14 mask 255.255.255.255
  network 10.111.3.19 mask 255.255.255.255
  network 14.14.14.14 mask 255.255.255.255
  network 40.40.40.40 mask 255.255.255.255
@@ -102,6 +102,7 @@ interface Tunnel115
  ip nhrp network-id 115
  ip nhrp holdtime 180
  ip nhrp registration timeout 60
+ ip nhrp redirect
  ip tcp adjust-mss 1360
  tunnel source 50.50.50.50
  tunnel mode gre multipoint
@@ -109,7 +110,6 @@ interface Tunnel115
 router bgp 1001
  bgp router-id 10.111.3.15
  bgp log-neighbor-changes
- network 10.111.3.15 mask 255.255.255.255
  network 15.15.15.15 mask 255.255.255.255
  network 50.50.50.50 mask 255.255.255.255
  neighbor 10.111.3.14 remote-as 1001
@@ -201,6 +201,7 @@ interface Loopback27
 interface Tunnel114
  description DMVPN to R14
  ip address 10.111.2.207 255.255.255.224
+ no ip redirects
  ip mtu 1400
  ip nhrp map multicast 40.40.40.40
  ip nhrp map 10.111.2.194 40.40.40.40
@@ -208,13 +209,15 @@ interface Tunnel114
  ip nhrp holdtime 180
  ip nhrp nhs 10.111.2.194
  ip nhrp registration timeout 60
+ ip nhrp shortcut
  ip tcp adjust-mss 1360
  tunnel source 27.27.27.27
- tunnel destination 40.40.40.40
+ tunnel mode gre multipoint
 !
 interface Tunnel115
  description DMVPN to R15
  ip address 10.111.2.227 255.255.255.224
+ no ip redirects
  ip mtu 1400
  ip nhrp map multicast 50.50.50.50
  ip nhrp map 10.111.2.225 50.50.50.50
@@ -222,13 +225,16 @@ interface Tunnel115
  ip nhrp holdtime 180
  ip nhrp nhs 10.111.2.225
  ip nhrp registration timeout 60
+ ip nhrp shortcut
  ip tcp adjust-mss 1360
  tunnel source 27.27.27.27
- tunnel destination 50.50.50.50
+ tunnel mode gre multipoint
 !
 ip route 0.0.0.0 0.0.0.0 44.115.25.25
 ip route 10.111.0.0 255.255.252.0 10.111.2.194
 ip route 10.111.0.0 255.255.252.0 10.111.2.225
+ip route 10.111.4.0 255.255.255.0 10.111.2.194
+ip route 10.111.4.0 255.255.255.0 10.111.2.225
 !
 ```
 
@@ -250,6 +256,7 @@ interface Loopback28
 interface Tunnel114
  description DMVPN to R14
  ip address 10.111.2.208 255.255.255.224
+ no ip redirects
  ip mtu 1400
  ip nhrp map multicast 40.40.40.40
  ip nhrp map 10.111.2.194 40.40.40.40
@@ -257,13 +264,15 @@ interface Tunnel114
  ip nhrp holdtime 180
  ip nhrp nhs 10.111.2.194
  ip nhrp registration timeout 60
+ ip nhrp shortcut
  ip tcp adjust-mss 1360
  tunnel source 28.28.28.28
- tunnel destination 40.40.40.40
+ tunnel mode gre multipoint
 !
 interface Tunnel115
  description DMVPN to R15
  ip address 10.111.2.228 255.255.255.224
+ no ip redirects
  ip mtu 1400
  ip nhrp map multicast 50.50.50.50
  ip nhrp map 10.111.2.225 50.50.50.50
@@ -271,14 +280,17 @@ interface Tunnel115
  ip nhrp holdtime 180
  ip nhrp nhs 10.111.2.225
  ip nhrp registration timeout 60
+ ip nhrp shortcut
  ip tcp adjust-mss 1360
  tunnel source 28.28.28.28
- tunnel destination 50.50.50.50
+ tunnel mode gre multipoint
 !
 ip route 0.0.0.0 0.0.0.0 44.114.25.25
 ip route 0.0.0.0 0.0.0.0 44.114.26.26
 ip route 10.111.0.0 255.255.252.0 10.111.2.194
 ip route 10.111.0.0 255.255.252.0 10.111.2.225
+ip route 10.111.5.0 255.255.255.0 10.111.2.194
+ip route 10.111.5.0 255.255.255.0 10.111.2.225
 !
 ```
 
@@ -468,8 +480,8 @@ Tunnel114 is up, line protocol is up
   Encapsulation TUNNEL, loopback not set
   Keepalive not set
   Tunnel linestate evaluation up
-  Tunnel source 27.27.27.27, destination 40.40.40.40
-  Tunnel protocol/transport GRE/IP
+  Tunnel source 27.27.27.27
+  Tunnel protocol/transport multi-GRE/IP
 
 R27#
 R27#show interfaces tunnel 115
@@ -482,11 +494,11 @@ Tunnel115 is up, line protocol is up
   Encapsulation TUNNEL, loopback not set
   Keepalive not set
   Tunnel linestate evaluation up
-  Tunnel source 27.27.27.27, destination 50.50.50.50
-  Tunnel protocol/transport GRE/IP
+  Tunnel source 27.27.27.27
+  Tunnel protocol/transport multi-GRE/IP
 
 R27#
-R27#show dmvpn
+R27#show dmvpn       
 Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
         N - NATed, L - Local, X - No Socket
         # Ent --> Number of NHRP entries with same NBMA peer
@@ -499,25 +511,27 @@ Type:Spoke, NHRP Peers:1,
 
  # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
  ----- --------------- --------------- ----- -------- -----
-     1 40.40.40.40        10.111.2.194    UP 00:58:54     S
+     2 40.40.40.40        10.111.2.194  NHRP 03:32:03     S
+     0 UNKNOWN            10.111.2.208  NHRP    never    IX
 
 Interface: Tunnel115, IPv4 NHRP Details 
-Type:Spoke, NHRP Peers:1, 
+Type:Spoke, NHRP Peers:2, 
 
  # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
  ----- --------------- --------------- ----- -------- -----
-     1 50.50.50.50        10.111.2.225    UP 00:57:50     S
+     1 50.50.50.50        10.111.2.225    UP 03:28:17     S
+     1 28.28.28.28        10.111.2.228    UP 00:00:30     D
 
 R27#
 R27#show ip nhrp
 10.111.2.194/32 via 10.111.2.194
-   Tunnel114 created 02:16:44, never expire 
-   Type: static, Flags: 
+   Tunnel114 created 01:08:38, never expire 
+   Type: static, Flags: used 
    NBMA address: 40.40.40.40 
 10.111.2.225/32 via 10.111.2.225
-   Tunnel115 created 02:11:49, never expire 
-   Type: static, Flags: 
-   NBMA address: 50.50.50.50
+   Tunnel115 created 01:08:38, never expire 
+   Type: static, Flags: used 
+   NBMA address: 50.50.50.50 
 
 
 R28#show interfaces tunnel 114
@@ -530,8 +544,8 @@ Tunnel114 is up, line protocol is up
   Encapsulation TUNNEL, loopback not set
   Keepalive not set
   Tunnel linestate evaluation up
-  Tunnel source 28.28.28.28, destination 40.40.40.40
-  Tunnel protocol/transport GRE/IP
+  Tunnel source 28.28.28.28
+  Tunnel protocol/transport multi-GRE/IP
 
 R28#
 R28#show interfaces tunnel 115
@@ -544,11 +558,11 @@ Tunnel115 is up, line protocol is up
   Encapsulation TUNNEL, loopback not set
   Keepalive not set
   Tunnel linestate evaluation up
-  Tunnel source 28.28.28.28, destination 50.50.50.50
-  Tunnel protocol/transport GRE/IP
+  Tunnel source 28.28.28.28
+  Tunnel protocol/transport multi-GRE/IP
 
 R28#
-R28#show dmvpn
+R28#show dmvpn       
 Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
         N - NATed, L - Local, X - No Socket
         # Ent --> Number of NHRP entries with same NBMA peer
@@ -561,14 +575,17 @@ Type:Spoke, NHRP Peers:1,
 
  # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
  ----- --------------- --------------- ----- -------- -----
-     1 40.40.40.40        10.111.2.194    UP 01:01:20     S
+     2 40.40.40.40        10.111.2.194  NHRP 02:24:26     S
+     0 UNKNOWN            10.111.2.207  NHRP    never    IX
 
 Interface: Tunnel115, IPv4 NHRP Details 
-Type:Spoke, NHRP Peers:1, 
+Type:Spoke, NHRP Peers:2, 
 
  # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
  ----- --------------- --------------- ----- -------- -----
-     1 50.50.50.50        10.111.2.225    UP 01:01:08     S
+     1 50.50.50.50        10.111.2.225    UP 02:25:15     S
+     1 27.27.27.27        10.111.2.227    UP 00:00:37     D
+
 
 R28#
 R28#show ip nhrp
