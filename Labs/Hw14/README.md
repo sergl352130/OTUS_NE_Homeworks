@@ -103,19 +103,220 @@ CA Certificate
     end   date: 19:02:49 MSK Dec 23 2026
   Associated Trustpoints: CA 
   Storage: nvram:CA#1CA.cer
+
+  R14#show crypto pki certificates
+Certificate
+  Status: Available
+  Certificate Serial Number (hex): 0A
+  Certificate Usage: General Purpose
+  Issuer: 
+    cn=CA
+  Subject:
+    Name: R14
+    IP Address: 22.111.22.14
+    hostname=R14+ipaddress=22.111.22.14
+    cn=R14
+    ou=R19
+    o=mydomain
+    c=RU
+  Validity Date: 
+    start date: 17:16:11 MSK Dec 26 2023
+    end   date: 17:16:11 MSK Dec 25 2024
+  Associated Trustpoints: R19 
+  Storage: nvram:CA#A.cer
+
+CA Certificate
+  Status: Available
+  Certificate Serial Number (hex): 01
+  Certificate Usage: Signature
+  Issuer: 
+    cn=CA
+  Subject: 
+    cn=CA
+  Validity Date: 
+    start date: 19:02:49 MSK Dec 24 2023
+    end   date: 19:02:49 MSK Dec 23 2026
+  Associated Trustpoints: R19 
+  Storage: nvram:CA#1CA.cer
+
+  R15#show crypto pki certificates
+Certificate
+  Status: Available
+  Certificate Serial Number (hex): 0D
+  Certificate Usage: General Purpose
+  Issuer: 
+    cn=CA
+  Subject:
+    Name: R15
+    IP Address: 33.111.21.15
+    hostname=R15+ipaddress=33.111.21.15
+    cn=R15
+    ou=R19
+    o=mydomain
+    c=RU
+  Validity Date: 
+    start date: 17:53:30 MSK Dec 26 2023
+    end   date: 17:53:30 MSK Dec 25 2024
+  Associated Trustpoints: R19 
+  Storage: nvram:CA#D.cer
+
+CA Certificate
+  Status: Available
+  Certificate Serial Number (hex): 01
+  Certificate Usage: Signature
+  Issuer: 
+    cn=CA
+  Subject: 
+    cn=CA
+  Validity Date: 
+    start date: 19:02:49 MSK Dec 24 2023
+    end   date: 19:02:49 MSK Dec 23 2026
+  Associated Trustpoints: R19 
+  Storage: nvram:CA#1CA.cer
+
+  R18#show crypto pki certificates
+Certificate
+  Status: Available
+  Certificate Serial Number (hex): 0C
+  Certificate Usage: General Purpose
+  Issuer: 
+    cn=CA
+  Subject:
+    Name: R18
+    IP Address: 44.112.26.18
+    hostname=R18+ipaddress=44.112.26.18
+    cn=R18
+    ou=R19
+    o=mydomain
+    c=RU
+  Validity Date: 
+    start date: 17:33:19 MSK Dec 26 2023
+    end   date: 17:33:19 MSK Dec 25 2024
+  Associated Trustpoints: R19_1 
+  Storage: nvram:CA#C.cer
+
+Certificate
+  Status: Available
+  Certificate Serial Number (hex): 0B
+  Certificate Usage: General Purpose
+  Issuer: 
+    cn=CA
+  Subject:
+    Name: R18
+    IP Address: 44.112.24.18
+    hostname=R18+ipaddress=44.112.24.18
+    cn=R18
+    ou=R19
+    o=mydomain
+    c=RU
+  Validity Date: 
+    start date: 17:18:44 MSK Dec 26 2023
+    end   date: 17:18:44 MSK Dec 25 2024
+  Associated Trustpoints: R19 
+  Storage: nvram:CA#B.cer
+
+CA Certificate
+  Status: Available
+  Certificate Serial Number (hex): 01
+  Certificate Usage: Signature
+  Issuer: 
+    cn=CA
+  Subject: 
+    cn=CA
+  Validity Date: 
+    start date: 19:02:49 MSK Dec 24 2023
+    end   date: 19:02:49 MSK Dec 23 2026
+  Associated Trustpoints: R19_1 R19 
+  Storage: nvram:CA#1CA.cer
+
+R27#show crypto pki certificates
+Certificate
+  Status: Available
+  Certificate Serial Number (hex): 0E
+  Certificate Usage: General Purpose
+  Issuer: 
+    cn=CA
+  Subject:
+    Name: R27
+    IP Address: 44.115.25.27
+    hostname=R27+ipaddress=44.115.25.27
+    cn=R27
+    ou=R19
+    o=mydomain
+    c=RU
+  Validity Date: 
+    start date: 15:13:54 MSK Dec 27 2023
+    end   date: 15:13:54 MSK Dec 26 2024
+  Associated Trustpoints: R19 
+
+CA Certificate
+  Status: Available
+  Certificate Serial Number (hex): 01
+  Certificate Usage: Signature
+  Issuer: 
+    cn=CA
+  Subject: 
+    cn=CA
+  Validity Date: 
+    start date: 22:02:49 MSK Dec 24 2023
+    end   date: 22:02:49 MSK Dec 23 2026
+  Associated Trustpoints: R19 
+
+R28#show crypto pki certificates
+Certificate
+  Status: Available
+  Certificate Serial Number (hex): 10
+  Certificate Usage: General Purpose
+  Issuer: 
+    cn=CA
+  Subject:
+    Name: R28
+    IP Address: 44.114.25.28
+    hostname=R28+ipaddress=44.114.25.28
+    cn=R28
+    ou=R19
+    o=mydomain
+    c=RU
+  Validity Date: 
+    start date: 12:29:44 MSK Dec 27 2023
+    end   date: 12:29:44 MSK Dec 26 2024
+  Associated Trustpoints: R19_1 
+
+Certificate
+  Status: Available
+  Certificate Serial Number (hex): 0F
+  Certificate Usage: General Purpose
+  Issuer: 
+    cn=CA
+  Subject:
+    Name: R28
+    IP Address: 44.114.26.28
+    hostname=R28+ipaddress=44.114.26.28
+    cn=R28
+    ou=R19
+    o=mydomain
+    c=RU
+  Validity Date: 
+    start date: 12:26:02 MSK Dec 27 2023
+    end   date: 12:26:02 MSK Dec 26 2024
+  Associated Trustpoints: R19 
+
+CA Certificate
+  Status: Available
+  Certificate Serial Number (hex): 01
+  Certificate Usage: Signature
+  Issuer: 
+    cn=CA
+  Subject: 
+    cn=CA
+  Validity Date: 
+    start date: 19:02:49 MSK Dec 24 2023
+    end   date: 19:02:49 MSK Dec 23 2026
+  Associated Trustpoints: R19_1 R19 
 ```
 
+
 ### Настройка GRE и DMVPN over IPsec
-
-
-
-
-
-
-
-
-
-
 
 
 #### R14:
