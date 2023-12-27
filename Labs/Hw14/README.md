@@ -1340,266 +1340,747 @@ trace to 10.111.1.2, 8 hops max, press Ctrl+C to stop
 ### Проверка DMVPN
 
 ```
-R14#show interfaces tunnel 114
-Tunnel114 is up, line protocol is up 
-  Hardware is Tunnel
-  Description: DMVPN to R27-R28
-  Internet address is 10.111.2.194/27
-  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
-     reliability 255/255, txload 1/255, rxload 1/255
-  Encapsulation TUNNEL, loopback not set
-  Keepalive not set
-  Tunnel linestate evaluation up
-  Tunnel source 40.40.40.40
-  Tunnel protocol/transport multi-GRE/IP
+R14# show crypto ikev2 sa
+ IPv4 Crypto IKEv2  SA 
 
-R14#
-R14#show dmvpn
-Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
-        N - NATed, L - Local, X - No Socket
-        # Ent --> Number of NHRP entries with same NBMA peer
-        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
-        UpDn Time --> Up or Down Time for a Tunnel
-==========================================================================
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+2         14.14.14.14/500       27.27.27.27/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/1972 sec
 
-Interface: Tunnel114, IPv4 NHRP Details 
-Type:Hub, NHRP Peers:2, 
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+1         14.14.14.14/500       18.18.18.18/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/8209 sec
 
- # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
- ----- --------------- --------------- ----- -------- -----
-     1 27.27.27.27        10.111.2.207    UP 00:54:58     D
-     1 28.28.28.28        10.111.2.208    UP 00:54:27     D
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+3         14.14.14.14/500       28.28.28.28/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/1793 sec
 
-R14#
-R14#sh ip nhrp
-10.111.2.207/32 via 10.111.2.207
-   Tunnel114 created 00:55:09, expire 00:02:24
-   Type: dynamic, Flags: unique registered used nhop 
-   NBMA address: 27.27.27.27 
-10.111.2.208/32 via 10.111.2.208
-   Tunnel114 created 00:54:37, expire 00:02:30
-   Type: dynamic, Flags: unique registered used nhop 
-   NBMA address: 28.28.28.28 
+ IPv6 Crypto IKEv2  SA 
+
+R14#show crypto ipsec sa 
+
+interface: Ethernet0/2
+    Crypto map tag: GRE_over_IPSEC, local addr 14.14.14.14
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (14.14.14.14/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (18.18.18.18/255.255.255.255/47/0)
+   current_peer 18.18.18.18 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 1730, #pkts encrypt: 1730, #pkts digest: 1730
+    #pkts decaps: 1830, #pkts decrypt: 1830, #pkts verify: 1830
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 14.14.14.14, remote crypto endpt.: 18.18.18.18
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet0/2
+     current outbound spi: 0x476503F8(1197802488)
+     PFS (Y/N): Y, DH group: group5
+
+     inbound esp sas:
+      spi: 0xC77E688D(3346950285)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 12, flow_id: SW:12, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4244885/2374)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x476503F8(1197802488)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 11, flow_id: SW:11, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4244885/2374)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+          
+     outbound ah sas:
+
+     outbound pcp sas:
+
+interface: Ethernet1/0
+    Crypto map tag: GRE_over_IPSEC, local addr 14.14.14.14
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (14.14.14.14/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (18.18.18.18/255.255.255.255/47/0)
+   current_peer 18.18.18.18 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 1730, #pkts encrypt: 1730, #pkts digest: 1730
+    #pkts decaps: 1830, #pkts decrypt: 1830, #pkts verify: 1830
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 14.14.14.14, remote crypto endpt.: 18.18.18.18
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet0/2
+     current outbound spi: 0x476503F8(1197802488)
+     PFS (Y/N): Y, DH group: group5
+
+     inbound esp sas:
+      spi: 0xC77E688D(3346950285)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 12, flow_id: SW:12, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4244885/2374)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x476503F8(1197802488)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 11, flow_id: SW:11, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4244885/2374)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+interface: Tunnel114
+    Crypto map tag: Tunnel114-head-0, local addr 14.14.14.14
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (14.14.14.14/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (28.28.28.28/255.255.255.255/47/0)
+   current_peer 28.28.28.28 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 31, #pkts encrypt: 31, #pkts digest: 31
+    #pkts decaps: 46, #pkts decrypt: 46, #pkts verify: 46
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+          
+     local crypto endpt.: 14.14.14.14, remote crypto endpt.: 28.28.28.28
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb (none)
+     current outbound spi: 0x8BDCDADB(2346506971)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0xBF59E7C1(3210340289)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 9, flow_id: SW:9, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4166090/1799)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x8BDCDADB(2346506971)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 10, flow_id: SW:10, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4166092/1799)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (14.14.14.14/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (27.27.27.27/255.255.255.255/47/0)
+   current_peer 27.27.27.27 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 33, #pkts encrypt: 33, #pkts digest: 33
+    #pkts decaps: 43, #pkts decrypt: 43, #pkts verify: 43
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 14.14.14.14, remote crypto endpt.: 27.27.27.27
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb (none)
+     current outbound spi: 0x8E301B5(149094837)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x1CD5E37A(483779450)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 7, flow_id: SW:7, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4210565/1620)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x8E301B5(149094837)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 8, flow_id: SW:8, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4210566/1620)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
 
 
-R15#show interfaces tunnel 115
-Tunnel115 is up, line protocol is up 
-  Hardware is Tunnel
-  Description: DMVPN to R27-R28
-  Internet address is 10.111.2.225/27
-  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
-     reliability 255/255, txload 1/255, rxload 1/255
-  Encapsulation TUNNEL, loopback not set
-  Keepalive not set
-  Tunnel linestate evaluation up
-  Tunnel source 50.50.50.50
-  Tunnel protocol/transport multi-GRE/IP
+R15#show crypto ikev2 sa        
+ IPv4 Crypto IKEv2  SA 
 
-R15#
-R15#show dmvpn
-Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
-        N - NATed, L - Local, X - No Socket
-        # Ent --> Number of NHRP entries with same NBMA peer
-        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
-        UpDn Time --> Up or Down Time for a Tunnel
-==========================================================================
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+2         15.15.15.15/500       27.27.27.27/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/2141 sec
 
-Interface: Tunnel115, IPv4 NHRP Details 
-Type:Hub, NHRP Peers:2, 
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+3         15.15.15.15/500       28.28.28.28/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/1962 sec
 
- # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
- ----- --------------- --------------- ----- -------- -----
-     1 27.27.27.27        10.111.2.227    UP 00:55:27     D
-     1 28.28.28.28        10.111.2.228    UP 00:55:48     D
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+1         15.15.15.15/500       18.18.18.18/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/1369 sec
 
-R15#
-R15#sh ip nhrp
-10.111.2.227/32 via 10.111.2.227
-   Tunnel115 created 00:55:35, expire 00:02:49
-   Type: dynamic, Flags: unique registered used nhop 
-   NBMA address: 27.27.27.27 
-10.111.2.228/32 via 10.111.2.228
-   Tunnel115 created 00:55:56, expire 00:02:15
-   Type: dynamic, Flags: unique registered used nhop 
-   NBMA address: 28.28.28.28
+ IPv6 Crypto IKEv2  SA 
+
+R15#show crypto ipsec sa
+
+interface: Ethernet0/2
+    Crypto map tag: GRE_over_IPSEC, local addr 15.15.15.15
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (15.15.15.15/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (18.18.18.18/255.255.255.255/47/0)
+   current_peer 18.18.18.18 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 1885, #pkts encrypt: 1885, #pkts digest: 1885
+    #pkts decaps: 1769, #pkts decrypt: 1769, #pkts verify: 1769
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 15.15.15.15, remote crypto endpt.: 18.18.18.18
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet0/2
+     current outbound spi: 0xA811FF85(2819751813)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x56D1BEA4(1456586404)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 50, flow_id: SW:50, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4339102/2213)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xA811FF85(2819751813)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 49, flow_id: SW:49, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4339103/2213)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+          
+     outbound ah sas:
+
+     outbound pcp sas:
+
+interface: Ethernet1/0
+    Crypto map tag: GRE_over_IPSEC, local addr 15.15.15.15
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (15.15.15.15/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (18.18.18.18/255.255.255.255/47/0)
+   current_peer 18.18.18.18 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 1885, #pkts encrypt: 1885, #pkts digest: 1885
+    #pkts decaps: 1769, #pkts decrypt: 1769, #pkts verify: 1769
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 15.15.15.15, remote crypto endpt.: 18.18.18.18
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet0/2
+     current outbound spi: 0xA811FF85(2819751813)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x56D1BEA4(1456586404)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 50, flow_id: SW:50, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4339102/2213)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xA811FF85(2819751813)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 49, flow_id: SW:49, sibling_flags 80000040, crypto map: GRE_over_IPSEC
+        sa timing: remaining key lifetime (k/sec): (4339103/2213)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+interface: Tunnel115
+    Crypto map tag: Tunnel115-head-0, local addr 15.15.15.15
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (15.15.15.15/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (28.28.28.28/255.255.255.255/47/0)
+   current_peer 28.28.28.28 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 64, #pkts encrypt: 64, #pkts digest: 64
+    #pkts decaps: 37, #pkts decrypt: 37, #pkts verify: 37
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+          
+     local crypto endpt.: 15.15.15.15, remote crypto endpt.: 28.28.28.28
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb (none)
+     current outbound spi: 0xC6D21263(3335656035)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0xBA8EE1EF(3129926127)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 15, flow_id: SW:15, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4217355/1620)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xC6D21263(3335656035)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 16, flow_id: SW:16, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4217350/1620)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (15.15.15.15/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (27.27.27.27/255.255.255.255/47/0)
+   current_peer 27.27.27.27 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 52, #pkts encrypt: 52, #pkts digest: 52
+    #pkts decaps: 40, #pkts decrypt: 40, #pkts verify: 40
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 15.15.15.15, remote crypto endpt.: 27.27.27.27
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb (none)
+     current outbound spi: 0x85AA5C8F(2242534543)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x85E99453(2246677587)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 13, flow_id: SW:13, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4276333/1441)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x85AA5C8F(2242534543)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 14, flow_id: SW:14, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4276330/1441)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
 
 
-R27#show interfaces tunnel 114
-Tunnel114 is up, line protocol is up 
-  Hardware is Tunnel
-  Description: DMVPN to R14
-  Internet address is 10.111.2.207/27
-  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
-     reliability 255/255, txload 1/255, rxload 1/255
-  Encapsulation TUNNEL, loopback not set
-  Keepalive not set
-  Tunnel linestate evaluation up
-  Tunnel source 27.27.27.27
-  Tunnel protocol/transport multi-GRE/IP
+R27#show crypto ikev2 sa
+ IPv4 Crypto IKEv2  SA 
 
-R27#
-R27#show interfaces tunnel 115
-Tunnel115 is up, line protocol is up 
-  Hardware is Tunnel
-  Description: DMVPN to R15
-  Internet address is 10.111.2.227/27
-  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
-     reliability 255/255, txload 1/255, rxload 1/255
-  Encapsulation TUNNEL, loopback not set
-  Keepalive not set
-  Tunnel linestate evaluation up
-  Tunnel source 27.27.27.27
-  Tunnel protocol/transport multi-GRE/IP
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+1         27.27.27.27/500       14.14.14.14/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/2239 sec
 
-R27#
-R27#show dmvpn       
-Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
-        N - NATed, L - Local, X - No Socket
-        # Ent --> Number of NHRP entries with same NBMA peer
-        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
-        UpDn Time --> Up or Down Time for a Tunnel
-==========================================================================
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+2         27.27.27.27/500       15.15.15.15/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/2239 sec
 
-Interface: Tunnel114, IPv4 NHRP Details 
-Type:Spoke, NHRP Peers:1, 
+ IPv6 Crypto IKEv2  SA 
 
- # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
- ----- --------------- --------------- ----- -------- -----
-     2 40.40.40.40        10.111.2.194  NHRP 03:32:03     S
-     0 UNKNOWN            10.111.2.208  NHRP    never    IX
+R27#show crypto ipsec sa
 
-Interface: Tunnel115, IPv4 NHRP Details 
-Type:Spoke, NHRP Peers:2, 
+interface: Tunnel114
+    Crypto map tag: Tunnel114-head-0, local addr 27.27.27.27
 
- # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
- ----- --------------- --------------- ----- -------- -----
-     1 50.50.50.50        10.111.2.225    UP 03:28:17     S
-     1 28.28.28.28        10.111.2.228    UP 00:00:30     D
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (27.27.27.27/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (14.14.14.14/255.255.255.255/47/0)
+   current_peer 14.14.14.14 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 48, #pkts encrypt: 48, #pkts digest: 48
+    #pkts decaps: 38, #pkts decrypt: 38, #pkts verify: 38
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
 
-R27#
-R27#show ip nhrp
-10.111.2.194/32 via 10.111.2.194
-   Tunnel114 created 01:08:38, never expire 
-   Type: static, Flags: used 
-   NBMA address: 40.40.40.40 
-10.111.2.225/32 via 10.111.2.225
-   Tunnel115 created 01:08:38, never expire 
-   Type: static, Flags: used 
-   NBMA address: 50.50.50.50 
+     local crypto endpt.: 27.27.27.27, remote crypto endpt.: 14.14.14.14
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet1/0
+     current outbound spi: 0x1CD5E37A(483779450)
+     PFS (Y/N): N, DH group: none
 
+     inbound esp sas:
+      spi: 0x8E301B5(149094837)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2, flow_id: SW:2, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4155588/1347)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
 
-R28#show interfaces tunnel 114
-Tunnel114 is up, line protocol is up 
-  Hardware is Tunnel
-  Description: DMVPN to R14
-  Internet address is 10.111.2.208/27
-  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
-     reliability 255/255, txload 1/255, rxload 1/255
-  Encapsulation TUNNEL, loopback not set
-  Keepalive not set
-  Tunnel linestate evaluation up
-  Tunnel source 28.28.28.28
-  Tunnel protocol/transport multi-GRE/IP
+     inbound ah sas:
 
-R28#
-R28#show interfaces tunnel 115
-Tunnel115 is up, line protocol is up 
-  Hardware is Tunnel
-  Description: DMVPN to R15
-  Internet address is 10.111.2.228/27
-  MTU 17916 bytes, BW 100 Kbit/sec, DLY 50000 usec, 
-     reliability 255/255, txload 1/255, rxload 1/255
-  Encapsulation TUNNEL, loopback not set
-  Keepalive not set
-  Tunnel linestate evaluation up
-  Tunnel source 28.28.28.28
-  Tunnel protocol/transport multi-GRE/IP
+     inbound pcp sas:
 
-R28#
-R28#show dmvpn       
-Legend: Attrb --> S - Static, D - Dynamic, I - Incomplete
-        N - NATed, L - Local, X - No Socket
-        # Ent --> Number of NHRP entries with same NBMA peer
-        NHS Status: E --> Expecting Replies, R --> Responding, W --> Waiting
-        UpDn Time --> Up or Down Time for a Tunnel
-==========================================================================
+     outbound esp sas:
+      spi: 0x1CD5E37A(483779450)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 1, flow_id: SW:1, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4155587/1347)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+          
+     outbound ah sas:
 
-Interface: Tunnel114, IPv4 NHRP Details 
-Type:Spoke, NHRP Peers:1, 
+     outbound pcp sas:
 
- # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
- ----- --------------- --------------- ----- -------- -----
-     2 40.40.40.40        10.111.2.194  NHRP 02:24:26     S
-     0 UNKNOWN            10.111.2.207  NHRP    never    IX
+interface: Tunnel115
+    Crypto map tag: Tunnel115-head-0, local addr 27.27.27.27
 
-Interface: Tunnel115, IPv4 NHRP Details 
-Type:Spoke, NHRP Peers:2, 
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (27.27.27.27/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (15.15.15.15/255.255.255.255/47/0)
+   current_peer 15.15.15.15 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 42, #pkts encrypt: 42, #pkts digest: 42
+    #pkts decaps: 54, #pkts decrypt: 54, #pkts verify: 54
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
 
- # Ent  Peer NBMA Addr Peer Tunnel Add State  UpDn Tm Attrb
- ----- --------------- --------------- ----- -------- -----
-     1 50.50.50.50        10.111.2.225    UP 02:25:15     S
-     1 27.27.27.27        10.111.2.227    UP 00:00:37     D
+     local crypto endpt.: 27.27.27.27, remote crypto endpt.: 15.15.15.15
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet1/0
+     current outbound spi: 0x85E99453(2246677587)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x85AA5C8F(2242534543)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 4, flow_id: SW:4, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4327538/1347)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x85E99453(2246677587)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 3, flow_id: SW:3, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4327541/1347)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
 
 
-R28#
-R28#show ip nhrp
-10.111.2.194/32 via 10.111.2.194
-   Tunnel114 created 02:10:44, never expire 
-   Type: static, Flags: 
-   NBMA address: 40.40.40.40 
-10.111.2.225/32 via 10.111.2.225
-   Tunnel115 created 02:09:18, never expire 
-   Type: static, Flags: 
-   NBMA address: 50.50.50.50
+R28#show crypto ikev2 sa
+ IPv4 Crypto IKEv2  SA 
+
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+1         28.28.28.28/500       14.14.14.14/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/2119 sec
+
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+2         28.28.28.28/500       15.15.15.15/500       none/none            READY  
+      Encr: AES-CBC, keysize: 128, PRF: MD5, Hash: MD596, DH Grp:2, Auth sign: RSA, Auth verify: RSA
+      Life/Active Time: 86400/2119 sec
+
+ IPv6 Crypto IKEv2  SA 
+
+R28#show crypto ipsec sa
+
+interface: Tunnel114
+    Crypto map tag: Tunnel114-head-0, local addr 28.28.28.28
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (28.28.28.28/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (14.14.14.14/255.255.255.255/47/0)
+   current_peer 14.14.14.14 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 51, #pkts encrypt: 51, #pkts digest: 51
+    #pkts decaps: 36, #pkts decrypt: 36, #pkts verify: 36
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 28.28.28.28, remote crypto endpt.: 14.14.14.14
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet1/1
+     current outbound spi: 0xBF59E7C1(3210340289)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x8BDCDADB(2346506971)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 2, flow_id: SW:2, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4243060/1455)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xBF59E7C1(3210340289)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 1, flow_id: SW:1, sibling_flags 80000040, crypto map: Tunnel114-head-0
+        sa timing: remaining key lifetime (k/sec): (4243058/1455)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+          
+     outbound ah sas:
+
+     outbound pcp sas:
+
+interface: Tunnel115
+    Crypto map tag: Tunnel115-head-0, local addr 28.28.28.28
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (28.28.28.28/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (15.15.15.15/255.255.255.255/47/0)
+   current_peer 15.15.15.15 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 40, #pkts encrypt: 40, #pkts digest: 40
+    #pkts decaps: 67, #pkts decrypt: 67, #pkts verify: 67
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 28.28.28.28, remote crypto endpt.: 15.15.15.15
+     plaintext mtu 1438, path mtu 1500, ip mtu 1500, ip mtu idb Ethernet1/1
+     current outbound spi: 0xBA8EE1EF(3129926127)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0xC6D21263(3335656035)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 4, flow_id: SW:4, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4208969/1455)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xBA8EE1EF(3129926127)
+        transform: esp-aes esp-md5-hmac ,
+        in use settings ={Tunnel, }
+        conn id: 3, flow_id: SW:3, sibling_flags 80000040, crypto map: Tunnel115-head-0
+        sa timing: remaining key lifetime (k/sec): (4208974/1455)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
 
 
-VPC1> ping 10.111.4.65 
+VPC1> ping 10.111.5.129 
 
-84 bytes from 10.111.4.65 icmp_seq=1 ttl=252 time=2.452 ms
-84 bytes from 10.111.4.65 icmp_seq=2 ttl=252 time=2.263 ms
-84 bytes from 10.111.4.65 icmp_seq=3 ttl=252 time=2.658 ms
-84 bytes from 10.111.4.65 icmp_seq=4 ttl=252 time=2.251 ms
-84 bytes from 10.111.4.65 icmp_seq=5 ttl=252 time=1.989 ms
+84 bytes from 10.111.5.129 icmp_seq=1 ttl=252 time=4.307 ms
+84 bytes from 10.111.5.129 icmp_seq=2 ttl=252 time=2.438 ms
+84 bytes from 10.111.5.129 icmp_seq=3 ttl=252 time=2.540 ms
+84 bytes from 10.111.5.129 icmp_seq=4 ttl=252 time=2.532 ms
+84 bytes from 10.111.5.129 icmp_seq=5 ttl=252 time=2.566 ms
+
+VPC1> trace 10.111.5.129
+trace to 10.111.5.129, 8 hops max, press Ctrl+C to stop
+ 1   10.111.0.1   0.977 ms  0.498 ms  0.439 ms
+ 2   10.111.2.2   0.901 ms  0.697 ms  0.580 ms
+ 3   10.111.2.14   0.976 ms  0.640 ms  0.621 ms
+ 4   *10.111.2.227   3.077 ms (ICMP type:3, code:3, Destination port unreachable)  *
+
+VPC1> ping 10.111.4.65  
+
+84 bytes from 10.111.4.65 icmp_seq=1 ttl=252 time=2.513 ms
+84 bytes from 10.111.4.65 icmp_seq=2 ttl=252 time=2.219 ms
+84 bytes from 10.111.4.65 icmp_seq=3 ttl=252 time=2.626 ms
+84 bytes from 10.111.4.65 icmp_seq=4 ttl=252 time=2.966 ms
+84 bytes from 10.111.4.65 icmp_seq=5 ttl=252 time=3.190 ms
+
+VPC1> trace 10.111.4.65
+trace to 10.111.4.65, 8 hops max, press Ctrl+C to stop
+ 1   10.111.0.1   0.576 ms  0.465 ms  0.722 ms
+ 2   10.111.2.2   1.766 ms  1.115 ms  0.582 ms
+ 3   10.111.2.14   1.349 ms  0.975 ms  0.845 ms
+ 4   *10.111.2.228   2.176 ms (ICMP type:3, code:3, Destination port unreachable)  *
 
 VPC1> ping 10.111.4.129
 
-84 bytes from 10.111.4.129 icmp_seq=1 ttl=252 time=2.574 ms
-84 bytes from 10.111.4.129 icmp_seq=2 ttl=252 time=2.709 ms
-84 bytes from 10.111.4.129 icmp_seq=3 ttl=252 time=2.896 ms
-84 bytes from 10.111.4.129 icmp_seq=4 ttl=252 time=2.622 ms
-84 bytes from 10.111.4.129 icmp_seq=5 ttl=252 time=2.671 ms
+84 bytes from 10.111.4.129 icmp_seq=1 ttl=252 time=4.657 ms
+84 bytes from 10.111.4.129 icmp_seq=2 ttl=252 time=3.066 ms
+84 bytes from 10.111.4.129 icmp_seq=3 ttl=252 time=2.846 ms
+84 bytes from 10.111.4.129 icmp_seq=4 ttl=252 time=3.235 ms
+84 bytes from 10.111.4.129 icmp_seq=5 ttl=252 time=2.937 ms
 
-VPC1> ping 10.111.5.129
+VPC1> trace 10.111.4.129
+trace to 10.111.4.129, 8 hops max, press Ctrl+C to stop
+ 1   10.111.0.1   0.516 ms  0.405 ms  0.302 ms
+ 2   10.111.2.2   0.598 ms  0.574 ms  1.146 ms
+ 3   10.111.2.14   1.334 ms  1.886 ms  0.931 ms
+ 4   *10.111.2.228   2.599 ms (ICMP type:3, code:3, Destination port unreachable)  *
 
-84 bytes from 10.111.5.129 icmp_seq=1 ttl=252 time=3.186 ms
-84 bytes from 10.111.5.129 icmp_seq=2 ttl=252 time=3.304 ms
-84 bytes from 10.111.5.129 icmp_seq=3 ttl=252 time=2.546 ms
-84 bytes from 10.111.5.129 icmp_seq=4 ttl=252 time=2.521 ms
-84 bytes from 10.111.5.129 icmp_seq=5 ttl=252 time=8.531 ms
-
-
-VPC7> ping 10.111.4.65
-
-84 bytes from 10.111.4.65 icmp_seq=1 ttl=252 time=2.718 ms
-84 bytes from 10.111.4.65 icmp_seq=2 ttl=252 time=2.804 ms
-84 bytes from 10.111.4.65 icmp_seq=3 ttl=252 time=2.426 ms
-84 bytes from 10.111.4.65 icmp_seq=4 ttl=252 time=2.278 ms
-84 bytes from 10.111.4.65 icmp_seq=5 ttl=252 time=2.668 ms
-
-VPC7> ping 10.111.4.129
-
-84 bytes from 10.111.4.129 icmp_seq=1 ttl=252 time=1.996 ms
-84 bytes from 10.111.4.129 icmp_seq=2 ttl=252 time=2.292 ms
-84 bytes from 10.111.4.129 icmp_seq=3 ttl=252 time=2.090 ms
-84 bytes from 10.111.4.129 icmp_seq=4 ttl=252 time=3.190 ms
-84 bytes from 10.111.4.129 icmp_seq=5 ttl=252 time=3.112 ms
 
 VPC7> ping 10.111.5.129
 
-84 bytes from 10.111.5.129 icmp_seq=1 ttl=252 time=2.980 ms
-84 bytes from 10.111.5.129 icmp_seq=2 ttl=252 time=2.995 ms
-84 bytes from 10.111.5.129 icmp_seq=3 ttl=252 time=3.127 ms
-84 bytes from 10.111.5.129 icmp_seq=4 ttl=252 time=2.405 ms
-84 bytes from 10.111.5.129 icmp_seq=5 ttl=252 time=2.908 ms
+84 bytes from 10.111.5.129 icmp_seq=1 ttl=252 time=2.985 ms
+84 bytes from 10.111.5.129 icmp_seq=2 ttl=252 time=2.461 ms
+84 bytes from 10.111.5.129 icmp_seq=3 ttl=252 time=2.524 ms
+84 bytes from 10.111.5.129 icmp_seq=4 ttl=252 time=2.676 ms
+84 bytes from 10.111.5.129 icmp_seq=5 ttl=252 time=2.619 ms
+
+VPC7> trace 10.111.5.129
+trace to 10.111.5.129, 8 hops max, press Ctrl+C to stop
+ 1   10.111.1.1   0.548 ms  0.432 ms  0.387 ms
+ 2   10.111.2.6   1.348 ms  0.958 ms  0.819 ms
+ 3   10.111.2.18   1.129 ms  1.288 ms  0.795 ms
+ 4   *10.111.2.227   2.852 ms (ICMP type:3, code:3, Destination port unreachable)  *
+
+VPC7> ping 10.111.4.65
+
+84 bytes from 10.111.4.65 icmp_seq=1 ttl=252 time=11.356 ms
+84 bytes from 10.111.4.65 icmp_seq=2 ttl=252 time=2.633 ms
+84 bytes from 10.111.4.65 icmp_seq=3 ttl=252 time=2.656 ms
+84 bytes from 10.111.4.65 icmp_seq=4 ttl=252 time=2.898 ms
+84 bytes from 10.111.4.65 icmp_seq=5 ttl=252 time=3.020 ms
+
+VPC7> trace 10.111.4.65
+trace to 10.111.4.65, 8 hops max, press Ctrl+C to stop
+ 1   10.111.1.1   0.658 ms  0.447 ms  0.547 ms
+ 2   10.111.2.6   0.732 ms  0.576 ms  0.703 ms
+ 3   10.111.2.18   0.807 ms  1.126 ms  1.068 ms
+ 4   *10.111.2.228   3.484 ms (ICMP type:3, code:3, Destination port unreachable)  *
+
+VPC7> ping 10.111.4.129
+
+84 bytes from 10.111.4.129 icmp_seq=1 ttl=252 time=4.557 ms
+84 bytes from 10.111.4.129 icmp_seq=2 ttl=252 time=3.190 ms
+84 bytes from 10.111.4.129 icmp_seq=3 ttl=252 time=3.099 ms
+84 bytes from 10.111.4.129 icmp_seq=4 ttl=252 time=2.352 ms
+84 bytes from 10.111.4.129 icmp_seq=5 ttl=252 time=2.709 ms
+
+VPC7> trace 10.111.4.129
+trace to 10.111.4.129, 8 hops max, press Ctrl+C to stop
+ 1   10.111.1.1   0.700 ms  0.506 ms  0.389 ms
+ 2   10.111.2.6   0.881 ms  0.640 ms  0.767 ms
+ 3   10.111.2.18   1.332 ms  1.411 ms  1.188 ms
+ 4   *10.111.2.228   3.153 ms (ICMP type:3, code:3, Destination port unreachable)  *
 
 ```
