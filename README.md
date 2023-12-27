@@ -53,5 +53,5 @@
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw13/README.md)
 
 ## Лабораторная работа 14
-+ ### IPSec over DMVPN
++ ### GRE/DMVPN over IPSec
 [Ссылка](https://github.com/sergl352130/OTUS_NE_Homeworks/blob/main/Labs/Hw14/README.md)
