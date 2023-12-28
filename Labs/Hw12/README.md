@@ -90,6 +90,7 @@ router bgp 1001
 !
 ip nat pool R14-PAT-OUT 40.40.40.40 40.40.40.40 netmask 255.255.255.0
 ip nat inside source list R14-PAT-IN pool R14-PAT-OUT overload
+ip nat inside source static 10.111.3.20 40.40.40.40
 ip route 40.40.40.40 255.255.255.255 Null0
 !
 ip access-list standard R14-PAT-IN
@@ -308,172 +309,209 @@ route-map RM-R28-R26-NAT permit 10
 ### Проверка NAT
 
 ```
-VPC1> ping 22.111.22.22
-
-22.111.22.22 icmp_seq=1 timeout
-22.111.22.22 icmp_seq=2 timeout
-22.111.22.22 icmp_seq=3 timeout
-22.111.22.22 icmp_seq=4 timeout
-22.111.22.22 icmp_seq=5 timeout
-
 VPC1> ping 10.112.0.2  
 
-*33.111.21.21 icmp_seq=1 ttl=252 time=1.830 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=2 ttl=252 time=1.557 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=3 ttl=252 time=1.417 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=4 ttl=252 time=1.303 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=5 ttl=252 time=1.376 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=1 ttl=252 time=1.419 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=2 ttl=252 time=1.611 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=3 ttl=252 time=1.743 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=4 ttl=252 time=1.938 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=5 ttl=252 time=1.897 ms (ICMP type:3, code:1, Destination host unreachable)
 
-VPC7> ping 22.111.22.22
+VPC1> ping 10.112.1.2 
 
-22.111.22.22 icmp_seq=1 timeout
-22.111.22.22 icmp_seq=2 timeout
-22.111.22.22 icmp_seq=3 timeout
-22.111.22.22 icmp_seq=4 timeout
-22.111.22.22 icmp_seq=5 timeout
+*33.111.21.21 icmp_seq=1 ttl=252 time=2.108 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=2 ttl=252 time=1.425 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=3 ttl=252 time=1.389 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=4 ttl=252 time=1.955 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=5 ttl=252 time=2.158 ms (ICMP type:3, code:1, Destination host unreachable)
 
 VPC7> ping 10.112.0.2
 
-*33.111.21.21 icmp_seq=1 ttl=252 time=1.920 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=2 ttl=252 time=1.687 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=3 ttl=252 time=2.098 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=4 ttl=252 time=1.557 ms (ICMP type:3, code:1, Destination host unreachable)
-*33.111.21.21 icmp_seq=5 ttl=252 time=1.670 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=1 ttl=252 time=1.889 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=2 ttl=252 time=1.691 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=3 ttl=252 time=2.243 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=4 ttl=252 time=1.708 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=5 ttl=252 time=1.291 ms (ICMP type:3, code:1, Destination host unreachable)
 
-R19#ping 10.112.3.18                   
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.112.3.18, timeout is 2 seconds:
-.....
-Success rate is 0 percent (0/5)
-R19#ping 10.112.3.18 source 10.111.3.19
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.112.3.18, timeout is 2 seconds:
-Packet sent with a source address of 10.111.3.19 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+VPC7> ping 10.112.1.2  
 
-R18#ping 10.111.3.19
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.3.19, timeout is 2 seconds:
-.....
-Success rate is 0 percent (0/5)
-R18#ping 10.111.3.19 source 10.112.3.18
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.3.19, timeout is 2 seconds:
-Packet sent with a source address of 10.112.3.18 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/3 ms
+*33.111.21.21 icmp_seq=1 ttl=252 time=2.065 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=2 ttl=252 time=2.163 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=3 ttl=252 time=1.968 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=4 ttl=252 time=1.709 ms (ICMP type:3, code:1, Destination host unreachable)
+*33.111.21.21 icmp_seq=5 ttl=252 time=2.275 ms (ICMP type:3, code:1, Destination host unreachable)
 
-R28#ping 10.111.3.19
+R20#ping 10.112.0.2 source 10.111.3.20
 Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.3.19, timeout is 2 seconds:
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
-R28#ping 10.111.3.19 source 10.111.4.28
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.111.3.19, timeout is 2 seconds:
-Packet sent with a source address of 10.111.4.28 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
-
-R20#ping 10.112.3.18                   
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.112.3.18, timeout is 2 seconds:
-.....
-Success rate is 0 percent (0/5)
-R20#ping 10.112.3.18 source 10.111.3.20
-Type escape sequence to abort.
-Sending 5, 100-byte ICMP Echos to 10.112.3.18, timeout is 2 seconds:
+Sending 5, 100-byte ICMP Echos to 10.112.0.2, timeout is 2 seconds:
 Packet sent with a source address of 10.111.3.20 
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
-
-VPC8> ping 10.111.1.6
-
-*44.112.26.26 icmp_seq=1 ttl=252 time=0.932 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.26.26 icmp_seq=2 ttl=252 time=1.081 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.26.26 icmp_seq=3 ttl=252 time=1.269 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.26.26 icmp_seq=4 ttl=252 time=1.470 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.26.26 icmp_seq=5 ttl=252 time=1.013 ms (ICMP type:3, code:1, Destination host unreachable)
+U.U.U
+Success rate is 0 percent (0/5)
 
 
-VPC> ping 10.111.1.6
+VPC8> ping 10.111.3.19
 
-*44.112.24.24 icmp_seq=1 ttl=252 time=0.887 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.24.24 icmp_seq=2 ttl=252 time=1.766 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.24.24 icmp_seq=3 ttl=252 time=1.142 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.24.24 icmp_seq=4 ttl=252 time=1.312 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.112.24.24 icmp_seq=5 ttl=252 time=1.442 ms (ICMP type:3, code:1, Destination host unreachable)
+84 bytes from 10.111.3.19 icmp_seq=1 ttl=248 time=2.540 ms
+84 bytes from 10.111.3.19 icmp_seq=2 ttl=248 time=2.047 ms
+84 bytes from 10.111.3.19 icmp_seq=3 ttl=248 time=2.301 ms
+84 bytes from 10.111.3.19 icmp_seq=4 ttl=248 time=2.350 ms
+84 bytes from 10.111.3.19 icmp_seq=5 ttl=248 time=2.485 ms
+
+VPC> ping 10.111.3.19
+
+84 bytes from 10.111.3.19 icmp_seq=1 ttl=248 time=1.972 ms
+84 bytes from 10.111.3.19 icmp_seq=2 ttl=248 time=2.857 ms
+84 bytes from 10.111.3.19 icmp_seq=3 ttl=248 time=2.824 ms
+84 bytes from 10.111.3.19 icmp_seq=4 ttl=248 time=2.013 ms
+84 bytes from 10.111.3.19 icmp_seq=5 ttl=248 time=2.337 ms
 
 
-VPC30> ping 10.111.1.6
+VPC30> ping 10.111.3.19
 
-*44.114.26.26 icmp_seq=1 ttl=254 time=0.811 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.26.26 icmp_seq=2 ttl=254 time=1.152 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.26.26 icmp_seq=3 ttl=254 time=0.929 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.26.26 icmp_seq=4 ttl=254 time=1.492 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.26.26 icmp_seq=5 ttl=254 time=1.063 ms (ICMP type:3, code:1, Destination host unreachable)
+84 bytes from 10.111.3.19 icmp_seq=1 ttl=249 time=2.140 ms
+84 bytes from 10.111.3.19 icmp_seq=2 ttl=249 time=2.628 ms
+84 bytes from 10.111.3.19 icmp_seq=3 ttl=249 time=2.607 ms
+84 bytes from 10.111.3.19 icmp_seq=4 ttl=249 time=2.326 ms
+84 bytes from 10.111.3.19 icmp_seq=5 ttl=249 time=2.200 ms
 
-VPC31> ping 10.111.1.6
+VPC31> ping 10.111.3.19
 
-*44.114.25.25 icmp_seq=1 ttl=254 time=0.793 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.25.25 icmp_seq=2 ttl=254 time=1.165 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.25.25 icmp_seq=3 ttl=254 time=1.260 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.25.25 icmp_seq=4 ttl=254 time=1.116 ms (ICMP type:3, code:1, Destination host unreachable)
-*44.114.25.25 icmp_seq=5 ttl=254 time=1.123 ms (ICMP type:3, code:1, Destination host unreachable)
+84 bytes from 10.111.3.19 icmp_seq=1 ttl=248 time=2.776 ms
+84 bytes from 10.111.3.19 icmp_seq=2 ttl=248 time=2.691 ms
+84 bytes from 10.111.3.19 icmp_seq=3 ttl=248 time=2.438 ms
+84 bytes from 10.111.3.19 icmp_seq=4 ttl=248 time=2.353 ms
+84 bytes from 10.111.3.19 icmp_seq=5 ttl=248 time=2.272 ms
 
-R14#show ip nat translations 
+
+R15#show ip nat translations
 Pro Inside global      Inside local       Outside local      Outside global
-icmp 14.14.14.14:3211  10.111.0.6:3211    22.111.22.22:3211  22.111.22.22:3211
-icmp 14.14.14.14:3723  10.111.0.6:3723    22.111.22.22:3723  22.111.22.22:3723
-icmp 14.14.14.14:4235  10.111.0.6:4235    22.111.22.22:4235  22.111.22.22:4235
-icmp 14.14.14.14:1024  10.111.0.6:4747    22.111.22.22:4747  22.111.22.22:1024
-icmp 14.14.14.14:1025  10.111.0.6:5259    22.111.22.22:5259  22.111.22.22:1025
-icmp 14.14.14.14:4747  10.111.1.6:4747    22.111.22.22:4747  22.111.22.22:4747
-icmp 14.14.14.14:5259  10.111.1.6:5259    22.111.22.22:5259  22.111.22.22:5259
-icmp 14.14.14.14:5771  10.111.1.6:5771    22.111.22.22:5771  22.111.22.22:5771
-icmp 14.14.14.14:6283  10.111.1.6:6283    22.111.22.22:6283  22.111.22.22:6283
-icmp 14.14.14.14:6795  10.111.1.6:6795    22.111.22.22:6795  22.111.22.22:6795
-
-R15#show ip nat translations 
+icmp 50.50.50.50:36994 10.111.0.2:36994   10.112.0.2:36994   10.112.0.2:36994
+icmp 50.50.50.50:37250 10.111.0.2:37250   10.112.0.2:37250   10.112.0.2:37250
+icmp 50.50.50.50:37506 10.111.0.2:37506   10.112.0.2:37506   10.112.0.2:37506
+icmp 50.50.50.50:37762 10.111.0.2:37762   10.112.0.2:37762   10.112.0.2:37762
+icmp 50.50.50.50:38018 10.111.0.2:38018   10.112.0.2:38018   10.112.0.2:38018
+icmp 50.50.50.50:39810 10.111.0.2:39810   10.112.1.2:39810   10.112.1.2:39810
+icmp 50.50.50.50:40066 10.111.0.2:40066   10.112.1.2:40066   10.112.1.2:40066
+icmp 50.50.50.50:40322 10.111.0.2:40322   10.112.1.2:40322   10.112.1.2:40322
+icmp 50.50.50.50:40578 10.111.0.2:40578   10.112.1.2:40578   10.112.1.2:40578
+icmp 50.50.50.50:40834 10.111.0.2:40834   10.112.1.2:40834   10.112.1.2:40834
+icmp 50.50.50.50:1024  10.111.1.2:38018   10.112.0.2:38018   10.112.0.2:1024
+icmp 50.50.50.50:38274 10.111.1.2:38274   10.112.0.2:38274   10.112.0.2:38274
+icmp 50.50.50.50:38530 10.111.1.2:38530   10.112.0.2:38530   10.112.0.2:38530
+icmp 50.50.50.50:38786 10.111.1.2:38786   10.112.0.2:38786   10.112.0.2:38786
+icmp 50.50.50.50:39042 10.111.1.2:39042   10.112.0.2:39042   10.112.0.2:39042
+icmp 50.50.50.50:42626 10.111.1.2:42626   10.112.1.2:42626   10.112.1.2:42626
+icmp 50.50.50.50:42882 10.111.1.2:42882   10.112.1.2:42882   10.112.1.2:42882
+icmp 50.50.50.50:43138 10.111.1.2:43138   10.112.1.2:43138   10.112.1.2:43138
+icmp 50.50.50.50:43394 10.111.1.2:43394   10.112.1.2:43394   10.112.1.2:43394
+icmp 50.50.50.50:43650 10.111.1.2:43650   10.112.1.2:43650   10.112.1.2:43650
+icmp 50.50.50.50:4     10.111.3.20:4      10.112.0.2:4       10.112.0.2:4
 Pro Inside global      Inside local       Outside local      Outside global
-icmp 15.15.15.15:20109 10.111.0.6:20109   10.112.0.2:20109   10.112.0.2:20109
-icmp 15.15.15.15:20365 10.111.0.6:20365   10.112.0.2:20365   10.112.0.2:20365
-icmp 15.15.15.15:20621 10.111.0.6:20621   10.112.0.2:20621   10.112.0.2:20621
-icmp 15.15.15.15:20877 10.111.0.6:20877   10.112.0.2:20877   10.112.0.2:20877
-icmp 15.15.15.15:21133 10.111.0.6:21133   10.112.0.2:21133   10.112.0.2:21133
-icmp 15.15.15.15:21389 10.111.1.6:21389   10.112.0.2:21389   10.112.0.2:21389
-icmp 15.15.15.15:21645 10.111.1.6:21645   10.112.0.2:21645   10.112.0.2:21645
-icmp 15.15.15.15:21901 10.111.1.6:21901   10.112.0.2:21901   10.112.0.2:21901
-icmp 15.15.15.15:22157 10.111.1.6:22157   10.112.0.2:22157   10.112.0.2:22157
-icmp 15.15.15.15:22413 10.111.1.6:22413   10.112.0.2:22413   10.112.0.2:22413
-icmp 15.15.15.15:11    10.111.3.20:11     10.112.3.18:11     10.112.3.18:11
---- 15.15.15.15        10.111.3.20        ---                ---
+--- 50.50.50.50        10.111.3.20        ---                ---
 
-R18#sh ip nat translations 
+R18#show ip nat translations
 Pro Inside global      Inside local       Outside local      Outside global
-icmp 18.18.18.18:54400 10.112.0.2:54400   10.111.1.6:54400   10.111.1.6:54400
-icmp 18.18.18.18:54656 10.112.0.2:54656   10.111.1.6:54656   10.111.1.6:54656
-icmp 18.18.18.18:54912 10.112.0.2:54912   10.111.1.6:54912   10.111.1.6:54912
-icmp 18.18.18.18:1024  10.112.0.2:55168   10.111.1.6:55168   10.111.1.6:1024
-icmp 18.18.18.18:1025  10.112.0.2:55424   10.111.1.6:55424   10.111.1.6:1025
-icmp 18.18.18.18:55168 10.112.1.2:55168   10.111.1.6:55168   10.111.1.6:55168
-icmp 18.18.18.18:55424 10.112.1.2:55424   10.111.1.6:55424   10.111.1.6:55424
-icmp 18.18.18.18:55680 10.112.1.2:55680   10.111.1.6:55680   10.111.1.6:55680
-icmp 18.18.18.18:55936 10.112.1.2:55936   10.111.1.6:55936   10.111.1.6:55936
+icmp 80.80.80.17:7044  10.112.0.2:7044    10.111.3.19:7044   10.111.3.19:7044
+icmp 80.80.80.17:7300  10.112.0.2:7300    10.111.3.19:7300   10.111.3.19:7300
+icmp 80.80.80.17:7556  10.112.0.2:7556    10.111.3.19:7556   10.111.3.19:7556
+icmp 80.80.80.17:7812  10.112.0.2:7812    10.111.3.19:7812   10.111.3.19:7812
+icmp 80.80.80.17:8068  10.112.0.2:8068    10.111.3.19:8068   10.111.3.19:8068
+icmp 80.80.80.17:8580  10.112.1.2:8580    10.111.3.19:8580   10.111.3.19:8580
+icmp 80.80.80.17:8836  10.112.1.2:8836    10.111.3.19:8836   10.111.3.19:8836
+icmp 80.80.80.17:9092  10.112.1.2:9092    10.111.3.19:9092   10.111.3.19:9092
+icmp 80.80.80.17:9348  10.112.1.2:9348    10.111.3.19:9348   10.111.3.19:9348
+icmp 80.80.80.17:9604  10.112.1.2:9604    10.111.3.19:9604   10.111.3.19:9604
 
 R28#show ip nat translations 
 Pro Inside global      Inside local       Outside local      Outside global
-icmp 44.114.26.28:49553 10.111.4.66:49553 10.111.1.6:49553   10.111.1.6:49553
-icmp 44.114.26.28:49809 10.111.4.66:49809 10.111.1.6:49809   10.111.1.6:49809
-icmp 44.114.26.28:50065 10.111.4.66:50065 10.111.1.6:50065   10.111.1.6:50065
-icmp 44.114.26.28:50321 10.111.4.66:50321 10.111.1.6:50321   10.111.1.6:50321
-icmp 44.114.26.28:50577 10.111.4.66:50577 10.111.1.6:50577   10.111.1.6:50577
-icmp 44.114.25.28:51089 10.111.4.131:51089 10.111.1.6:51089  10.111.1.6:51089
-icmp 44.114.25.28:51345 10.111.4.131:51345 10.111.1.6:51345  10.111.1.6:51345
-icmp 44.114.25.28:51601 10.111.4.131:51601 10.111.1.6:51601  10.111.1.6:51601
-icmp 44.114.25.28:51857 10.111.4.131:51857 10.111.1.6:51857  10.111.1.6:51857
-icmp 44.114.25.28:52113 10.111.4.131:52113 10.111.1.6:52113  10.111.1.6:52113
+icmp 44.114.26.28:51332 10.111.4.66:51332 10.111.3.19:51332  10.111.3.19:51332
+icmp 44.114.26.28:51588 10.111.4.66:51588 10.111.3.19:51588  10.111.3.19:51588
+icmp 44.114.26.28:51844 10.111.4.66:51844 10.111.3.19:51844  10.111.3.19:51844
+icmp 44.114.26.28:52100 10.111.4.66:52100 10.111.3.19:52100  10.111.3.19:52100
+icmp 44.114.26.28:52356 10.111.4.66:52356 10.111.3.19:52356  10.111.3.19:52356
+icmp 44.114.25.28:53380 10.111.4.131:53380 10.111.3.19:53380 10.111.3.19:53380
+icmp 44.114.25.28:53636 10.111.4.131:53636 10.111.3.19:53636 10.111.3.19:53636
+icmp 44.114.25.28:53892 10.111.4.131:53892 10.111.3.19:53892 10.111.3.19:53892
+icmp 44.114.25.28:54148 10.111.4.131:54148 10.111.3.19:54148 10.111.3.19:54148
+icmp 44.114.25.28:54404 10.111.4.131:54404 10.111.3.19:54404 10.111.3.19:54404
+```
+
+### Проверка NAT через R14
+
+```
+R15(config)#interface Ethernet1/0
+R15(config-if)#shutdown
+R15(config-if)#
+Dec 28 14:29:40.016: %BGP-5-NBR_RESET: Neighbor 33.111.21.21 reset (Interface flap)
+Dec 28 14:29:40.017: %BGP-5-ADJCHANGE: neighbor 33.111.21.21 Down Interface flap
+Dec 28 14:29:40.017: %BGP_SESSION-5-ADJCHANGE: neighbor 33.111.21.21 IPv4 Unicast topology base removed from session  Interface flap
+R15(config-if)#
+Dec 28 14:29:42.012: %LINK-5-CHANGED: Interface Ethernet1/0, changed state to administratively down
+Dec 28 14:29:43.017: %LINEPROTO-5-UPDOWN: Line protocol on Interface Ethernet1/0, changed state to down
+R15(config-if)#
+
+VPC1> ping 10.112.0.2
+
+10.112.0.2 icmp_seq=1 timeout
+10.112.0.2 icmp_seq=2 timeout
+10.112.0.2 icmp_seq=3 timeout
+10.112.0.2 icmp_seq=4 timeout
+10.112.0.2 icmp_seq=5 timeout
+
+VPC1> ping 10.112.1.2
+
+10.112.1.2 icmp_seq=1 timeout
+10.112.1.2 icmp_seq=2 timeout
+10.112.1.2 icmp_seq=3 timeout
+10.112.1.2 icmp_seq=4 timeout
+10.112.1.2 icmp_seq=5 timeout
+
+VPC7> ping 10.112.0.2
+
+10.112.0.2 icmp_seq=1 timeout
+10.112.0.2 icmp_seq=2 timeout
+10.112.0.2 icmp_seq=3 timeout
+10.112.0.2 icmp_seq=4 timeout
+10.112.0.2 icmp_seq=5 timeout
+
+VPC7> ping 10.112.1.2
+
+10.112.1.2 icmp_seq=1 timeout
+10.112.1.2 icmp_seq=2 timeout
+10.112.1.2 icmp_seq=3 timeout
+10.112.1.2 icmp_seq=4 timeout
+10.112.1.2 icmp_seq=5 timeout
+
+R20#ping 10.112.0.2 source 10.111.3.20
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.112.0.2, timeout is 2 seconds:
+Packet sent with a source address of 10.111.3.20 
+.....
+Success rate is 0 percent (0/5)
+
+
+R14#show ip nat translations
+Pro Inside global      Inside local       Outside local      Outside global
+icmp 40.40.40.40:40070 10.111.0.2:40070   10.112.0.2:40070   10.112.0.2:40070
+icmp 40.40.40.40:40582 10.111.0.2:40582   10.112.0.2:40582   10.112.0.2:40582
+icmp 40.40.40.40:41094 10.111.0.2:41094   10.112.0.2:41094   10.112.0.2:41094
+icmp 40.40.40.40:42118 10.111.0.2:42118   10.112.1.2:42118   10.112.1.2:42118
+icmp 40.40.40.40:42630 10.111.0.2:42630   10.112.1.2:42630   10.112.1.2:42630
+icmp 40.40.40.40:43142 10.111.0.2:43142   10.112.1.2:43142   10.112.1.2:43142
+icmp 40.40.40.40:43654 10.111.0.2:43654   10.112.1.2:43654   10.112.1.2:43654
+icmp 40.40.40.40:1024  10.111.0.2:44166   10.112.1.2:44166   10.112.1.2:1024
+icmp 40.40.40.40:44166 10.111.1.2:44166   10.112.0.2:44166   10.112.0.2:44166
+icmp 40.40.40.40:44678 10.111.1.2:44678   10.112.0.2:44678   10.112.0.2:44678
+icmp 40.40.40.40:45190 10.111.1.2:45190   10.112.0.2:45190   10.112.0.2:45190
+icmp 40.40.40.40:45702 10.111.1.2:45702   10.112.0.2:45702   10.112.0.2:45702
+icmp 40.40.40.40:46214 10.111.1.2:46214   10.112.0.2:46214   10.112.0.2:46214
+icmp 40.40.40.40:47238 10.111.1.2:47238   10.112.1.2:47238   10.112.1.2:47238
+icmp 40.40.40.40:47750 10.111.1.2:47750   10.112.1.2:47750   10.112.1.2:47750
+icmp 40.40.40.40:48262 10.111.1.2:48262   10.112.1.2:48262   10.112.1.2:48262
+icmp 40.40.40.40:48774 10.111.1.2:48774   10.112.1.2:48774   10.112.1.2:48774
+icmp 40.40.40.40:49286 10.111.1.2:49286   10.112.1.2:49286   10.112.1.2:49286
+icmp 40.40.40.40:5     10.111.3.20:5      10.112.0.2:5       10.112.0.2:5
+--- 40.40.40.40        10.111.3.20        ---                ---
 ```
 
 ### DHCP, NTP
